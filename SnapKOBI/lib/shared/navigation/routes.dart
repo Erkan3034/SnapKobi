@@ -8,7 +8,11 @@ abstract final class AppRoutes {
   static const String resetPassword = '/reset-password';
   static const String verifyEmail = '/verify-email';
   static const String home = '/home';
+  static const String create = '/create';
   static const String results = '/results';
   static const String history = '/history';
+  static const String projectDetail = '/project-detail';
+  static const String library = '/library';
   static const String settings = '/settings';
+  static const String subscription = '/subscription';
 }

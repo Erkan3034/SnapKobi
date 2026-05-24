@@ -1,0 +1,81 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:image_picker/image_picker.dart';
+
+import '../../core/theme/app_colors.dart';
+import '../../core/theme/app_dimensions.dart';
+import '../../core/theme/app_icons.dart';
+import '../../core/theme/app_typography.dart';
+import '../home/widgets/action_buttons.dart';
+import '../home/widgets/credit_counter.dart';
+import '../home/widgets/image_upload_zone.dart';
+import '../home/widgets/platform_selection_sheet.dart';
+import '../home/widgets/submit_button.dart';
+import 'create_provider.dart';
+import 'widgets/background_theme_selector.dart';
+import 'widgets/platform_chip_button.dart';
+
+class CreateScreen extends ConsumerWidget {
+  const CreateScreen({super.key});
+
+  Future<void> _pickImage(WidgetRef ref, ImageSource src) async {
+    final img = await ImagePicker().pickImage(source: src);
+    if (img != null) ref.read(createProvider.notifier).setImagePath(img.path);
+  }
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final state = ref.watch(createProvider);
+    final hasImg = state.selectedImagePath != null;
+
+    return Scaffold(
+      backgroundColor: AppColors.backgroundLight,
+      appBar: AppBar(
+        backgroundColor: AppColors.white,
+        surfaceTintColor: AppColors.transparent,
+        leading: IconButton(
+          icon: const Icon(AppIcons.close, color: AppColors.textPrimary),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+        title: Text('Yeni Üretim ✨', style: AppTypography.headlineMedium.copyWith(fontSize: 18)),
+        centerTitle: true,
+      ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(vertical: AppDimensions.spacing16),
+        child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+          const UsageBanner(),
+          const SizedBox(height: AppDimensions.spacing20),
+          ImageUploadZone(
+            imagePath: state.selectedImagePath,
+            onClear: () => ref.read(createProvider.notifier).setImagePath(null),
+            onTap: () => _pickImage(ref, ImageSource.gallery),
+          ),
+          if (!hasImg) ...[
+            const SizedBox(height: AppDimensions.spacing16),
+            QuickActionButtons(
+              onCameraTap: () => _pickImage(ref, ImageSource.camera),
+              onGalleryTap: () => _pickImage(ref, ImageSource.gallery),
+            ),
+          ],
+          const SizedBox(height: AppDimensions.spacing20),
+          PlatformChipButton(
+            selectedPlatform: state.selectedPlatform,
+            onTap: () => PlatformSelectionSheet.show(context,
+              current: state.selectedPlatform,
+              onConfirm: ref.read(createProvider.notifier).setPlatform,
+            ),
+          ),
+          if (hasImg) ...[
+            const SizedBox(height: AppDimensions.spacing20),
+            BackgroundThemeSelector(
+              selectedTheme: state.selectedBackgroundTheme,
+              onThemeSelected: ref.read(createProvider.notifier).setBackgroundTheme,
+            ),
+          ],
+          const SizedBox(height: AppDimensions.spacing32),
+          SubmitButton(isEnabled: hasImg, onTap: () {}),
+        ]),
+      ),
+    );
+  }
+}

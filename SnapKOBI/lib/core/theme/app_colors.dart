@@ -28,6 +28,11 @@ abstract final class AppColors {
   static const Color inputBackground = Color(0xFFFFFFFF);
   static const Color indicatorInactive = Color(0xFFD1D5DB);
 
+  // ─── Durum (Semantic) ─────────────────────────────────────────────
+  static const Color success = Color(0xFF22C55E);
+  static const Color warning = Color(0xFFF59E0B);
+  static const Color error = Color(0xFFEF4444);
+
   // ─── Opaklık yardımcıları ────────────────────────────────────────
   static Color whiteOpacity(double opacity) =>
       Colors.white.withOpacity(opacity);

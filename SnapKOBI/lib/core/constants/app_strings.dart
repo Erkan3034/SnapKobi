@@ -106,9 +106,31 @@ abstract final class AppStrings {
   static const String historyTitle = 'Geçmiş';
   static const String historyPlaceholder = 'Geçmiş Verileri Buraya Gelecek';
 
+  // ─── Processing ────────────────────────────────────────────────────
+  static const String processingTitle = 'İşleminiz Hazırlanıyor';
+  static const String processingSubtitle = 'Telefonu kapatabilirsiniz, bildirim göndereceğiz';
+  static const String processingStepAnalyze = 'Görsel Analiz Edildi';
+  static const String processingStepBackground = 'Arka Plan Değiştiriliyor...';
+  static const String processingStepCaption = 'Metin Üretiliyor';
+  static const String processingEstimatedTime = 'Tahmini Süre:';
+  static const String processingBackground = 'Arka Planda Çalışsın';
+  static const String processingNotification = 'İşlem tamamlandığında bildirim alacaksınız 🔔';
+
   // ─── Result ──────────────────────────────────────────────────────
   static const String resultTitle = 'Sonuçlar';
-  static const String resultPlaceholder = 'Sonuç Verileri Buraya Gelecek';
+  static const String resultSuccess = 'İşlem saniyede tamamlandı';
+  static const String resultImageComparison = 'Görsel Karşılaştırma';
+  static const String resultSave = 'Kaydet 💾';
+  static const String resultBefore = 'Önce';
+  static const String resultAfter = 'Sonra';
+  static const String resultHighQuality = 'Yüksek Kalite';
+  static const String resultVideo = 'Tanıtım Videosu';
+  static const String resultPlay = 'Oynat';
+  static const String resultDownload = 'İndir';
+  static const String resultCaption = 'Instagram Metni';
+  static const String resultCopy = 'Kopyala';
+  static const String resultEdit = 'Düzenle';
+  static const String resultShareAll = 'Tümünü Paylaş';
 
   // ─── Settings ────────────────────────────────────────────────────
   static const String settingsTitle = 'Ayarlar';
@@ -118,8 +140,47 @@ abstract final class AppStrings {
 
   // ─── Bottom Navigation ───────────────────────────────────────────
   static const String navHome = 'Ana Sayfa';
-  static const String navHistory = 'Geçmiş';
-  static const String navSubscription = 'Paketler';
-  static const String navSettings = 'Ayarlar';
+  static const String navProjects = 'Projelerim';
   static const String navCreate = 'Üret';
+  static const String navLibrary = 'Kütüphane';
+  static const String navProfile = 'Profil';
+
+  // ─── Discover (Ana Sayfa) ────────────────────────────────────────
+  static const String discoverTrending = '🔥 Bu Hafta Trend';
+  static const String discoverPopular = '⭐ Popüler Şablonlar';
+  static const String discoverCommunity = '💡 Topluluk Vitrini';
+  static const String discoverQuickStart = 'Hemen Üretmeye Başla';
+  static const String discoverQuickStartSub = 'Ürününüzü çekin, AI gerisini halleder';
+  static const String discoverUsageCount = 'üretim';
+  static const String discoverUseTemplate = 'Kullan';
+  static const String discoverViewAll = 'Tümünü Gör';
+
+  // ─── Create (Üretim) ────────────────────────────────────────────
+  static const String createTitle = 'Yeni Üretim';
+  static const String createSelectPlatform = 'Platform Seçin';
+  static const String createBackgroundTheme = 'Arka Plan Teması';
+  static const String createStartAi = 'AI İşlemini Başlat ✨';
+
+  // ─── Library (Kütüphane) ─────────────────────────────────────────
+  static const String libraryTitle = 'Kütüphane';
+  static const String libraryTemplates = 'Şablonlar';
+  static const String libraryCategories = 'Kategoriler';
+  static const String libraryAll = 'Tümü';
+
+  // ─── Project Detail ──────────────────────────────────────────────
+  static const String projectDetailTitle = 'Proje Detayı';
+  static const String projectRegenerate = '🔄 Yeniden Üret';
+  static const String projectShareAll = 'Tümünü Paylaş';
+
+  // ─── Platform Selection ──────────────────────────────────────────
+  static const String platformSheetTitle = 'Platform & Format Seçin';
+  static const String platformSheetSubtitle = 'Her platform için AI farklı format üretir';
+  static const String platformConfirm = 'Seçimi Onayla →';
+
+  // ─── Notification ────────────────────────────────────────────────
+  static const String notificationAppName = 'SnapKOBİ';
+  static const String notificationTimeAgo = 'az önce';
+  static const String notificationView = 'Görüntüle';
+  static const String notificationShare = 'Paylaş';
+  static const String notificationReadyTitle = '✨ Ürününüz Hazır!';
 }
