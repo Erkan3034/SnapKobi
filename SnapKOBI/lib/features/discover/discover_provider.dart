@@ -38,12 +38,25 @@ class TemplateItem {
 }
 
 class CommunityItem {
-  final String userName;
-  final String beforeUrl;
-  final String afterUrl;
-  final String timeAgo;
-  final String platform;
-  const CommunityItem({required this.userName, required this.beforeUrl, required this.afterUrl, required this.timeAgo, required this.platform});
+  final String? userName;
+  final String? beforeUrl;
+  final String? afterUrl;
+  final String? timeAgo;
+  final String? platform;
+  final int? likesCount;
+  final int? commentsCount;
+  final String? avatarUrl;
+
+  const CommunityItem({
+    this.userName,
+    this.beforeUrl,
+    this.afterUrl,
+    this.timeAgo,
+    this.platform,
+    this.likesCount,
+    this.commentsCount,
+    this.avatarUrl,
+  });
 }
 
 class DiscoverState {
@@ -116,8 +129,36 @@ class DiscoverNotifier extends StateNotifier<DiscoverState> {
       TemplateItem(id: '6', title: 'Gradient', imageUrl: 'https://images.unsplash.com/photo-1579546929518-9e396f3cc809?w=300&q=80', category: 'Gradient', usageCount: 650),
     ],
     community: [
-      CommunityItem(userName: 'ayakkabi_dunyasi', beforeUrl: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&q=80', afterUrl: 'https://images.unsplash.com/photo-1600185365926-3a2ce3cdb9eb?w=400&q=80', timeAgo: '2 saat önce', platform: 'Instagram'),
-      CommunityItem(userName: 'tech_store_tr', beforeUrl: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&q=80', afterUrl: 'https://images.unsplash.com/photo-1546868871-af0de0ae72be?w=400&q=80', timeAgo: '5 saat önce', platform: 'Trendyol'),
+      CommunityItem(
+        userName: 'ayakkabi_dunyasi',
+        beforeUrl: 'https://images.unsplash.com/photo-1485738422979-f5c462d49f74?w=400&q=80', // black shoe before
+        afterUrl: 'https://images.unsplash.com/photo-1600185365926-3a2ce3cdb9eb?w=400&q=80', // red shoe after
+        timeAgo: '2 saat önce',
+        platform: 'Instagram',
+        likesCount: 242,
+        commentsCount: 18,
+        avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=80&q=80',
+      ),
+      CommunityItem(
+        userName: 'tech_store_tr',
+        beforeUrl: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&q=80', // watch before
+        afterUrl: 'https://images.unsplash.com/photo-1546868871-af0de0ae72be?w=400&q=80', // watch after
+        timeAgo: '5 saat önce',
+        platform: 'Trendyol',
+        likesCount: 1200,
+        commentsCount: 56,
+        avatarUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&q=80',
+      ),
+      CommunityItem(
+        userName: 'butik_moda',
+        beforeUrl: 'https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=400&q=80', // bag before
+        afterUrl: 'https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=400&q=80', // bag after
+        timeAgo: '8 saat önce',
+        platform: 'Mağaza',
+        likesCount: 840,
+        commentsCount: 31,
+        avatarUrl: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=80&q=80',
+      ),
     ],
   );
 }

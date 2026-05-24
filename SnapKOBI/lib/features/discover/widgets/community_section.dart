@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../core/theme/app_dimensions.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
+import '../../community/community_screen.dart';
 import '../discover_provider.dart';
 import 'community_card.dart';
 
@@ -19,7 +20,12 @@ class CommunitySection extends StatelessWidget {
           Text('💡 Topluluk Vitrini', style: AppTypography.headlineMedium.copyWith(fontSize: 18)),
           const Spacer(),
           TextButton(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const CommunityScreen()),
+              );
+            },
             child: Text('Tümünü Gör', style: AppTypography.labelSmall.copyWith(color: AppColors.primary)),
           ),
         ]),
@@ -28,3 +34,4 @@ class CommunitySection extends StatelessWidget {
     ]);
   }
 }
+

@@ -26,7 +26,14 @@ class HomeScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final homeState = ref.watch(homeProvider);
     final user = ref.watch(authNotifierProvider).valueOrNull;
-    final initials = (user?.displayName?.isNotEmpty ?? false) ? user!.displayName![0].toUpperCase() : 'MY';
+    
+    String initials = 'MY';
+    if (user != null) {
+      final name = user.displayName;
+      if (name != null && name.isNotEmpty) {
+        initials = name[0].toUpperCase();
+      }
+    }
     final hasImg = homeState.selectedImagePath != null;
 
     return Scaffold(

@@ -22,7 +22,13 @@ class DiscoverScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(discoverProvider);
     final user = ref.watch(authNotifierProvider).valueOrNull;
-    final initials = (user?.displayName?.isNotEmpty ?? false) ? user!.displayName![0].toUpperCase() : 'U';
+    String initials = 'U';
+    if (user != null) {
+      final name = user.displayName;
+      if (name != null && name.isNotEmpty) {
+        initials = name[0].toUpperCase();
+      }
+    }
 
     return Scaffold(
       backgroundColor: AppColors.backgroundLight,
