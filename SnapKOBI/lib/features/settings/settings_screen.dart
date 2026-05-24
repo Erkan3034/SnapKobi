@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../core/di/providers.dart';
 import '../../core/theme/app_colors.dart';
@@ -7,13 +8,7 @@ import '../../core/theme/app_dimensions.dart';
 import '../../core/theme/app_typography.dart';
 import '../../domain/entities/sector.dart';
 import '../../domain/entities/subscription.dart';
-import '../subscription/payment_history_screen.dart';
-import '../subscription/subscription_screen.dart';
-import 'screens/help_faq_screen.dart';
-import 'screens/language_settings_screen.dart';
-import 'screens/privacy_policy_screen.dart';
-import 'screens/profile_info_screen.dart';
-import 'screens/sector_settings_screen.dart';
+import '../../shared/navigation/routes.dart';
 import 'widgets/profile_header.dart';
 import 'widgets/settings_footer.dart';
 import 'widgets/settings_section.dart';
@@ -38,32 +33,32 @@ class SettingsScreen extends ConsumerWidget {
         const ProfileHeader(),
         SettingsSection(title: 'Hesap Ayarları', children: [
           SettingsTile(icon: Icons.person_outline, title: 'Profil Bilgileri',
-            onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const ProfileInfoScreen()))),
+            onTap: () => context.push(AppRoutes.profileInfo)),
           SettingsTile(icon: Icons.grid_view, title: 'Sektör Ayarları', trailing: Row(mainAxisSize: MainAxisSize.min, children: [
             _badge(sector, AppColors.primary), const SizedBox(width: AppDimensions.spacing4),
             const Icon(Icons.chevron_right, color: AppColors.textHint),
-          ]), onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const SectorSettingsScreen()))),
+          ]), onTap: () => context.push(AppRoutes.sectorSettings)),
           SettingsTile(icon: Icons.notifications_outlined, title: 'Bildirimler', showDivider: false,
             trailing: Switch(value: true, onChanged: (_) {}, activeThumbColor: AppColors.primary)),
         ]),
         SettingsSection(title: 'Abonelik', children: [
           SettingsTile(icon: Icons.shield_outlined, title: '$plan Plan', trailing: Row(mainAxisSize: MainAxisSize.min, children: [
             Text('Yükselt →', style: AppTypography.labelSmall.copyWith(color: AppColors.primary, fontWeight: FontWeight.bold)),
-          ]), onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const SubscriptionScreen()))),
+          ]), onTap: () => context.push(AppRoutes.subscription)),
           SettingsTile(icon: Icons.receipt_long_outlined, title: 'Ödeme Geçmişi',
-            onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const PaymentHistoryScreen()))),
+            onTap: () => context.push(AppRoutes.paymentHistory)),
           SettingsTile(icon: Icons.settings_outlined, title: 'Abonelik Yönetimi', showDivider: false,
-            onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const SubscriptionScreen()))),
+            onTap: () => context.push(AppRoutes.subscription)),
         ]),
         SettingsSection(title: 'Uygulama', children: [
           SettingsTile(icon: Icons.language, title: 'Dil', trailing: Row(mainAxisSize: MainAxisSize.min, children: [
             _badge('Türkçe', AppColors.primary), const SizedBox(width: AppDimensions.spacing4),
             const Icon(Icons.chevron_right, color: AppColors.textHint),
-          ]), onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const LanguageSettingsScreen()))),
+          ]), onTap: () => context.push(AppRoutes.languageSettings)),
           SettingsTile(icon: Icons.help_outline, title: 'Yardım & SSS',
-            onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const HelpFaqScreen()))),
+            onTap: () => context.push(AppRoutes.helpFaq)),
           SettingsTile(icon: Icons.lock_outline, title: 'Gizlilik Politikası',
-            onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const PrivacyPolicyScreen()))),
+            onTap: () => context.push(AppRoutes.privacyPolicy)),
           SettingsTile(icon: Icons.star_outline, title: 'Uygulamayı Puanla', showDivider: false,
             onTap: () => _showRatingDialog(context)),
         ]),

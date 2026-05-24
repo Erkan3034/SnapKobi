@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_dimensions.dart';
@@ -29,7 +30,7 @@ class _SectorSettingsScreenState extends State<SectorSettingsScreen> {
       appBar: AppBar(
         backgroundColor: AppColors.white,
         elevation: 0,
-        leading: IconButton(icon: const Icon(Icons.arrow_back, color: AppColors.textPrimary), onPressed: () => Navigator.pop(context)),
+        leading: IconButton(icon: const Icon(Icons.arrow_back, color: AppColors.textPrimary), onPressed: () => context.pop()),
         title: Text('Sektör Ayarları', style: AppTypography.headlineMedium.copyWith(color: AppColors.textPrimary)),
         centerTitle: true,
       ),
@@ -66,7 +67,7 @@ class _SectorSettingsScreenState extends State<SectorSettingsScreen> {
             ),
             onPressed: () {
               ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Sektör ayarları güncellendi!')));
-              Navigator.pop(context);
+              context.pop();
             },
             child: Text('Kaydet', style: AppTypography.labelLarge.copyWith(color: AppColors.white, fontWeight: FontWeight.bold)),
           ),

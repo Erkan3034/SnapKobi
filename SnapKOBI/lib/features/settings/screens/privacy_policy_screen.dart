@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_dimensions.dart';
@@ -14,7 +15,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: AppColors.white,
         elevation: 0,
-        leading: IconButton(icon: const Icon(Icons.arrow_back, color: AppColors.textPrimary), onPressed: () => Navigator.pop(context)),
+        leading: IconButton(icon: const Icon(Icons.arrow_back, color: AppColors.textPrimary), onPressed: () => context.pop()),
         title: Text('Gizlilik Politikası', style: AppTypography.headlineMedium.copyWith(color: AppColors.textPrimary)),
         centerTitle: true,
       ),

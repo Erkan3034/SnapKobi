@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_dimensions.dart';
 import '../../core/theme/app_typography.dart';
-import '../settings/screens/profile_info_screen.dart';
+import '../../shared/navigation/routes.dart';
 import 'history_provider.dart';
 import 'widgets/history_filter_chips.dart';
 import 'widgets/history_grid_card.dart';
@@ -21,7 +22,7 @@ class HistoryScreen extends ConsumerWidget {
         backgroundColor: AppColors.white,
         surfaceTintColor: AppColors.transparent,
         leading: GestureDetector(
-          onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const ProfileInfoScreen())),
+          onTap: () => context.push(AppRoutes.profileInfo),
           child: Padding(
             padding: const EdgeInsets.all(AppDimensions.spacing8),
             child: CircleAvatar(backgroundColor: AppColors.primaryLightest,

@@ -15,4 +15,10 @@ abstract final class AppRoutes {
   static const String library = '/library';
   static const String settings = '/settings';
   static const String subscription = '/subscription';
+  static const String profileInfo = '/profile-info';
+  static const String sectorSettings = '/sector-settings';
+  static const String paymentHistory = '/payment-history';
+  static const String helpFaq = '/help-faq';
+  static const String privacyPolicy = '/privacy-policy';
+  static const String languageSettings = '/language-settings';
 }

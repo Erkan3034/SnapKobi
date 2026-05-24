@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../core/di/providers.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_dimensions.dart';
 import '../../core/theme/app_icons.dart';
 import '../../core/theme/app_typography.dart';
+import '../../shared/navigation/routes.dart';
 import '../create/create_screen.dart';
-import '../settings/screens/profile_info_screen.dart';
 import 'discover_provider.dart';
 import 'widgets/community_section.dart';
 import 'widgets/popular_templates_section.dart';
@@ -36,7 +37,7 @@ class DiscoverScreen extends ConsumerWidget {
           IconButton(icon: const Icon(AppIcons.notification, color: AppColors.primaryDark),
             onPressed: () => _showNotificationSheet(context)),
           GestureDetector(
-            onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const ProfileInfoScreen())),
+            onTap: () => context.push(AppRoutes.profileInfo),
             child: Padding(
               padding: const EdgeInsets.only(right: AppDimensions.spacing16),
               child: CircleAvatar(radius: 18, backgroundColor: AppColors.primary,

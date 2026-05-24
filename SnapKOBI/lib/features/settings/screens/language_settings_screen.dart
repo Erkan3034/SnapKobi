@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_dimensions.dart';
@@ -27,7 +28,7 @@ class _LanguageSettingsScreenState extends State<LanguageSettingsScreen> {
       appBar: AppBar(
         backgroundColor: AppColors.white,
         elevation: 0,
-        leading: IconButton(icon: const Icon(Icons.arrow_back, color: AppColors.textPrimary), onPressed: () => Navigator.pop(context)),
+        leading: IconButton(icon: const Icon(Icons.arrow_back, color: AppColors.textPrimary), onPressed: () => context.pop()),
         title: Text('Dil Seçimi', style: AppTypography.headlineMedium.copyWith(color: AppColors.textPrimary)),
         centerTitle: true,
       ),
@@ -53,7 +54,7 @@ class _LanguageSettingsScreenState extends State<LanguageSettingsScreen> {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(content: Text('${lang['name']} dili seçildi!')),
                 );
-                Navigator.pop(context);
+                context.pop();
               },
             ),
           );
