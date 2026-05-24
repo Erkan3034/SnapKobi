@@ -4,6 +4,7 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_dimensions.dart';
 import '../../../core/theme/app_typography.dart';
 import '../discover_provider.dart';
+import '../../trend/trend_details_screen.dart';
 
 class TrendingCard extends StatelessWidget {
   final TrendItem item;
@@ -13,7 +14,12 @@ class TrendingCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: onTap,
+      onTap: onTap ?? () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => TrendDetailsScreen(item: item)),
+        );
+      },
       child: Container(
         width: 160,
         margin: const EdgeInsets.only(right: AppDimensions.spacing12),

@@ -1,11 +1,31 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../core/constants/app_constants.dart';
+
 class TrendItem {
   final String title;
   final String imageUrl;
   final int usageCount;
   final String category;
-  const TrendItem({required this.title, required this.imageUrl, required this.usageCount, required this.category});
+  final String popularity;
+  final String sector;
+  final String platform;
+  final String caption;
+  final List<String> hashtags;
+  final List<String> scenes;
+
+  const TrendItem({
+    required this.title,
+    required this.imageUrl,
+    required this.usageCount,
+    required this.category,
+    required this.popularity,
+    required this.sector,
+    required this.platform,
+    required this.caption,
+    required this.hashtags,
+    required this.scenes,
+  });
 }
 
 class TemplateItem {
@@ -38,10 +58,54 @@ class DiscoverNotifier extends StateNotifier<DiscoverState> {
 
   static const _mockData = DiscoverState(
     trends: [
-      TrendItem(title: 'Spor Ayakkabı', imageUrl: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&q=80', usageCount: 1247, category: 'Tekstil'),
-      TrendItem(title: 'Akıllı Saat', imageUrl: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&q=80', usageCount: 856, category: 'Elektronik'),
-      TrendItem(title: 'El Çantası', imageUrl: 'https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=400&q=80', usageCount: 634, category: 'Aksesuar'),
-      TrendItem(title: 'Parfüm', imageUrl: 'https://images.unsplash.com/photo-1541643600914-78b084683601?w=400&q=80', usageCount: 512, category: 'Kozmetik'),
+      TrendItem(
+        title: 'Spor Ayakkabı',
+        imageUrl: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&q=80',
+        usageCount: 1247,
+        category: 'Tekstil',
+        popularity: '%94',
+        sector: 'Tekstil',
+        platform: 'Instagram',
+        caption: 'Yeni sezonun en göz alıcı kırmızıları SnapKOBİ ile hazır! ❤️ Hem şık hem rahat bu modelle tarzını konuştur. Stoklar bitmeden hemen incele. 👟✨',
+        hashtags: ['#TrendSneaker', '#Moda2024', '#SnapKOBİ', '#AyakkabiModasi', '#TarziniYansit'],
+        scenes: AppConstants.defaultSceneImages,
+      ),
+      TrendItem(
+        title: 'Akıllı Saat',
+        imageUrl: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&q=80',
+        usageCount: 856,
+        category: 'Elektronik',
+        popularity: '%91',
+        sector: 'Elektronik',
+        platform: 'Trendyol',
+        caption: 'Günün her anında şıklığı yakala! ⌚ En trend tasarımlarla zamanı tarzınla yönet. Sınırlı stoklarla hemen sepetine ekle. ✨',
+        hashtags: ['#TrendWatch', '#Moda2024', '#SnapKOBİ', '#AkilliSaat', '#TarziniYansit'],
+        scenes: AppConstants.defaultSceneImages,
+      ),
+      TrendItem(
+        title: 'Deri El Çantası',
+        imageUrl: 'https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=400&q=80',
+        usageCount: 634,
+        category: 'Tekstil',
+        popularity: '%89',
+        sector: 'Tekstil',
+        platform: 'Instagram',
+        caption: 'Zarafet ve şıklık bir arada! 👜 Kombinlerinin en şık tamamlayıcısı olacak deri el çantası şimdi stoklarda. Kaçırma! ❤️',
+        hashtags: ['#TrendBag', '#Moda2024', '#SnapKOBİ', '#DeriCanta', '#TarziniYansit'],
+        scenes: AppConstants.defaultSceneImages,
+      ),
+      TrendItem(
+        title: 'Kulaklık',
+        imageUrl: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&q=80',
+        usageCount: 912,
+        category: 'Elektronik',
+        popularity: '%96',
+        sector: 'Elektronik',
+        platform: 'Instagram',
+        caption: 'Yüksek ses kalitesi ve konfor bir arada! 🎧 En sevdiğin ritimleri gün boyu kesintisiz hisset. Sipariş için profildeki linke tıkla. ⚡',
+        hashtags: ['#TrendAudio', '#Moda2024', '#SnapKOBİ', '#Kulaklik', '#SesKalitesi'],
+        scenes: AppConstants.defaultSceneImages,
+      ),
     ],
     templates: [
       TemplateItem(id: '1', title: 'Studio Beyaz', imageUrl: 'https://images.unsplash.com/photo-1596265376427-4688ee0f616f?w=300&q=80', category: 'Stüdyo', usageCount: 2340),

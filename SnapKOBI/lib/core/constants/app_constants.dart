@@ -29,4 +29,16 @@ abstract final class AppConstants {
 	static const Duration animSlow = Duration(milliseconds: 400);
 
 	static const int minPasswordLength = 6;
+
+	static const List<String> defaultSceneNames = ['Doğa Teması', 'Minimalist', 'Lüks Teması'];
+	static const List<String> defaultSceneImages = [
+		'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=200&q=80',
+		'https://images.unsplash.com/photo-1494438639946-1ebd1d20bf85?w=200&q=80',
+		'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=200&q=80',
+	];
+	static const List<String> mockAvatars = [
+		'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=80&q=80',
+		'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&q=80',
+		'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=80&q=80',
+	];
 }
