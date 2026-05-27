@@ -19,7 +19,7 @@ class ProjectDetailActions extends StatelessWidget {
           child: ElevatedButton(
             onPressed: onShareAll,
             style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF22C55E), foregroundColor: AppColors.white, elevation: 0,
+              backgroundColor: AppColors.success, foregroundColor: AppColors.white, elevation: 0,
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppDimensions.radiusFull)),
             ),
             child: Text('Tümünü Paylaş', style: AppTypography.labelLarge.copyWith(color: AppColors.white)),

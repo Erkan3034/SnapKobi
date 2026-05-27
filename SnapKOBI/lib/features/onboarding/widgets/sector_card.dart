@@ -24,7 +24,7 @@ class SectorCard extends StatelessWidget {
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
         decoration: BoxDecoration(
-          color: isSelected ? AppColors.primaryLightest : AppColors.white,
+          color: isSelected ? AppColors.primaryLightest : Theme.of(context).colorScheme.surface,
           borderRadius: BorderRadius.circular(AppDimensions.radiusMedium),
           border: Border.all(
             color: isSelected ? AppColors.primary : AppColors.transparent,
@@ -52,8 +52,8 @@ class SectorCard extends StatelessWidget {
                   Text(
                     title,
                     textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      color: AppColors.textPrimary,
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.onSurface,
                       fontSize: AppDimensions.fontSM,
                       fontWeight: FontWeight.w500,
                     ),

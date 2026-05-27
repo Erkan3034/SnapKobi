@@ -12,49 +12,52 @@ class PlanCardPro extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final activeGreen = theme.brightness == Brightness.dark ? const Color(0xFF10B981) : AppColors.success;
+
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: AppDimensions.spacing16, vertical: AppDimensions.spacing8),
       padding: const EdgeInsets.all(AppDimensions.spacing20),
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color: theme.cardTheme.color ?? theme.cardColor,
         borderRadius: BorderRadius.circular(AppDimensions.radiusLarge),
         boxShadow: const [AppShadows.cardShadow],
       ),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Row(children: [
-          Text('Pro', style: AppTypography.headlineMedium),
+          Text('Pro', style: AppTypography.headlineMedium.copyWith(color: theme.textTheme.headlineMedium?.color)),
           const Spacer(),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: AppDimensions.spacing12, vertical: AppDimensions.spacing4),
             decoration: BoxDecoration(
-              color: AppColors.primaryLightest,
+              color: theme.colorScheme.primary.withOpacity(0.1),
               borderRadius: BorderRadius.circular(AppDimensions.radiusFull),
             ),
             child: Row(mainAxisSize: MainAxisSize.min, children: [
-              const Icon(Icons.auto_awesome, size: 14, color: AppColors.primary),
+              Icon(Icons.auto_awesome, size: 14, color: theme.colorScheme.primary),
               const SizedBox(width: AppDimensions.spacing4),
-              Text('PRO', style: AppTypography.labelSmall.copyWith(color: AppColors.primary, fontWeight: FontWeight.bold)),
+              Text('PRO', style: AppTypography.labelSmall.copyWith(color: theme.colorScheme.primary, fontWeight: FontWeight.bold)),
             ]),
           ),
         ]),
         Row(crossAxisAlignment: CrossAxisAlignment.baseline, textBaseline: TextBaseline.alphabetic, children: [
-          Text('$price ₺', style: AppTypography.displayMedium.copyWith(color: AppColors.textPrimary)),
-          Text(' / ay', style: AppTypography.bodyMedium.copyWith(color: AppColors.textSecondary)),
+          Text('$price ₺', style: AppTypography.displayMedium.copyWith(color: theme.textTheme.displayMedium?.color)),
+          Text(' / ay', style: AppTypography.bodyMedium.copyWith(color: theme.textTheme.bodyMedium?.color)),
         ]),
         const SizedBox(height: AppDimensions.spacing12),
         ...planPro.features.map((f) => Padding(
           padding: const EdgeInsets.symmetric(vertical: AppDimensions.spacing4),
           child: Row(children: [
-            const Icon(Icons.check_circle, size: 18, color: AppColors.success),
+            Icon(Icons.check_circle, size: 18, color: activeGreen),
             const SizedBox(width: AppDimensions.spacing8),
-            Text(f.text, style: AppTypography.bodyMedium),
+            Text(f.text, style: AppTypography.bodyMedium.copyWith(color: theme.textTheme.bodyMedium?.color)),
           ]),
         )),
         const SizedBox(height: AppDimensions.spacing16),
         Center(
           child: TextButton(
             onPressed: () {},
-            child: Text("Pro'ya Geç", style: AppTypography.labelLarge.copyWith(color: AppColors.primary)),
+            child: Text("Pro'ya Geç", style: AppTypography.labelLarge.copyWith(color: theme.colorScheme.primary)),
           ),
         ),
       ]),

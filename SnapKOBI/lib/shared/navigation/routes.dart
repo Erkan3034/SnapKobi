@@ -21,4 +21,8 @@ abstract final class AppRoutes {
   static const String helpFaq = '/help-faq';
   static const String privacyPolicy = '/privacy-policy';
   static const String languageSettings = '/language-settings';
+  static const String trending = '/trending';
+  static const String trendDetails = '/trend-details';
+  static const String communityShowcase = '/community-showcase';
+  static const String processing = '/processing';
 }

@@ -12,11 +12,12 @@ class BillingToggle extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final isYearly = ref.watch(subscriptionProvider).isYearly;
+    final theme = Theme.of(context);
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: AppDimensions.spacing16, vertical: AppDimensions.spacing12),
       child: Row(children: [
         Text('Aylık', style: AppTypography.bodyMedium.copyWith(
-          fontWeight: FontWeight.w600, color: isYearly ? AppColors.textHint : AppColors.textPrimary,
+          fontWeight: FontWeight.w600, color: isYearly ? theme.hintColor : theme.textTheme.bodyMedium?.color,
         )),
         const SizedBox(width: AppDimensions.spacing8),
         Switch(

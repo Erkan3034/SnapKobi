@@ -55,6 +55,27 @@ class ResultNotifier extends Notifier<ResultState> {
         processingDurationSec: state.processingDurationSec,
         qualityScore: state.qualityScore,
       );
+
+  void setResult({
+    required String originalImageUrl,
+    required String processedImageUrl,
+    String? videoUrl,
+    required String caption,
+    required List<String> hashtags,
+    required String platformLabel,
+    required int processingDurationSec,
+  }) {
+    state = ResultState(
+      originalImageUrl: originalImageUrl,
+      processedImageUrl: processedImageUrl,
+      videoUrl: videoUrl,
+      caption: caption,
+      hashtags: hashtags,
+      platformLabel: platformLabel,
+      processingDurationSec: processingDurationSec,
+      qualityScore: 5,
+    );
+  }
 }
 
 final resultProvider = NotifierProvider<ResultNotifier, ResultState>(

@@ -36,7 +36,7 @@ class SettingsFooter extends ConsumerWidget {
           child: Text('Çıkış Yap', style: AppTypography.labelLarge.copyWith(color: AppColors.error)),
         ),
         const SizedBox(height: AppDimensions.spacing8),
-        Text('SnapKOBİ v1.0.0 • snapkobi.com', style: AppTypography.labelSmall.copyWith(color: AppColors.textHint)),
+        Text('SnapKOBİ v1.0.0 • snapkobi.com', style: AppTypography.labelSmall.copyWith(color: Theme.of(context).hintColor)),
       ]),
     );
   }

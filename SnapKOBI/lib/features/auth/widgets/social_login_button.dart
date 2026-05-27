@@ -19,6 +19,7 @@ class SocialLoginButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final isGoogle = type == SocialLoginType.google;
 
     return SizedBox(
@@ -27,14 +28,14 @@ class SocialLoginButton extends StatelessWidget {
       child: ElevatedButton(
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(
-          backgroundColor: isGoogle ? AppColors.white : AppColors.black,
-          foregroundColor: isGoogle ? AppColors.textPrimary : AppColors.white,
+          backgroundColor: isGoogle ? theme.colorScheme.surface : AppColors.black,
+          foregroundColor: isGoogle ? theme.colorScheme.onSurface : AppColors.white,
           elevation: isGoogle ? 1 : 0,
           shadowColor: AppColors.black.withOpacity(0.1),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(AppDimensions.buttonRadius),
             side: isGoogle
-                ? BorderSide(color: AppColors.borderLight, width: 1)
+                ? BorderSide(color: theme.dividerColor, width: 1)
                 : BorderSide.none,
           ),
         ),
@@ -46,12 +47,12 @@ class SocialLoginButton extends StatelessWidget {
               width: 24,
               height: 24,
               decoration: BoxDecoration(
-                color: isGoogle ? AppColors.white : AppColors.black,
+                color: isGoogle ? theme.colorScheme.surface : AppColors.black,
                 shape: BoxShape.circle,
               ),
               child: Center(
                 child: Text(
-                  isGoogle ? 'G' : '',
+                  isGoogle ? 'G' : '',
                   style: TextStyle(
                     color: isGoogle ? Colors.red : AppColors.white,
                     fontSize: 16,
@@ -66,7 +67,7 @@ class SocialLoginButton extends StatelessWidget {
               style: TextStyle(
                 fontSize: AppDimensions.fontMD,
                 fontWeight: FontWeight.w500,
-                color: isGoogle ? AppColors.textPrimary : AppColors.white,
+                color: isGoogle ? theme.colorScheme.onSurface : AppColors.white,
               ),
             ),
           ],

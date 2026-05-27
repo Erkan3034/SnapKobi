@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 
-import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_dimensions.dart';
 import 'empty_upload_zone.dart';
 
@@ -48,7 +47,10 @@ class ImageUploadZone extends StatelessWidget {
         child: Stack(
           fit: StackFit.expand,
           children: [
-            Image.file(file, fit: BoxFit.cover),
+            Hero(
+              tag: 'product_image_hero',
+              child: Image.file(file, fit: BoxFit.cover),
+            ),
             Positioned(
               top: AppDimensions.spacing16,
               right: AppDimensions.spacing16,

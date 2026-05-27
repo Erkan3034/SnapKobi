@@ -13,20 +13,19 @@ class EmailVerificationScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Scaffold(
-      backgroundColor: AppColors.backgroundLight,
       appBar: AppBar(
-        backgroundColor: AppColors.backgroundLight,
         elevation: 0,
         centerTitle: true,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: AppColors.primary),
           onPressed: () => context.go(AppRoutes.login),
         ),
-        title: const Text(
+        title: Text(
           AppStrings.verifyEmailTitle,
           style: TextStyle(
-            color: AppColors.textPrimary,
+            color: theme.colorScheme.onSurface,
             fontSize: AppDimensions.fontMD,
             fontWeight: FontWeight.w600,
           ),
@@ -39,10 +38,10 @@ class EmailVerificationScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               const SizedBox(height: AppDimensions.spacing24),
-              const Text(
+              Text(
                 AppStrings.verifyEmailSubtitle,
                 style: TextStyle(
-                  color: AppColors.textSecondary,
+                  color: theme.hintColor,
                   fontSize: AppDimensions.fontMD,
                 ),
               ),
@@ -51,14 +50,14 @@ class EmailVerificationScreen extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(AppDimensions.spacing16),
                   decoration: BoxDecoration(
-                    color: AppColors.white,
+                    color: theme.colorScheme.surface,
                     borderRadius: BorderRadius.circular(AppDimensions.radiusMedium),
-                    border: Border.all(color: AppColors.borderLight),
+                    border: Border.all(color: theme.dividerColor),
                   ),
                   child: Text(
                     '${AppStrings.verifyEmailSentTo}${email!}',
-                    style: const TextStyle(
-                      color: AppColors.textPrimary,
+                    style: TextStyle(
+                      color: theme.colorScheme.onSurface,
                       fontSize: AppDimensions.fontSM,
                       fontWeight: FontWeight.w500,
                     ),

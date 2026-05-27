@@ -10,6 +10,7 @@ class PaymentHistoryScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final payments = [
       _Payment('24 Mayıs 2026', 'Başlangıç Planı (Aylık)', '99 ₺', 'Başarılı'),
       _Payment('24 Nisan 2026', 'Başlangıç Planı (Aylık)', '99 ₺', 'Başarılı'),
@@ -17,12 +18,12 @@ class PaymentHistoryScreen extends StatelessWidget {
     ];
 
     return Scaffold(
-      backgroundColor: AppColors.backgroundLight,
+      backgroundColor: theme.scaffoldBackgroundColor,
       appBar: AppBar(
-        backgroundColor: AppColors.white,
+        backgroundColor: theme.appBarTheme.backgroundColor,
         elevation: 0,
-        leading: IconButton(icon: const Icon(Icons.arrow_back, color: AppColors.textPrimary), onPressed: () => context.pop()),
-        title: Text('Ödeme Geçmişi', style: AppTypography.headlineMedium.copyWith(color: AppColors.textPrimary)),
+        leading: IconButton(icon: Icon(Icons.arrow_back, color: theme.colorScheme.onSurface), onPressed: () => context.pop()),
+        title: Text('Ödeme Geçmişi', style: AppTypography.headlineMedium.copyWith(color: theme.colorScheme.onSurface)),
         centerTitle: true,
       ),
       body: ListView.builder(
@@ -32,7 +33,7 @@ class PaymentHistoryScreen extends StatelessWidget {
           final payment = payments[index];
           return Card(
             margin: const EdgeInsets.only(bottom: AppDimensions.spacing12),
-            color: AppColors.white,
+            color: theme.cardColor,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppDimensions.radiusMedium)),
             elevation: 0,
             child: ListTile(
@@ -40,7 +41,7 @@ class PaymentHistoryScreen extends StatelessWidget {
               title: Text(payment.planName, style: AppTypography.bodyLarge.copyWith(fontWeight: FontWeight.bold)),
               subtitle: Padding(
                 padding: const EdgeInsets.only(top: AppDimensions.spacing4),
-                child: Text('${payment.date} • iyzico', style: AppTypography.labelSmall.copyWith(color: AppColors.textHint)),
+                child: Text('${payment.date} • iyzico', style: AppTypography.labelSmall.copyWith(color: theme.hintColor)),
               ),
               trailing: Column(
                 mainAxisAlignment: MainAxisAlignment.center,

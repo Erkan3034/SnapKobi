@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_dimensions.dart';
 import '../../../core/theme/app_typography.dart';
 import '../history_provider.dart';
@@ -19,6 +18,9 @@ class HistoryFilterChips extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final active = ref.watch(historyProvider).filter;
+    final theme = Theme.of(context);
+    final primaryColor = theme.colorScheme.primary;
+
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       padding: const EdgeInsets.symmetric(horizontal: AppDimensions.spacing16, vertical: AppDimensions.spacing8),
@@ -32,14 +34,14 @@ class HistoryFilterChips extends ConsumerWidget {
               selected: isSelected,
               onSelected: (_) => ref.read(historyProvider.notifier).setFilter(e.key),
               labelStyle: AppTypography.bodyMedium.copyWith(
-                color: isSelected ? AppColors.white : AppColors.primary,
+                color: isSelected ? theme.colorScheme.onPrimary : primaryColor,
                 fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
               ),
-              backgroundColor: AppColors.white,
-              selectedColor: AppColors.primary,
+              backgroundColor: theme.cardTheme.color ?? theme.cardColor,
+              selectedColor: primaryColor,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(AppDimensions.radiusFull),
-                side: BorderSide(color: isSelected ? AppColors.transparent : AppColors.primary),
+                side: BorderSide(color: isSelected ? Colors.transparent : primaryColor),
               ),
               showCheckmark: false,
             ),

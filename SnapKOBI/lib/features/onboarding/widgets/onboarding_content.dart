@@ -27,11 +27,11 @@ class OnboardingContent extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              _buildDot(isActive: true),
+              _buildDot(context, isActive: true),
               const SizedBox(width: AppDimensions.spacing8),
-              _buildDot(isActive: false),
+              _buildDot(context, isActive: false),
               const SizedBox(width: AppDimensions.spacing8),
-              _buildDot(isActive: false),
+              _buildDot(context, isActive: false),
             ],
           ),
           
@@ -41,8 +41,8 @@ class OnboardingContent extends StatelessWidget {
           Text(
             AppStrings.onboardingTitle,
             textAlign: TextAlign.center,
-            style: const TextStyle(
-              color: AppColors.textPrimary,
+            style: TextStyle(
+              color: Theme.of(context).colorScheme.onSurface,
               fontSize: AppDimensions.fontLG,
               fontWeight: FontWeight.w600,
             ),
@@ -51,8 +51,8 @@ class OnboardingContent extends StatelessWidget {
           Text(
             AppStrings.onboardingDesc,
             textAlign: TextAlign.center,
-            style: const TextStyle(
-              color: AppColors.textSecondary,
+            style: TextStyle(
+              color: Theme.of(context).textTheme.bodyMedium?.color,
               fontSize: AppDimensions.fontSM,
               height: 1.5,
             ),
@@ -105,13 +105,13 @@ class OnboardingContent extends StatelessWidget {
     );
   }
 
-  Widget _buildDot({required bool isActive}) {
+  Widget _buildDot(BuildContext context, {required bool isActive}) {
     return AnimatedContainer(
       duration: const Duration(milliseconds: 300),
       height: 8,
       width: isActive ? 24 : 8,
       decoration: BoxDecoration(
-        color: isActive ? AppColors.primary : AppColors.indicatorInactive,
+        color: isActive ? Theme.of(context).colorScheme.primary : Theme.of(context).hintColor.withOpacity(0.3),
         borderRadius: BorderRadius.circular(4),
       ),
     );

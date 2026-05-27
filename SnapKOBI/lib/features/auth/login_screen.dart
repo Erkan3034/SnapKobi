@@ -80,6 +80,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final authState = ref.watch(authNotifierProvider);
     final isLoading = authState.isLoading;
 
@@ -100,7 +101,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     });
 
     return Scaffold(
-      backgroundColor: AppColors.backgroundLight,
       appBar: _buildAppBar(),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -151,7 +151,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 suffixIcon: IconButton(
                   icon: Icon(
                     _obscurePassword ? Icons.visibility_off_outlined : Icons.visibility_outlined,
-                    color: AppColors.textSecondary,
+                    color: theme.hintColor,
                     size: 20,
                   ),
                   onPressed: _togglePasswordVisibility,
@@ -213,10 +213,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text(
+                  Text(
                     AppStrings.loginNoAccount,
                     style: TextStyle(
-                      color: AppColors.textSecondary,
+                      color: theme.hintColor,
                       fontSize: AppDimensions.fontSM,
                     ),
                   ),
@@ -253,18 +253,18 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   }
 
   PreferredSizeWidget _buildAppBar() {
+    final theme = Theme.of(context);
     return AppBar(
-      backgroundColor: AppColors.backgroundLight,
       elevation: 0,
       centerTitle: true,
       leading: IconButton(
         icon: const Icon(Icons.arrow_back, color: AppColors.primary),
         onPressed: () => Navigator.pop(context),
       ),
-      title: const Text(
+      title: Text(
         AppStrings.loginAppBarTitle,
         style: TextStyle(
-          color: AppColors.textPrimary,
+          color: theme.colorScheme.onSurface,
           fontSize: AppDimensions.fontMD,
           fontWeight: FontWeight.w600,
         ),
@@ -285,11 +285,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           ),
         ),
         const SizedBox(height: AppDimensions.spacing8),
-        const Text(
+        Text(
           AppStrings.loginSubtitle,
           textAlign: TextAlign.center,
           style: TextStyle(
-            color: AppColors.textSecondary,
+            color: Theme.of(context).hintColor,
             fontSize: AppDimensions.fontMD,
           ),
         ),
@@ -298,29 +298,31 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   }
 
   Widget _buildDivider() {
+    final theme = Theme.of(context);
     return Row(
       children: [
-        const Expanded(child: Divider(color: AppColors.borderLight)),
+        Expanded(child: Divider(color: theme.dividerColor)),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: AppDimensions.spacing16),
-          child: const Text(
+          child: Text(
             AppStrings.registerOrEmail, // 'veya e-posta ile' - aynı metin
             style: TextStyle(
-              color: AppColors.textSecondary,
+              color: theme.hintColor,
               fontSize: AppDimensions.fontSM,
             ),
           ),
         ),
-        const Expanded(child: Divider(color: AppColors.borderLight)),
+        Expanded(child: Divider(color: theme.dividerColor)),
       ],
     );
   }
 
   Widget _buildInfoBanner() {
+    final theme = Theme.of(context);
     return Container(
       padding: const EdgeInsets.all(AppDimensions.spacing16),
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color: theme.colorScheme.surface,
         borderRadius: BorderRadius.circular(AppDimensions.radiusMedium),
         boxShadow: [
           BoxShadow(
@@ -359,10 +361,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   ),
                 ),
                 const SizedBox(height: AppDimensions.spacing4),
-                const Text(
+                Text(
                   AppStrings.loginBannerDesc,
                   style: TextStyle(
-                    color: AppColors.textSecondary,
+                    color: theme.hintColor,
                     fontSize: 12, // AppDimensions.fontXS (11) ile SM (13) arası
                     height: 1.4,
                   ),

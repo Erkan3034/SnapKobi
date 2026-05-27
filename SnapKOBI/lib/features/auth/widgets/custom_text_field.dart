@@ -35,11 +35,12 @@ class CustomTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final textField = Container(
       decoration: BoxDecoration(
-        color: AppColors.inputBackground,
+        color: theme.colorScheme.surface,
         borderRadius: BorderRadius.circular(AppDimensions.radiusMedium),
-        border: Border.all(color: AppColors.borderLight),
+        border: Border.all(color: theme.dividerColor),
         boxShadow: [
           BoxShadow(
             color: AppColors.black.withOpacity(0.02),
@@ -56,20 +57,20 @@ class CustomTextField extends StatelessWidget {
         textCapitalization: textCapitalization,
         enabled: enabled,
         onChanged: onChanged,
-        style: const TextStyle(
-          color: AppColors.textPrimary,
+        style: TextStyle(
+          color: theme.colorScheme.onSurface,
           fontSize: AppDimensions.fontMD,
         ),
         decoration: InputDecoration(
           hintText: hintText,
-          hintStyle: const TextStyle(
-            color: AppColors.textHint,
+          hintStyle: TextStyle(
+            color: theme.hintColor,
             fontSize: AppDimensions.fontMD,
           ),
           prefixIcon: prefixWidget ??
               Icon(
                 prefixIcon,
-                color: AppColors.textSecondary,
+                color: theme.hintColor,
                 size: 20,
               ),
           suffixIcon: suffixIcon,
@@ -90,8 +91,8 @@ class CustomTextField extends StatelessWidget {
       children: [
         Text(
           label!,
-          style: const TextStyle(
-            color: AppColors.textPrimary,
+          style: TextStyle(
+            color: theme.colorScheme.onSurface,
             fontSize: AppDimensions.fontSM,
             fontWeight: FontWeight.w500,
           ),

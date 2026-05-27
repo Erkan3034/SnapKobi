@@ -1,0 +1,218 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_DATABASE_URL")
+}
+
+model AppUser {
+  id           String        @id @db.Uuid
+  email        String        @unique
+  displayName  String?       @map("display_name")
+  avatarUrl    String?       @map("avatar_url")
+  phone        String?
+  creditsLeft  Int           @default(5) @map("credits_left")
+  createdAt    DateTime      @default(now()) @map("created_at")
+  updatedAt    DateTime      @updatedAt @map("updated_at")
+  sector       SectorType    @default(other)
+  language     Language      @default(tr)
+  planType     PlanType      @default(free) @map("plan_type")
+  brandKit     BrandKit?
+  generations  Generation[]
+  payments     Payment[]
+  products     Product[]
+  subscription Subscription?
+
+  @@map("users")
+}
+
+model Generation {
+  id                 String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId             String           @map("user_id") @db.Uuid
+  originalImagePath  String           @map("original_image_path")
+  originalImageSize  Int?             @map("original_image_size")
+  processedImagePath String?          @map("processed_image_path")
+  videoPath          String?          @map("video_path")
+  caption            String?
+  hashtags           String[]         @default([])
+  imageModel         String?          @map("image_model")
+  videoModel         String?          @map("video_model")
+  captionModel       String?          @map("caption_model")
+  processingMs       Int?             @map("processing_ms")
+  errorMessage       String?          @map("error_message")
+  options            Json             @default("{}")
+  createdAt          DateTime         @default(now()) @map("created_at")
+  completedAt        DateTime?        @map("completed_at")
+  expiresAt          DateTime?        @map("expires_at")
+  sector             SectorType
+  platform           PlatformType
+  status             GenerationStatus @default(pending)
+  user               AppUser          @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt(sort: Desc)])
+  @@index([status, createdAt])
+  @@map("generations")
+}
+
+model BrandKit {
+  id             String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId         String   @unique @map("user_id") @db.Uuid
+  primaryColor   String?  @map("primary_color")
+  secondaryColor String?  @map("secondary_color")
+  logoPath       String?  @map("logo_path")
+  preferredStyle String?  @map("preferred_style")
+  toneOfVoice    String?  @map("tone_of_voice")
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
+  user           AppUser  @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("brand_kits")
+}
+
+model Product {
+  id              String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId          String     @map("user_id") @db.Uuid
+  name            String
+  price           Decimal?   @db.Decimal(10, 2)
+  currency        String     @default("TRY")
+  description     String?
+  tags            String[]   @default([])
+  thumbnailPath   String?    @map("thumbnail_path")
+  generationCount Int        @default(0) @map("generation_count")
+  createdAt       DateTime   @default(now()) @map("created_at")
+  updatedAt       DateTime   @updatedAt @map("updated_at")
+  sector          SectorType
+  user            AppUser    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("products")
+}
+
+model Subscription {
+  id                 String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId             String    @unique @map("user_id") @db.Uuid
+  currentPeriodStart DateTime  @map("current_period_start")
+  currentPeriodEnd   DateTime  @map("current_period_end")
+  cancelAtPeriodEnd  Boolean   @default(false) @map("cancel_at_period_end")
+  iyzicoSubRef       String?   @map("iyzico_sub_ref")
+  createdAt          DateTime  @default(now()) @map("created_at")
+  updatedAt          DateTime  @updatedAt @map("updated_at")
+  planType           PlanType  @map("plan_type")
+  status             SubStatus @default(active)
+  user               AppUser   @relation(fields: [userId], references: [id])
+
+  @@map("subscriptions")
+}
+
+model Payment {
+  id           String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId       String        @map("user_id") @db.Uuid
+  amount       Decimal       @db.Decimal(10, 2)
+  currency     String        @default("TRY")
+  iyzicoToken  String?       @map("iyzico_token")
+  iyzicoPayRef String?       @unique @map("iyzico_pay_ref")
+  errorCode    String?       @map("error_code")
+  createdAt    DateTime      @default(now()) @map("created_at")
+  updatedAt    DateTime      @updatedAt @map("updated_at")
+  planType     PlanType      @map("plan_type")
+  status       PaymentStatus @default(pending)
+  user         AppUser       @relation(fields: [userId], references: [id])
+
+  @@index([userId, createdAt])
+  @@map("payments")
+}
+
+model AiConfig {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  taskType    String   @unique @map("task_type")
+  activeModel String   @map("active_model")
+  apiKey      String?  @map("api_key")
+  apiUrl      String?  @map("api_url")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@map("ai_configs")
+}
+
+enum SectorType {
+  food
+  textile
+  electronics
+  jewelry
+  beauty
+  furniture
+  other
+}
+
+enum PlatformType {
+  instagram
+  trendyol
+  hepsiburada
+  whatsapp
+  web
+  tiktok
+}
+
+enum GenerationStatus {
+  pending
+  uploading_image
+  processing_image
+  processing_video
+  generating_caption
+  completed
+  failed
+  cancelled
+}
+
+enum PlanType {
+  free
+  starter
+  pro
+  enterprise
+}
+
+enum Language {
+  tr
+  en
+  ar
+}
+
+enum SubStatus {
+  active
+  past_due
+  cancelled
+  trialing
+}
+
+enum PaymentStatus {
+  pending
+  success
+  failed
+  refunded
+}
+
+model AdminTemplate {
+  id                      String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name                    String
+  slug                    String    @unique
+  description             String?
+  thumbnailUrl            String?   @map("thumbnail_url")
+  category                String
+  isActive                Boolean   @default(true) @map("is_active")
+  isFeatured              Boolean   @default(false) @map("is_featured")
+  sortOrder               Int       @default(0) @map("sort_order")
+  displayWeek             DateTime? @map("display_week")
+  backgroundSystemPrompt  String?   @map("background_system_prompt") @db.Text
+  videoSystemPrompt       String?   @map("video_system_prompt") @db.Text
+  captionSystemPrompt     String?   @map("caption_system_prompt") @db.Text
+  captionUserPromptSuffix String?   @map("caption_user_prompt_suffix") @db.Text
+  applicablePlatforms     String[]  @default([]) @map("applicable_platforms")
+  defaultBackgroundStyle  String    @default("studio_white") @map("default_background_style")
+  createdAt               DateTime  @default(now()) @map("created_at")
+  updatedAt               DateTime  @updatedAt @map("updated_at")
+
+  @@map("admin_templates")
+}
+

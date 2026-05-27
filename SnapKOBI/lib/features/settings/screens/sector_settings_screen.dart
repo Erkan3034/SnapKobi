@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_dimensions.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../domain/entities/sector.dart';
@@ -25,13 +24,14 @@ class _SectorSettingsScreenState extends State<SectorSettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Scaffold(
-      backgroundColor: AppColors.backgroundLight,
+      backgroundColor: theme.scaffoldBackgroundColor,
       appBar: AppBar(
-        backgroundColor: AppColors.white,
+        backgroundColor: theme.appBarTheme.backgroundColor,
         elevation: 0,
-        leading: IconButton(icon: const Icon(Icons.arrow_back, color: AppColors.textPrimary), onPressed: () => context.pop()),
-        title: Text('Sektör Ayarları', style: AppTypography.headlineMedium.copyWith(color: AppColors.textPrimary)),
+        leading: IconButton(icon: Icon(Icons.arrow_back, color: theme.iconTheme.color), onPressed: () => context.pop()),
+        title: Text('Sektör Ayarları', style: AppTypography.headlineMedium.copyWith(color: theme.textTheme.headlineMedium?.color)),
         centerTitle: true,
       ),
       body: Column(children: [
@@ -43,13 +43,13 @@ class _SectorSettingsScreenState extends State<SectorSettingsScreen> {
               return Container(
                 margin: const EdgeInsets.only(bottom: AppDimensions.spacing12),
                 decoration: BoxDecoration(
-                  color: AppColors.white,
+                  color: theme.cardTheme.color ?? theme.cardColor,
                   borderRadius: BorderRadius.circular(AppDimensions.radiusMedium),
-                  border: Border.all(color: isSel ? AppColors.primary : AppColors.borderLight, width: isSel ? 2 : 1),
+                  border: Border.all(color: isSel ? theme.colorScheme.primary : theme.dividerColor, width: isSel ? 2 : 1),
                 ),
                 child: ListTile(
-                  title: Text(e.value, style: AppTypography.bodyLarge.copyWith(fontWeight: isSel ? FontWeight.bold : FontWeight.normal)),
-                  trailing: isSel ? const Icon(Icons.check_circle, color: AppColors.primary) : null,
+                  title: Text(e.value, style: AppTypography.bodyLarge.copyWith(color: theme.textTheme.bodyLarge?.color, fontWeight: isSel ? FontWeight.bold : FontWeight.normal)),
+                  trailing: isSel ? Icon(Icons.check_circle, color: theme.colorScheme.primary) : null,
                   onTap: () => setState(() => _selectedSector = e.key),
                 ),
               );
@@ -60,8 +60,8 @@ class _SectorSettingsScreenState extends State<SectorSettingsScreen> {
           padding: const EdgeInsets.all(AppDimensions.spacing16),
           child: ElevatedButton(
             style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.primary,
-              foregroundColor: AppColors.white,
+              backgroundColor: theme.colorScheme.primary,
+              foregroundColor: theme.colorScheme.onPrimary,
               minimumSize: const Size.fromHeight(56),
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppDimensions.radiusMedium)),
             ),
@@ -69,7 +69,7 @@ class _SectorSettingsScreenState extends State<SectorSettingsScreen> {
               ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Sektör ayarları güncellendi!')));
               context.pop();
             },
-            child: Text('Kaydet', style: AppTypography.labelLarge.copyWith(color: AppColors.white, fontWeight: FontWeight.bold)),
+            child: Text('Kaydet', style: AppTypography.labelLarge.copyWith(color: theme.colorScheme.onPrimary, fontWeight: FontWeight.bold)),
           ),
         ),
       ]),

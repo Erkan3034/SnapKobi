@@ -11,6 +11,7 @@ class ProjectDetailHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Column(children: [
       ClipRRect(
         borderRadius: BorderRadius.circular(AppDimensions.radiusMedium),
@@ -20,20 +21,20 @@ class ProjectDetailHeader extends StatelessWidget {
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: AppDimensions.spacing16),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text(item.title, style: AppTypography.headlineMedium),
+          Text(item.title, style: AppTypography.headlineMedium.copyWith(color: theme.textTheme.headlineMedium?.color)),
           const SizedBox(height: AppDimensions.spacing4),
           Row(children: [
             Container(
               padding: const EdgeInsets.symmetric(horizontal: AppDimensions.spacing8, vertical: AppDimensions.spacing4),
-              decoration: BoxDecoration(color: AppColors.primaryLightest, borderRadius: BorderRadius.circular(AppDimensions.radiusFull)),
-              child: Text('📷 ${item.platformLabel}', style: AppTypography.labelSmall.copyWith(color: AppColors.primary)),
+              decoration: BoxDecoration(color: theme.colorScheme.primary.withOpacity(0.1), borderRadius: BorderRadius.circular(AppDimensions.radiusFull)),
+              child: Text('📷 ${item.platformLabel}', style: AppTypography.labelSmall.copyWith(color: theme.colorScheme.primary)),
             ),
             const SizedBox(width: AppDimensions.spacing8),
-            Text(item.timeAgo, style: AppTypography.bodyMedium.copyWith(color: AppColors.textHint)),
+            Text(item.timeAgo, style: AppTypography.bodyMedium.copyWith(color: theme.hintColor)),
           ]),
           const SizedBox(height: AppDimensions.spacing8),
           Row(children: List.generate(5, (i) =>
-            Icon(Icons.star, size: 16, color: i < 4 ? AppColors.warning : AppColors.indicatorInactive))),
+            Icon(Icons.star, size: 16, color: i < 4 ? AppColors.warning : theme.disabledColor))),
         ]),
       ),
     ]);

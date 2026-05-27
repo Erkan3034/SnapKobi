@@ -15,6 +15,7 @@ class SubmitButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: AppDimensions.spacing24),
       child: Container(
@@ -32,8 +33,8 @@ class SubmitButton extends StatelessWidget {
         child: ElevatedButton(
           onPressed: isEnabled ? onTap : null,
           style: ElevatedButton.styleFrom(
-            backgroundColor: isEnabled ? AppColors.primary : Colors.grey.shade300,
-            foregroundColor: isEnabled ? Colors.white : Colors.grey.shade600,
+            backgroundColor: isEnabled ? AppColors.primary : theme.colorScheme.onSurface.withValues(alpha: 0.12),
+            foregroundColor: isEnabled ? Colors.white : theme.disabledColor,
             minimumSize: const Size(double.infinity, 56),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(28),

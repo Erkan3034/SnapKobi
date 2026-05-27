@@ -3,16 +3,82 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_dimensions.dart';
 import '../../../../core/theme/app_typography.dart';
+import '../../../../domain/entities/generation.dart';
 import '../processing_provider.dart';
 
 const _successGreen = Color(0xFF22C55E);
 
+enum LocalStepStatus { completed, inProgress, pending }
+
+class LocalStepInfo {
+  final String label;
+  final LocalStepStatus status;
+  const LocalStepInfo({required this.label, required this.status});
+}
+
 class ProcessingStepsCard extends ConsumerWidget {
   const ProcessingStepsCard({super.key});
 
+  List<LocalStepInfo> _getSteps(AsyncValue<Generation?> state) {
+    const defaultSteps = [
+      LocalStepInfo(label: 'Görsel Analiz Ediliyor', status: LocalStepStatus.pending),
+      LocalStepInfo(label: 'Arka Plan Değiştiriliyor', status: LocalStepStatus.pending),
+      LocalStepInfo(label: 'Metin ve Video Üretiliyor', status: LocalStepStatus.pending),
+    ];
+    
+    if (state.isLoading) {
+      return [
+        const LocalStepInfo(label: 'Görsel Analiz Ediliyor...', status: LocalStepStatus.inProgress),
+        const LocalStepInfo(label: 'Arka Plan Değiştiriliyor', status: LocalStepStatus.pending),
+        const LocalStepInfo(label: 'Metin ve Video Üretiliyor', status: LocalStepStatus.pending),
+      ];
+    }
+    
+    final gen = state.value;
+    if (gen == null) return defaultSteps;
+    
+    switch (gen.status) {
+      case GenerationStatus.pending:
+      case GenerationStatus.uploadingImage:
+        return [
+          const LocalStepInfo(label: 'Görsel Analiz Ediliyor...', status: LocalStepStatus.inProgress),
+          const LocalStepInfo(label: 'Arka Plan Değiştiriliyor', status: LocalStepStatus.pending),
+          const LocalStepInfo(label: 'Metin ve Video Üretiliyor', status: LocalStepStatus.pending),
+        ];
+      case GenerationStatus.processingImage:
+        return [
+          const LocalStepInfo(label: 'Görsel Analiz Edildi', status: LocalStepStatus.completed),
+          const LocalStepInfo(label: 'Arka Plan Değiştiriliyor...', status: LocalStepStatus.inProgress),
+          const LocalStepInfo(label: 'Metin ve Video Üretiliyor', status: LocalStepStatus.pending),
+        ];
+      case GenerationStatus.generatingCaption:
+      case GenerationStatus.processingVideo:
+        return [
+          const LocalStepInfo(label: 'Görsel Analiz Edildi', status: LocalStepStatus.completed),
+          const LocalStepInfo(label: 'Arka Plan Değiştirildi', status: LocalStepStatus.completed),
+          const LocalStepInfo(label: 'Metin ve Video Üretiliyor...', status: LocalStepStatus.inProgress),
+        ];
+      case GenerationStatus.completed:
+        return [
+          const LocalStepInfo(label: 'Görsel Analiz Edildi', status: LocalStepStatus.completed),
+          const LocalStepInfo(label: 'Arka Plan Değiştirildi', status: LocalStepStatus.completed),
+          const LocalStepInfo(label: 'Metin ve Video Üretildi', status: LocalStepStatus.completed),
+        ];
+      case GenerationStatus.failed:
+      case GenerationStatus.cancelled:
+        return [
+          const LocalStepInfo(label: 'İşlem Başarısız Oldu', status: LocalStepStatus.pending),
+          const LocalStepInfo(label: 'İşlem Başarısız Oldu', status: LocalStepStatus.pending),
+          const LocalStepInfo(label: 'İşlem Başarısız Oldu', status: LocalStepStatus.pending),
+        ];
+    }
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final steps = ref.watch(processingProvider).steps;
+    final state = ref.watch(processingProvider);
+    final steps = _getSteps(state);
+    
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: AppDimensions.spacing24),
       padding: const EdgeInsets.all(AppDimensions.spacing20),
@@ -28,7 +94,7 @@ class ProcessingStepsCard extends ConsumerWidget {
 }
 
 class _StepRow extends StatelessWidget {
-  final ProcessingStepInfo info;
+  final LocalStepInfo info;
   const _StepRow({required this.info});
 
   @override
@@ -41,7 +107,7 @@ class _StepRow extends StatelessWidget {
           const SizedBox(width: AppDimensions.spacing12),
           Expanded(
             child: Text(info.label, style: AppTypography.bodyMedium.copyWith(
-              color: info.status == ProcessingStepStatus.pending
+              color: info.status == LocalStepStatus.pending
                   ? AppColors.textHint : AppColors.textPrimary,
             )),
           ),
@@ -52,18 +118,19 @@ class _StepRow extends StatelessWidget {
 
   Widget _buildIcon() {
     switch (info.status) {
-      case ProcessingStepStatus.completed:
+      case LocalStepStatus.completed:
         return const Icon(Icons.check_circle, color: _successGreen, size: 24);
-      case ProcessingStepStatus.inProgress:
+      case LocalStepStatus.inProgress:
         return const SizedBox(
           width: 24, height: 24,
           child: CircularProgressIndicator(
             strokeWidth: 2.5, valueColor: AlwaysStoppedAnimation(AppColors.primary),
           ),
         );
-      case ProcessingStepStatus.pending:
-        return Icon(Icons.radio_button_unchecked,
+      case LocalStepStatus.pending:
+        return const Icon(Icons.radio_button_unchecked,
             color: AppColors.indicatorInactive, size: 24);
     }
   }
 }
+

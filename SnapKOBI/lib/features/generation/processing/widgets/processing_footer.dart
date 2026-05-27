@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_dimensions.dart';
 import '../../../../core/theme/app_typography.dart';
+import '../../../../domain/entities/generation.dart';
 import '../processing_provider.dart';
 
 class ProcessingFooter extends ConsumerWidget {
@@ -10,7 +11,25 @@ class ProcessingFooter extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final secs = ref.watch(processingProvider).estimatedSeconds;
+    final state = ref.watch(processingProvider);
+    final secs = state.maybeWhen(
+      data: (gen) {
+        if (gen == null) return 30;
+        switch (gen.status) {
+          case GenerationStatus.pending:
+          case GenerationStatus.uploadingImage:
+            return 30;
+          case GenerationStatus.processingImage:
+            return 20;
+          case GenerationStatus.generatingCaption:
+          case GenerationStatus.processingVideo:
+            return 10;
+          default:
+            return 0;
+        }
+      },
+      orElse: () => 30,
+    );
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: AppDimensions.spacing24),
       child: Column(

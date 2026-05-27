@@ -5,6 +5,9 @@ import '../../features/auth/forgot_password_screen.dart';
 import '../../features/auth/login_screen.dart';
 import '../../features/auth/register_screen.dart';
 import '../../features/auth/reset_password_screen.dart';
+import '../../features/community/community_screen.dart';
+import '../../features/discover/discover_provider.dart';
+import '../../features/generation/processing/processing_screen.dart';
 import '../../features/generation/result/result_screen.dart';
 import '../../features/history/history_screen.dart';
 import '../../features/onboarding/onboarding_screen.dart';
@@ -18,6 +21,9 @@ import '../../features/settings/settings_screen.dart';
 import '../../features/splash/splash_screen.dart';
 import '../../features/subscription/payment_history_screen.dart';
 import '../../features/subscription/subscription_screen.dart';
+import '../../features/trend/trend_details_screen.dart';
+import '../../features/trend/trending_screen.dart';
+import '../../features/library/library_screen.dart';
 import '../widgets/layout/main_scaffold.dart';
 import 'routes.dart';
 
@@ -41,4 +47,9 @@ final List<RouteBase> appRoutesList = [
   GoRoute(path: AppRoutes.helpFaq, builder: (_, __) => const HelpFaqScreen()),
   GoRoute(path: AppRoutes.privacyPolicy, builder: (_, __) => const PrivacyPolicyScreen()),
   GoRoute(path: AppRoutes.languageSettings, builder: (_, __) => const LanguageSettingsScreen()),
+  GoRoute(path: AppRoutes.trending, builder: (_, __) => const TrendingScreen()),
+  GoRoute(path: AppRoutes.trendDetails, builder: (_, state) => TrendDetailsScreen(item: state.extra as TrendItem)),
+  GoRoute(path: AppRoutes.communityShowcase, builder: (_, __) => const CommunityScreen()),
+  GoRoute(path: AppRoutes.processing, builder: (_, __) => const ProcessingScreen()),
+  GoRoute(path: AppRoutes.library, builder: (_, __) => const LibraryScreen()),
 ];

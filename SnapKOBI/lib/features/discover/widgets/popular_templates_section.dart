@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_dimensions.dart';
 import '../../../core/theme/app_typography.dart';
+import '../../../shared/navigation/routes.dart';
 import '../discover_provider.dart';
 import 'template_card.dart';
 
@@ -19,7 +21,7 @@ class PopularTemplatesSection extends StatelessWidget {
           Text('⭐ Popüler Şablonlar', style: AppTypography.headlineMedium.copyWith(fontSize: 18)),
           const Spacer(),
           TextButton(
-            onPressed: () {},
+            onPressed: () => context.push(AppRoutes.library),
             child: Text('Tümünü Gör', style: AppTypography.labelSmall.copyWith(color: AppColors.primary)),
           ),
         ]),
@@ -30,10 +32,8 @@ class PopularTemplatesSection extends StatelessWidget {
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 3,
-            crossAxisSpacing: AppDimensions.spacing8,
-            mainAxisSpacing: AppDimensions.spacing8,
-            childAspectRatio: 0.78,
+            crossAxisCount: 3, crossAxisSpacing: AppDimensions.spacing8,
+            mainAxisSpacing: AppDimensions.spacing8, childAspectRatio: 0.78,
           ),
           itemCount: items.length,
           itemBuilder: (_, i) => TemplateCard(item: items[i]),

@@ -1,0 +1,62 @@
+import fastify from 'fastify';
+import cors from '@fastify/cors';
+import rateLimit from '@fastify/rate-limit';
+import { aiConfigRoutes } from './modules/ai-config/ai-config.routes';
+import { userRoutes } from './modules/users/users.routes';
+import { brandKitRoutes } from './modules/brand-kit/brand-kit.routes';
+import { productRoutes } from './modules/product/product.routes';
+import { generationRoutes } from './modules/generation/generation.routes';
+import { seedAiConfigs } from './config/seed';
+
+const app = fastify({
+  logger: {
+    level: process.env.NODE_ENV === 'development' ? 'info' : 'warn',
+  },
+});
+
+// Register CORS
+app.register(cors, {
+  origin: '*', // Adjust for production security if needed
+});
+
+// Register Rate Limiting
+app.register(rateLimit, {
+  max: 100,
+  timeWindow: '1 minute',
+});
+
+// Global Error Handler
+app.setErrorHandler((error, request, reply) => {
+  app.log.error(error);
+  
+  if (error.statusCode) {
+    return reply.status(error.statusCode).send({
+      error: error.name,
+      message: error.message,
+    });
+  }
+
+  return reply.status(500).send({
+    error: 'InternalServerError',
+    message: 'An unexpected error occurred on the server',
+  });
+});
+
+// Health check endpoint
+app.get('/health', async () => {
+  return { status: 'healthy', timestamp: new Date().toISOString() };
+});
+
+// Register Modules
+app.register(aiConfigRoutes, { prefix: '/v1/ai-configs' });
+app.register(userRoutes, { prefix: '/v1/users' });
+app.register(brandKitRoutes, { prefix: '/v1/brand-kit' });
+app.register(productRoutes, { prefix: '/v1/products' });
+app.register(generationRoutes, { prefix: '/v1/generations' });
+
+// App ready hook to trigger DB seeding
+app.addHook('onReady', async () => {
+  await seedAiConfigs();
+});
+
+export default app;

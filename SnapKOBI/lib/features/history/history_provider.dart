@@ -1,4 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../core/di/providers.dart';
+
 
 enum HistoryFilter { all, thisWeek, images, videos }
 
@@ -8,28 +10,87 @@ class HistoryItem {
   final String platformLabel;
   final String timeAgo;
   final String imageUrl;
-  const HistoryItem({required this.id, required this.title, required this.platformLabel, required this.timeAgo, required this.imageUrl});
+  final String beforeUrl;
+
+  const HistoryItem({
+    required this.id,
+    required this.title,
+    required this.platformLabel,
+    required this.timeAgo,
+    required this.imageUrl,
+    required this.beforeUrl,
+  });
 }
 
 class HistoryState {
   final HistoryFilter filter;
   final List<HistoryItem> items;
-  const HistoryState({this.filter = HistoryFilter.all, this.items = _mockItems});
-  HistoryState copyWith({HistoryFilter? filter}) => HistoryState(filter: filter ?? this.filter, items: items);
+  final bool isLoading;
+  const HistoryState({this.filter = HistoryFilter.all, this.items = const [], this.isLoading = true});
+  HistoryState copyWith({HistoryFilter? filter, List<HistoryItem>? items, bool? isLoading}) =>
+      HistoryState(filter: filter ?? this.filter, items: items ?? this.items, isLoading: isLoading ?? this.isLoading);
 }
 
-const _mockItems = [
-  HistoryItem(id: '1', title: 'Kırmızı Spor Ayakkabı', platformLabel: 'IG', timeAgo: '3 gün önce', imageUrl: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&q=80'),
-  HistoryItem(id: '2', title: 'Akıllı Saat Pro', platformLabel: 'TR', timeAgo: '4 gün önce', imageUrl: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&q=80'),
-  HistoryItem(id: '3', title: 'Deri El Çantası', platformLabel: 'IG', timeAgo: '5 gün önce', imageUrl: 'https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=400&q=80'),
-  HistoryItem(id: '4', title: 'Gurme Dilimi', platformLabel: 'TR', timeAgo: '1 hafta önce', imageUrl: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=400&q=80'),
-];
-
 class HistoryNotifier extends StateNotifier<HistoryState> {
-  HistoryNotifier() : super(const HistoryState());
+  final Ref _ref;
+
+  HistoryNotifier(this._ref) : super(const HistoryState(isLoading: true)) {
+    loadRealHistory();
+  }
+
+  Future<void> loadRealHistory() async {
+    state = state.copyWith(isLoading: true);
+    try {
+      final repo = _ref.read(generationRepositoryProvider);
+      final result = await repo.getHistory();
+
+      result.fold(
+        onSuccess: (list) {
+          final items = list.map((gen) {
+            final title = '${gen.sector.name.toUpperCase()} Reklamı';
+            final platformLabel = gen.platform.name.toUpperCase();
+
+            final dt = gen.createdAt;
+            final diff = DateTime.now().difference(dt);
+            String timeAgo = 'Bilinmiyor';
+            if (diff.inMinutes < 60) {
+              timeAgo = '${diff.inMinutes} dk önce';
+            } else if (diff.inHours < 24) {
+              timeAgo = '${diff.inHours} saat önce';
+            } else {
+              timeAgo = '${diff.inDays} gün önce';
+            }
+
+            return HistoryItem(
+              id: gen.id,
+              title: title,
+              platformLabel: platformLabel,
+              timeAgo: timeAgo,
+              imageUrl: gen.processedImageUrl ?? 'https://images.unsplash.com/photo-1600185365926-3a2ce3cdb9eb?w=400&q=80',
+              beforeUrl: gen.originalImageUrl,
+            );
+          }).toList();
+
+          if (mounted) {
+            state = state.copyWith(items: items, isLoading: false);
+          }
+        },
+        onFailure: (error) {
+          if (mounted) {
+            state = state.copyWith(items: const [], isLoading: false);
+          }
+        },
+      );
+    } catch (e) {
+      if (mounted) {
+        state = state.copyWith(items: const [], isLoading: false);
+      }
+    }
+  }
+
   void setFilter(HistoryFilter f) => state = state.copyWith(filter: f);
 }
 
 final historyProvider = StateNotifierProvider<HistoryNotifier, HistoryState>(
-  (ref) => HistoryNotifier(),
+  (ref) => HistoryNotifier(ref),
 );

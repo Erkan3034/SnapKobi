@@ -11,6 +11,7 @@ import '../../shared/navigation/routes.dart';
 import '../create/create_screen.dart';
 import 'discover_provider.dart';
 import 'widgets/community_section.dart';
+import 'widgets/discover_helpers.dart';
 import 'widgets/popular_templates_section.dart';
 import 'widgets/quick_start_banner.dart';
 import 'widgets/trending_section.dart';
@@ -22,38 +23,33 @@ class DiscoverScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(discoverProvider);
     final user = ref.watch(authNotifierProvider).valueOrNull;
-    String initials = 'U';
-    if (user != null) {
-      final name = user.displayName;
-      if (name != null && name.isNotEmpty) {
-        initials = name[0].toUpperCase();
-      }
-    }
+    final initials = (user?.displayName?.isNotEmpty ?? false) ? user!.displayName![0].toUpperCase() : 'U';
+    final theme = Theme.of(context);
 
     return Scaffold(
-      backgroundColor: AppColors.backgroundLight,
+      backgroundColor: theme.scaffoldBackgroundColor,
       appBar: AppBar(
-        backgroundColor: AppColors.white,
-        surfaceTintColor: AppColors.transparent,
+        backgroundColor: theme.appBarTheme.backgroundColor,
+        surfaceTintColor: Colors.transparent,
         title: Row(children: [
-          Text('SnapKOBİ', style: AppTypography.headlineMedium.copyWith(color: AppColors.primaryDark, fontSize: 20)),
-          const SizedBox(width: 4), const Icon(AppIcons.ai, color: AppColors.primary, size: 18),
+          Text('SnapKOBİ', style: AppTypography.headlineMedium.copyWith(color: theme.colorScheme.primary, fontSize: 20)),
+          const SizedBox(width: 4), Icon(AppIcons.ai, color: theme.colorScheme.primary, size: 18),
         ]),
         actions: [
-          IconButton(icon: const Icon(AppIcons.notification, color: AppColors.primaryDark),
-            onPressed: () => _showNotificationSheet(context)),
+          IconButton(icon: Icon(AppIcons.notification, color: theme.iconTheme.color ?? theme.colorScheme.primary), onPressed: () => showNotificationSheet(context)),
           GestureDetector(
             onTap: () => context.push(AppRoutes.profileInfo),
             child: Padding(
               padding: const EdgeInsets.only(right: AppDimensions.spacing16),
-              child: CircleAvatar(radius: 18, backgroundColor: AppColors.primary,
+              child: CircleAvatar(radius: 18, backgroundColor: theme.colorScheme.primary,
                 child: Text(initials, style: const TextStyle(color: AppColors.white, fontSize: 13, fontWeight: FontWeight.bold))),
             ),
           ),
         ],
       ),
       body: SingleChildScrollView(
-        child: Column(children: [
+        padding: state.isLoading ? const EdgeInsets.symmetric(horizontal: AppDimensions.spacing16) : EdgeInsets.zero,
+        child: state.isLoading ? buildDiscoverShimmer() : Column(children: [
           QuickStartBanner(onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const CreateScreen()))),
           TrendingSection(items: state.trends),
           const SizedBox(height: AppDimensions.spacing16),
@@ -61,24 +57,6 @@ class DiscoverScreen extends ConsumerWidget {
           const SizedBox(height: AppDimensions.spacing16),
           CommunitySection(items: state.community),
           const SizedBox(height: AppDimensions.spacing48 * 2),
-        ]),
-      ),
-    );
-  }
-
-  void _showNotificationSheet(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(AppDimensions.radiusLarge))),
-      builder: (context) => Container(
-        padding: const EdgeInsets.all(AppDimensions.spacing20),
-        child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-          Text('Bildirimler 🔔', style: AppTypography.titleLarge),
-          const SizedBox(height: AppDimensions.spacing16),
-          ListTile(leading: const Icon(Icons.star, color: AppColors.warning),
-            title: const Text('Tebrikler! Yapay Zeka görseliniz hazırlandı.'), subtitle: const Text('2 dakika önce')),
-          ListTile(leading: const Icon(Icons.celebration, color: AppColors.primary),
-            title: const Text('Yeni trend şablonlar eklendi! Hemen dene.'), subtitle: const Text('1 saat önce')),
         ]),
       ),
     );

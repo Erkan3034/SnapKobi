@@ -6,10 +6,12 @@ import '../../core/di/providers.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_dimensions.dart';
 import '../../core/theme/app_typography.dart';
+import '../../core/theme/theme_provider.dart';
 import '../../domain/entities/sector.dart';
 import '../../domain/entities/subscription.dart';
 import '../../shared/navigation/routes.dart';
 import 'widgets/profile_header.dart';
+import 'widgets/rating_dialog_helper.dart';
 import 'widgets/settings_footer.dart';
 import 'widgets/settings_section.dart';
 import 'widgets/settings_tile.dart';
@@ -26,17 +28,18 @@ class SettingsScreen extends ConsumerWidget {
     final user = ref.watch(authNotifierProvider).valueOrNull;
     final sector = _sectorLabels[user?.sector ?? SectorType.other] ?? 'Diğer';
     final plan = _planLabels[user?.planType ?? PlanType.free] ?? 'Ücretsiz';
+    final isDark = ref.watch(themeProvider) == ThemeMode.dark;
+    final theme = Theme.of(context);
 
     return Scaffold(
-      backgroundColor: AppColors.backgroundLight,
+      backgroundColor: theme.scaffoldBackgroundColor,
       body: SingleChildScrollView(child: Column(children: [
         const ProfileHeader(),
         SettingsSection(title: 'Hesap Ayarları', children: [
-          SettingsTile(icon: Icons.person_outline, title: 'Profil Bilgileri',
-            onTap: () => context.push(AppRoutes.profileInfo)),
+          SettingsTile(icon: Icons.person_outline, title: 'Profil Bilgileri', onTap: () => context.push(AppRoutes.profileInfo)),
           SettingsTile(icon: Icons.grid_view, title: 'Sektör Ayarları', trailing: Row(mainAxisSize: MainAxisSize.min, children: [
             _badge(sector, AppColors.primary), const SizedBox(width: AppDimensions.spacing4),
-            const Icon(Icons.chevron_right, color: AppColors.textHint),
+            Icon(Icons.chevron_right, color: theme.hintColor),
           ]), onTap: () => context.push(AppRoutes.sectorSettings)),
           SettingsTile(icon: Icons.notifications_outlined, title: 'Bildirimler', showDivider: false,
             trailing: Switch(value: true, onChanged: (_) {}, activeThumbColor: AppColors.primary)),
@@ -45,22 +48,19 @@ class SettingsScreen extends ConsumerWidget {
           SettingsTile(icon: Icons.shield_outlined, title: '$plan Plan', trailing: Row(mainAxisSize: MainAxisSize.min, children: [
             Text('Yükselt →', style: AppTypography.labelSmall.copyWith(color: AppColors.primary, fontWeight: FontWeight.bold)),
           ]), onTap: () => context.push(AppRoutes.subscription)),
-          SettingsTile(icon: Icons.receipt_long_outlined, title: 'Ödeme Geçmişi',
-            onTap: () => context.push(AppRoutes.paymentHistory)),
-          SettingsTile(icon: Icons.settings_outlined, title: 'Abonelik Yönetimi', showDivider: false,
-            onTap: () => context.push(AppRoutes.subscription)),
+          SettingsTile(icon: Icons.receipt_long_outlined, title: 'Ödeme Geçmişi', onTap: () => context.push(AppRoutes.paymentHistory)),
+          SettingsTile(icon: Icons.settings_outlined, title: 'Abonelik Yönetimi', showDivider: false, onTap: () => context.push(AppRoutes.subscription)),
         ]),
         SettingsSection(title: 'Uygulama', children: [
           SettingsTile(icon: Icons.language, title: 'Dil', trailing: Row(mainAxisSize: MainAxisSize.min, children: [
             _badge('Türkçe', AppColors.primary), const SizedBox(width: AppDimensions.spacing4),
-            const Icon(Icons.chevron_right, color: AppColors.textHint),
+            Icon(Icons.chevron_right, color: theme.hintColor),
           ]), onTap: () => context.push(AppRoutes.languageSettings)),
-          SettingsTile(icon: Icons.help_outline, title: 'Yardım & SSS',
-            onTap: () => context.push(AppRoutes.helpFaq)),
-          SettingsTile(icon: Icons.lock_outline, title: 'Gizlilik Politikası',
-            onTap: () => context.push(AppRoutes.privacyPolicy)),
-          SettingsTile(icon: Icons.star_outline, title: 'Uygulamayı Puanla', showDivider: false,
-            onTap: () => _showRatingDialog(context)),
+          SettingsTile(icon: Icons.dark_mode_outlined, title: 'Karanlık Tema', trailing: Switch(value: isDark,
+            onChanged: (val) => ref.read(themeProvider.notifier).toggleTheme(val), activeThumbColor: AppColors.primary)),
+          SettingsTile(icon: Icons.help_outline, title: 'Yardım & SSS', onTap: () => context.push(AppRoutes.helpFaq)),
+          SettingsTile(icon: Icons.lock_outline, title: 'Gizlilik Politikası', onTap: () => context.push(AppRoutes.privacyPolicy)),
+          SettingsTile(icon: Icons.star_outline, title: 'Uygulamayı Puanla', showDivider: false, onTap: () => showRatingDialog(context)),
         ]),
         const SettingsFooter(),
         const SizedBox(height: AppDimensions.spacing32),
@@ -68,35 +68,9 @@ class SettingsScreen extends ConsumerWidget {
     );
   }
 
-  Widget _badge(String text, Color color) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: AppDimensions.spacing8, vertical: AppDimensions.spacing4),
-      decoration: BoxDecoration(color: color.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(AppDimensions.radiusFull)),
-      child: Text(text, style: AppTypography.labelSmall.copyWith(color: color, fontWeight: FontWeight.bold)),
-    );
-  }
-
-  void _showRatingDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppDimensions.radiusMedium)),
-        title: const Text('Uygulamayı Puanlayın'),
-        content: const Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-          Icon(Icons.star, color: Colors.amber, size: 36),
-          Icon(Icons.star, color: Colors.amber, size: 36),
-          Icon(Icons.star, color: Colors.amber, size: 36),
-          Icon(Icons.star, color: Colors.amber, size: 36),
-          Icon(Icons.star, color: Colors.amber, size: 36),
-        ]),
-        actions: [
-          TextButton(onPressed: () => Navigator.pop(context), child: const Text('İptal')),
-          TextButton(onPressed: () {
-            Navigator.pop(context);
-            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Puanınız için teşekkür ederiz! ⭐⭐⭐⭐⭐')));
-          }, child: const Text('Gönder')),
-        ],
-      ),
-    );
-  }
+  Widget _badge(String text, Color color) => Container(
+    padding: const EdgeInsets.symmetric(horizontal: AppDimensions.spacing8, vertical: AppDimensions.spacing4),
+    decoration: BoxDecoration(color: color.withOpacity(0.1), borderRadius: BorderRadius.circular(AppDimensions.radiusFull)),
+    child: Text(text, style: AppTypography.labelSmall.copyWith(color: color, fontWeight: FontWeight.bold)),
+  );
 }

@@ -84,6 +84,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final authState = ref.watch(authNotifierProvider);
     final isLoading = authState.isLoading;
 
@@ -114,7 +115,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     });
 
     return Scaffold(
-      backgroundColor: AppColors.backgroundLight,
       body: SafeArea(
         child: Column(
           children: [
@@ -176,7 +176,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                       suffixIcon: IconButton(
                         icon: Icon(
                           _obscurePassword ? Icons.visibility_off_outlined : Icons.visibility_outlined,
-                          color: AppColors.textSecondary,
+                          color: theme.hintColor,
                           size: 20,
                         ),
                         onPressed: _togglePasswordVisibility,
@@ -243,13 +243,14 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   }
 
   Widget _buildHeader() {
+    final theme = Theme.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
+        Text(
           AppStrings.registerTitle,
           style: TextStyle(
-            color: AppColors.textPrimary,
+            color: theme.colorScheme.onSurface,
             fontSize: AppDimensions.fontXL,
             fontWeight: FontWeight.w700,
           ),
@@ -257,8 +258,8 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
         const SizedBox(height: AppDimensions.spacing8),
         Text(
           AppStrings.registerSubtitle,
-          style: const TextStyle(
-            color: AppColors.textSecondary,
+          style: TextStyle(
+            color: theme.hintColor,
             fontSize: AppDimensions.fontMD,
           ),
         ),
@@ -267,20 +268,21 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   }
 
   Widget _buildDivider() {
+    final theme = Theme.of(context);
     return Row(
       children: [
-        const Expanded(child: Divider(color: AppColors.borderLight)),
-        const Padding(
-          padding: EdgeInsets.symmetric(horizontal: AppDimensions.spacing16),
+        Expanded(child: Divider(color: theme.dividerColor)),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: AppDimensions.spacing16),
           child: Text(
             AppStrings.registerOrEmail,
             style: TextStyle(
-              color: AppColors.textSecondary,
+              color: theme.hintColor,
               fontSize: AppDimensions.fontSM,
             ),
           ),
         ),
-        const Expanded(child: Divider(color: AppColors.borderLight)),
+        Expanded(child: Divider(color: theme.dividerColor)),
       ],
     );
   }
@@ -297,7 +299,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
         mainAxisSize: MainAxisSize.min,
         children: [
           const SizedBox(width: AppDimensions.spacing16),
-          const Icon(Icons.phone_outlined, color: AppColors.textSecondary, size: 20),
+          Icon(Icons.phone_outlined, color: Theme.of(context).hintColor, size: 20),
           const SizedBox(width: AppDimensions.spacing8),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
@@ -327,25 +329,26 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   }
 
   Widget _buildTermsText() {
+    final theme = Theme.of(context);
     return RichText(
-      text: const TextSpan(
+      text: TextSpan(
         style: TextStyle(
-          color: AppColors.textSecondary,
+          color: theme.hintColor,
           fontSize: AppDimensions.fontSM,
           height: 1.4,
         ),
         children: [
-          TextSpan(text: AppStrings.registerTermsPrefix),
-          TextSpan(
+          const TextSpan(text: AppStrings.registerTermsPrefix),
+          const TextSpan(
             text: AppStrings.registerTermsLink,
             style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.w600),
           ),
-          TextSpan(text: AppStrings.registerTermsAnd),
-          TextSpan(
+          const TextSpan(text: AppStrings.registerTermsAnd),
+          const TextSpan(
             text: AppStrings.registerPrivacyLink,
             style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.w600),
           ),
-          TextSpan(text: AppStrings.registerTermsSuffix),
+          const TextSpan(text: AppStrings.registerTermsSuffix),
         ],
       ),
     );

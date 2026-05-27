@@ -9,8 +9,13 @@ import '../network/dio_client.dart';
 import '../network/interceptors/auth_interceptor.dart';
 import '../../data/datasources/remote/supabase_auth_datasource.dart';
 import '../../data/datasources/remote/supabase_user_datasource.dart';
+import '../../data/datasources/remote/supabase_storage_datasource.dart';
+import '../../data/datasources/remote/backend_generation_ds.dart';
+import '../../data/datasources/remote/supabase_generation_datasource.dart';
 import '../../data/repositories_impl/auth_repository_impl.dart';
+import '../../data/repositories_impl/generation_repository_impl.dart';
 import '../../domain/repositories/auth_repository.dart';
+import '../../domain/repositories/generation_repository.dart';
 import '../../domain/entities/user.dart' as domain;
 import '../../domain/usecases/auth/get_current_user_usecase.dart';
 import '../../domain/usecases/auth/sign_in_with_apple_usecase.dart';
@@ -20,6 +25,9 @@ import '../../domain/usecases/auth/sign_out_usecase.dart';
 import '../../domain/usecases/auth/sign_up_with_email_usecase.dart';
 import '../../domain/usecases/auth/send_password_reset_email_usecase.dart';
 import '../../domain/usecases/auth/update_password_usecase.dart';
+import '../../domain/usecases/generation/start_generation_usecase.dart';
+import '../../domain/usecases/generation/watch_generation_usecase.dart';
+import '../../domain/usecases/generation/get_generation_history_usecase.dart';
 
 final supabaseClientProvider = Provider<SupabaseClient>(
   (_) => SupabaseClientProvider.client,
@@ -223,3 +231,38 @@ class AuthNotifier extends AsyncNotifier<domain.User?> {
     return redirectTo;
   }
 }
+
+
+final supabaseStorageDsProvider = Provider<SupabaseStorageDatasource>(
+  (ref) => SupabaseStorageDatasource(ref.watch(supabaseClientProvider)),
+);
+
+final backendGenerationDsProvider = Provider<BackendGenerationDatasource>(
+  (ref) => BackendGenerationDatasource(ref.watch(dioClientProvider).dio),
+);
+
+final supabaseGenerationDsProvider = Provider<SupabaseGenerationDatasource>(
+  (ref) => SupabaseGenerationDatasource(ref.watch(supabaseClientProvider)),
+);
+
+final generationRepositoryProvider = Provider<GenerationRepository>(
+  (ref) => GenerationRepositoryImpl(
+    storageDs: ref.watch(supabaseStorageDsProvider),
+    backendDs: ref.watch(backendGenerationDsProvider),
+    supabaseDs: ref.watch(supabaseGenerationDsProvider),
+  ),
+);
+
+final startGenerationUseCaseProvider = Provider<StartGenerationUseCase>(
+  (ref) => StartGenerationUseCase(ref.watch(generationRepositoryProvider)),
+);
+
+final watchGenerationUseCaseProvider = Provider<WatchGenerationUseCase>(
+  (ref) => WatchGenerationUseCase(ref.watch(generationRepositoryProvider)),
+);
+
+final getGenerationHistoryUseCaseProvider = Provider<GetGenerationHistoryUseCase>(
+  (ref) => GetGenerationHistoryUseCase(ref.watch(generationRepositoryProvider)),
+);
+
+

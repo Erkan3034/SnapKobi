@@ -25,6 +25,7 @@ class _CommunityPostFooterState extends State<CommunityPostFooter> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Row(
       children: [
         IconButton(
@@ -32,7 +33,7 @@ class _CommunityPostFooterState extends State<CommunityPostFooter> {
           padding: EdgeInsets.zero,
           icon: Icon(
             _isLiked ? Icons.favorite : Icons.favorite_border,
-            color: _isLiked ? AppColors.error : AppColors.textSecondary,
+            color: _isLiked ? AppColors.error : theme.hintColor,
             size: 20,
           ),
           onPressed: () {
@@ -46,17 +47,17 @@ class _CommunityPostFooterState extends State<CommunityPostFooter> {
         Text(
           '$_likesCount',
           style: AppTypography.labelSmall.copyWith(
-            color: AppColors.textSecondary,
+            color: theme.hintColor,
             fontWeight: FontWeight.w600,
           ),
         ),
         const SizedBox(width: 16),
-        const Icon(Icons.chat_bubble_outline, color: AppColors.textSecondary, size: 20),
+        Icon(Icons.chat_bubble_outline, color: theme.hintColor, size: 20),
         const SizedBox(width: 4),
         Text(
           '${widget.item.commentsCount ?? 0}',
           style: AppTypography.labelSmall.copyWith(
-            color: AppColors.textSecondary,
+            color: theme.hintColor,
             fontWeight: FontWeight.w600,
           ),
         ),

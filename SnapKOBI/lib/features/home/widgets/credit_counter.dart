@@ -12,6 +12,7 @@ class UsageBanner extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
     final user = ref.watch(authNotifierProvider).valueOrNull;
     final creditsLeft = user?.creditsLeft ?? 7;
     const totalCredits = 10;
@@ -21,7 +22,7 @@ class UsageBanner extends ConsumerWidget {
       margin: const EdgeInsets.symmetric(horizontal: AppDimensions.spacing24),
       padding: const EdgeInsets.symmetric(horizontal: AppDimensions.spacing16, vertical: AppDimensions.spacing12),
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color: theme.colorScheme.surface,
         borderRadius: BorderRadius.circular(AppDimensions.radiusMedium),
         boxShadow: const [AppShadows.cardShadow],
       ),
@@ -59,7 +60,7 @@ class UsageBanner extends ConsumerWidget {
                   'Bu Ay Ücretsiz Kredi',
                   style: AppTypography.titleLarge.copyWith(
                     fontSize: 14,
-                    color: AppColors.textPrimary,
+                    color: theme.colorScheme.onSurface,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -68,7 +69,7 @@ class UsageBanner extends ConsumerWidget {
                   '$creditsLeft kredi kaldı',
                   style: AppTypography.bodyMedium.copyWith(
                     fontSize: 12,
-                    color: AppColors.textSecondary,
+                    color: theme.hintColor,
                   ),
                 ),
               ],

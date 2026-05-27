@@ -10,6 +10,7 @@ class CommunityPostHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final avatar = item.avatarUrl;
     final name = item.userName ?? '';
     final initials = name.isNotEmpty ? name[0].toUpperCase() : 'K';
@@ -37,22 +38,22 @@ class CommunityPostHeader extends StatelessWidget {
               Text(
                 '@$name',
                 style: AppTypography.labelLarge.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.textPrimary,
-                ),
+                    fontWeight: FontWeight.bold,
+                    color: theme.colorScheme.onSurface,
+                  ),
               ),
               const SizedBox(height: 2),
               Text(
                 '$platform · $timeAgo',
                 style: AppTypography.labelSmall.copyWith(
-                  color: AppColors.textHint,
-                ),
+                    color: theme.hintColor,
+                  ),
               ),
             ],
           ),
         ),
         IconButton(
-          icon: const Icon(Icons.more_vert, color: AppColors.textSecondary),
+          icon: Icon(Icons.more_vert, color: theme.hintColor),
           onPressed: () {},
         ),
       ],

@@ -25,6 +25,7 @@ class PlatformSelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -32,7 +33,7 @@ class PlatformSelector extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: AppDimensions.spacing24),
           child: Text(
             'Platform Seçin',
-            style: AppTypography.headlineMedium.copyWith(fontSize: 16, color: AppColors.textPrimary),
+            style: AppTypography.headlineMedium.copyWith(fontSize: 16, color: theme.colorScheme.onSurface),
           ),
         ),
         const SizedBox(height: AppDimensions.spacing12),
@@ -52,7 +53,7 @@ class PlatformSelector extends StatelessWidget {
                     color: isSelected ? Colors.white : AppColors.primary,
                     fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
                   ),
-                  backgroundColor: Colors.white,
+                  backgroundColor: theme.colorScheme.surface,
                   selectedColor: AppColors.primary,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(AppDimensions.radiusFull),

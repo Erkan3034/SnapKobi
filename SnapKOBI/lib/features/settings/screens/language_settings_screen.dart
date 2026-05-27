@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_dimensions.dart';
 import '../../../core/theme/app_typography.dart';
 
@@ -23,13 +22,14 @@ class _LanguageSettingsScreenState extends State<LanguageSettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Scaffold(
-      backgroundColor: AppColors.backgroundLight,
+      backgroundColor: theme.scaffoldBackgroundColor,
       appBar: AppBar(
-        backgroundColor: AppColors.white,
+        backgroundColor: theme.appBarTheme.backgroundColor,
         elevation: 0,
-        leading: IconButton(icon: const Icon(Icons.arrow_back, color: AppColors.textPrimary), onPressed: () => context.pop()),
-        title: Text('Dil Seçimi', style: AppTypography.headlineMedium.copyWith(color: AppColors.textPrimary)),
+        leading: IconButton(icon: Icon(Icons.arrow_back, color: theme.iconTheme.color), onPressed: () => context.pop()),
+        title: Text('Dil Seçimi', style: AppTypography.headlineMedium.copyWith(color: theme.textTheme.headlineMedium?.color)),
         centerTitle: true,
       ),
       body: ListView.builder(
@@ -41,14 +41,14 @@ class _LanguageSettingsScreenState extends State<LanguageSettingsScreen> {
           return Container(
             margin: const EdgeInsets.only(bottom: AppDimensions.spacing12),
             decoration: BoxDecoration(
-              color: AppColors.white,
+              color: theme.cardTheme.color ?? theme.cardColor,
               borderRadius: BorderRadius.circular(AppDimensions.radiusMedium),
-              border: Border.all(color: isSelected ? AppColors.primary : AppColors.borderLight, width: isSelected ? 2 : 1),
+              border: Border.all(color: isSelected ? theme.colorScheme.primary : theme.dividerColor, width: isSelected ? 2 : 1),
             ),
             child: ListTile(
               leading: Text(lang['flag']!, style: const TextStyle(fontSize: 24)),
-              title: Text(lang['name']!, style: AppTypography.bodyLarge.copyWith(fontWeight: isSelected ? FontWeight.bold : FontWeight.normal)),
-              trailing: isSelected ? const Icon(Icons.check_circle, color: AppColors.primary) : null,
+              title: Text(lang['name']!, style: AppTypography.bodyLarge.copyWith(color: theme.textTheme.bodyLarge?.color, fontWeight: isSelected ? FontWeight.bold : FontWeight.normal)),
+              trailing: isSelected ? Icon(Icons.check_circle, color: theme.colorScheme.primary) : null,
               onTap: () {
                 setState(() => _selectedLangCode = lang['code']!);
                 ScaffoldMessenger.of(context).showSnackBar(

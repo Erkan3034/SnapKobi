@@ -4,6 +4,8 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_dimensions.dart';
 import '../../../../core/theme/app_typography.dart';
 
+import 'result_share_sheet.dart';
+
 const _successGreen = Color(0xFF22C55E);
 
 class ResultShareButton extends StatelessWidget {
@@ -19,7 +21,7 @@ class ResultShareButton extends StatelessWidget {
         height: AppDimensions.buttonHeight,
         width: double.infinity,
         child: ElevatedButton(
-          onPressed: () {},
+          onPressed: () => ResultShareSheet.show(context),
           style: ElevatedButton.styleFrom(
             backgroundColor: _successGreen,
             foregroundColor: AppColors.white,

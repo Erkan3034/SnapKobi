@@ -5,7 +5,9 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_dimensions.dart';
 import '../../../../core/theme/app_shadows.dart';
 import '../../../../core/theme/app_typography.dart';
+import '../../../../shared/widgets/image/before_after_slider.dart';
 import '../result_provider.dart';
+import '../../../../core/utils/helpers/file_helper.dart';
 
 class ResultImageComparison extends ConsumerWidget {
   const ResultImageComparison({super.key});
@@ -13,12 +15,13 @@ class ResultImageComparison extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final s = ref.watch(resultProvider);
+    final theme = Theme.of(context);
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: AppDimensions.spacing16),
       child: Container(
         padding: const EdgeInsets.all(AppDimensions.spacing12),
         decoration: BoxDecoration(
-          color: AppColors.white,
+          color: theme.colorScheme.surface,
           borderRadius: BorderRadius.circular(AppDimensions.radiusMedium),
           boxShadow: const [AppShadows.cardShadow],
         ),
@@ -26,39 +29,56 @@ class ResultImageComparison extends ConsumerWidget {
           Row(children: [
             Text('Görsel Karşılaştırma', style: AppTypography.titleLarge),
             const Spacer(),
-            TextButton(onPressed: () {}, child: Text('Kaydet 💾', style: AppTypography.labelLarge.copyWith(color: AppColors.primary))),
+            TextButton(
+              onPressed: () async {
+                showDialog(
+                  context: context,
+                  barrierDismissible: false,
+                  builder: (ctx) => const AlertDialog(
+                    content: Row(
+                      children: [
+                        CircularProgressIndicator(),
+                        SizedBox(width: 20),
+                        Expanded(child: Text('Fotoğraf galeriye kaydediliyor...', style: TextStyle(fontSize: 14))),
+                      ],
+                    ),
+                  ),
+                );
+
+                try {
+                  await FileHelper.saveNetworkImageToGallery(s.processedImageUrl);
+                  if (context.mounted) {
+                    Navigator.pop(context);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Fotoğraf galeriye kaydedildi! 💾')),
+                    );
+                  }
+                } catch (e) {
+                  if (context.mounted) {
+                    Navigator.pop(context);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Hata oluştu: $e')),
+                    );
+                  }
+                }
+              },
+              child: Text(
+                'Kaydet 💾',
+                style: AppTypography.labelLarge.copyWith(color: AppColors.primary),
+              ),
+            ),
           ]),
           const SizedBox(height: AppDimensions.spacing8),
-          Row(children: [
-            _imageCard('Önce', s.originalImageUrl),
-            const SizedBox(width: AppDimensions.spacing8),
-            _imageCard('Sonra', s.processedImageUrl),
-          ]),
+          BeforeAfterSlider(
+            beforeUrl: s.originalImageUrl,
+            afterUrl: s.processedImageUrl,
+            height: 220,
+          ),
           const SizedBox(height: AppDimensions.spacing8),
           Center(
-            child: Text('⭐⭐⭐⭐⭐ Yüksek Kalite', style: AppTypography.labelSmall.copyWith(color: AppColors.textSecondary)),
-          ),
-        ]),
-      ),
-    );
-  }
-
-  Widget _imageCard(String label, String url) {
-    return Expanded(
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(AppDimensions.radiusSmall),
-        child: Stack(children: [
-          AspectRatio(
-            aspectRatio: 1,
-            child: Image.network(url, fit: BoxFit.cover),
-          ),
-          Positioned(
-            left: AppDimensions.spacing4,
-            top: AppDimensions.spacing4,
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: AppDimensions.spacing8, vertical: AppDimensions.spacing4),
-              decoration: BoxDecoration(color: AppColors.black.withValues(alpha: 0.5), borderRadius: BorderRadius.circular(AppDimensions.radiusSmall)),
-              child: Text(label, style: AppTypography.labelSmall.copyWith(color: AppColors.white)),
+            child: Text(
+              '⭐⭐⭐⭐⭐ Yüksek Kalite',
+              style: AppTypography.labelSmall.copyWith(color: theme.hintColor),
             ),
           ),
         ]),

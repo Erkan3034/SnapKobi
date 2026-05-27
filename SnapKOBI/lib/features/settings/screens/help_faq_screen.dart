@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_dimensions.dart';
 import '../../../core/theme/app_typography.dart';
 
@@ -10,6 +9,7 @@ class HelpFaqScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final faqs = [
       _FAQ('SnapKOBİ nedir?', 'KOBİ\'lerin ürün görsellerini yapay zeka ile profesyonel stüdyo kalitesinde arka planlarla birleştiren ve sosyal medya/pazaryeri tanıtım materyalleri üreten bir uygulamadır.'),
       _FAQ('Kredi sistemi nasıl çalışır?', 'Her görsel üretimi veya video üretimi 1 kredi tüketir. Aylık planınız yenilendiğinde kredileriniz sıfırlanır.'),
@@ -18,12 +18,12 @@ class HelpFaqScreen extends StatelessWidget {
     ];
 
     return Scaffold(
-      backgroundColor: AppColors.backgroundLight,
+      backgroundColor: theme.scaffoldBackgroundColor,
       appBar: AppBar(
-        backgroundColor: AppColors.white,
+        backgroundColor: theme.appBarTheme.backgroundColor,
         elevation: 0,
-        leading: IconButton(icon: const Icon(Icons.arrow_back, color: AppColors.textPrimary), onPressed: () => context.pop()),
-        title: Text('Yardım & SSS', style: AppTypography.headlineMedium.copyWith(color: AppColors.textPrimary)),
+        leading: IconButton(icon: Icon(Icons.arrow_back, color: theme.iconTheme.color), onPressed: () => context.pop()),
+        title: Text('Yardım & SSS', style: AppTypography.headlineMedium.copyWith(color: theme.textTheme.headlineMedium?.color)),
         centerTitle: true,
       ),
       body: ListView.builder(
@@ -33,16 +33,18 @@ class HelpFaqScreen extends StatelessWidget {
           final faq = faqs[index];
           return Card(
             margin: const EdgeInsets.only(bottom: AppDimensions.spacing12),
-            color: AppColors.white,
+            color: theme.cardTheme.color ?? theme.cardColor,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppDimensions.radiusMedium)),
             elevation: 0,
             child: ExpansionTile(
               shape: const Border(),
-              title: Text(faq.question, style: AppTypography.bodyLarge.copyWith(fontWeight: FontWeight.bold, color: AppColors.textPrimary)),
+              iconColor: theme.iconTheme.color,
+              collapsedIconColor: theme.iconTheme.color,
+              title: Text(faq.question, style: AppTypography.bodyLarge.copyWith(fontWeight: FontWeight.bold, color: theme.textTheme.bodyLarge?.color)),
               children: [
                 Padding(
                   padding: const EdgeInsets.all(AppDimensions.spacing16).copyWith(top: 0),
-                  child: Text(faq.answer, style: AppTypography.bodyMedium.copyWith(color: AppColors.textSecondary, height: 1.5)),
+                  child: Text(faq.answer, style: AppTypography.bodyMedium.copyWith(color: theme.textTheme.bodyMedium?.color ?? theme.hintColor, height: 1.5)),
                 )
               ],
             ),

@@ -1,60 +1,90 @@
 import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../core/di/providers.dart';
+import '../../../domain/entities/generation.dart';
+import '../../../domain/entities/platform_type.dart';
+import '../../../domain/entities/sector.dart';
+import '../result/result_provider.dart';
 
-enum ProcessingStep { analyzingImage, changingBackground, generatingCaption }
-enum ProcessingStepStatus { completed, inProgress, pending }
-
-class ProcessingStepInfo {
-  final ProcessingStep step;
-  final String label;
-  final ProcessingStepStatus status;
-  const ProcessingStepInfo({required this.step, required this.label, required this.status});
-  ProcessingStepInfo copyWith({ProcessingStepStatus? status}) =>
-      ProcessingStepInfo(step: step, label: label, status: status ?? this.status);
-}
-
-class ProcessingState {
-  final List<ProcessingStepInfo> steps;
-  final double progress;
-  final int estimatedSeconds;
-  final String? imagePath;
-  const ProcessingState({required this.steps, this.progress = 0.0, this.estimatedSeconds = 45, this.imagePath});
-  ProcessingState copyWith({List<ProcessingStepInfo>? steps, double? progress, int? estimatedSeconds, String? imagePath}) =>
-      ProcessingState(steps: steps ?? this.steps, progress: progress ?? this.progress,
-          estimatedSeconds: estimatedSeconds ?? this.estimatedSeconds, imagePath: imagePath ?? this.imagePath);
-}
-
-const _initialSteps = [
-  ProcessingStepInfo(step: ProcessingStep.analyzingImage, label: 'Görsel Analiz Edildi', status: ProcessingStepStatus.completed),
-  ProcessingStepInfo(step: ProcessingStep.changingBackground, label: 'Arka Plan Değiştiriliyor...', status: ProcessingStepStatus.inProgress),
-  ProcessingStepInfo(step: ProcessingStep.generatingCaption, label: 'Metin Üretiliyor', status: ProcessingStepStatus.pending),
-];
-
-class ProcessingNotifier extends StateNotifier<ProcessingState> {
-  Timer? _timer;
-  ProcessingNotifier() : super(const ProcessingState(steps: _initialSteps));
-
-  List<ProcessingStepInfo> _stepsFor(double p) {
-    final s = state.steps;
-    if (p >= 0.66) return [s[0].copyWith(status: ProcessingStepStatus.completed), s[1].copyWith(status: ProcessingStepStatus.completed), s[2].copyWith(status: ProcessingStepStatus.inProgress)];
-    if (p >= 0.33) return [s[0].copyWith(status: ProcessingStepStatus.completed), s[1].copyWith(status: ProcessingStepStatus.inProgress), s[2].copyWith(status: ProcessingStepStatus.pending)];
-    return s;
-  }
-
-  void simulateProgress() {
-    _timer?.cancel();
-    _timer = Timer.periodic(const Duration(milliseconds: 300), (t) {
-      if (!mounted) { t.cancel(); return; }
-      final next = (state.progress + 0.02).clamp(0.0, 1.0);
-      state = state.copyWith(progress: next, estimatedSeconds: ((1.0 - next) * 45).round(), steps: _stepsFor(next));
-      if (next >= 1.0) t.cancel();
-    });
-  }
+class ProcessingNotifier extends AsyncNotifier<Generation?> {
+  StreamSubscription? _subscription;
 
   @override
-  void dispose() { _timer?.cancel(); super.dispose(); }
+  Future<Generation?> build() async {
+    ref.onDispose(() {
+      _subscription?.cancel();
+    });
+    return null;
+  }
+
+  Future<void> startGeneration({
+    required String localImagePath,
+    required SectorType sector,
+    required PlatformType platform,
+    String? templateId,
+  }) async {
+    state = const AsyncLoading();
+    final useCase = ref.read(startGenerationUseCaseProvider);
+
+    final result = await useCase.call(
+      localImagePath: localImagePath,
+      sector: sector,
+      platform: platform,
+      templateId: templateId,
+    );
+
+    result.fold(
+      onSuccess: (generation) {
+        state = AsyncData(generation);
+        _watchStatus(generation.id);
+      },
+      onFailure: (error) {
+        state = AsyncError(error, StackTrace.current);
+      },
+    );
+  }
+
+  void _watchStatus(String generationId) {
+    _subscription?.cancel();
+    final useCase = ref.read(watchGenerationUseCaseProvider);
+
+    _subscription = useCase.call(generationId).listen(
+      (result) {
+        result.fold(
+          onSuccess: (gen) {
+            state = AsyncData(gen);
+            if (gen.isCompleted) {
+              _subscription?.cancel();
+              // Sync the result provider upon successful completion
+              ref.read(resultProvider.notifier).setResult(
+                originalImageUrl: gen.originalImageUrl,
+                processedImageUrl: gen.processedImageUrl ?? '',
+                videoUrl: gen.videoUrl,
+                caption: gen.caption ?? '',
+                hashtags: gen.hashtags,
+                platformLabel: gen.platform.name,
+                processingDurationSec: gen.completedAt != null
+                    ? gen.completedAt!.difference(gen.createdAt).inSeconds
+                    : 0,
+              );
+            } else if (gen.isFailed) {
+              _subscription?.cancel();
+            }
+          },
+          onFailure: (err) {
+            state = AsyncError(err, StackTrace.current);
+            _subscription?.cancel();
+          },
+        );
+      },
+      onError: (err) {
+        state = AsyncError(err, StackTrace.current);
+        _subscription?.cancel();
+      },
+    );
+  }
 }
 
-final processingProvider = StateNotifierProvider<ProcessingNotifier, ProcessingState>(
-  (ref) => ProcessingNotifier(),
+final processingProvider = AsyncNotifierProvider<ProcessingNotifier, Generation?>(
+  ProcessingNotifier.new,
 );

@@ -45,7 +45,7 @@ class _OnboardingSectorScreenState extends State<OnboardingSectorScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.backgroundLight,
+
       body: SafeArea(
         child: Column(
           children: [
@@ -62,11 +62,11 @@ class _OnboardingSectorScreenState extends State<OnboardingSectorScreen> {
                     _buildGrid(),
                     const SizedBox(height: AppDimensions.spacing16),
                     // Yardımcı metin
-                    const Text(
+                    Text(
                       AppStrings.sectorMultipleChoice,
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                        color: AppColors.textSecondary,
+                        color: Theme.of(context).textTheme.bodyMedium?.color,
                         fontSize: AppDimensions.fontSM,
                         fontStyle: FontStyle.italic,
                       ),
@@ -95,7 +95,7 @@ class _OnboardingSectorScreenState extends State<OnboardingSectorScreen> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           IconButton(
-            icon: const Icon(Icons.arrow_back, color: AppColors.primary),
+            icon: Icon(Icons.arrow_back, color: Theme.of(context).colorScheme.primary),
             onPressed: () => Navigator.pop(context),
           ),
           // Page Indicator (2. adım)
@@ -129,7 +129,7 @@ class _OnboardingSectorScreenState extends State<OnboardingSectorScreen> {
       height: 8,
       width: isActive ? 24 : 8,
       decoration: BoxDecoration(
-        color: isActive ? AppColors.primary : AppColors.indicatorInactive,
+        color: isActive ? Theme.of(context).colorScheme.primary : Theme.of(context).hintColor.withOpacity(0.3),
         borderRadius: BorderRadius.circular(4),
       ),
     );
@@ -139,10 +139,10 @@ class _OnboardingSectorScreenState extends State<OnboardingSectorScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
+        Text(
           AppStrings.sectorTitle,
           style: TextStyle(
-            color: AppColors.textPrimary,
+            color: Theme.of(context).colorScheme.onSurface,
             fontSize: AppDimensions.fontXL,
             fontWeight: FontWeight.w700,
           ),
@@ -151,7 +151,7 @@ class _OnboardingSectorScreenState extends State<OnboardingSectorScreen> {
         Text(
           AppStrings.sectorSubtitle,
           style: TextStyle(
-            color: AppColors.textSecondary,
+            color: Theme.of(context).textTheme.bodyMedium?.color,
             fontSize: AppDimensions.fontMD,
           ),
         ),

@@ -36,9 +36,10 @@ class _PlatformSelectionSheetState extends State<PlatformSelectionSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Container(
-      decoration: const BoxDecoration(
-        color: AppColors.white,
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surface,
         borderRadius: BorderRadius.vertical(top: Radius.circular(AppDimensions.radiusLarge)),
       ),
       child: SafeArea(child: Column(mainAxisSize: MainAxisSize.min, children: [
@@ -50,7 +51,7 @@ class _PlatformSelectionSheetState extends State<PlatformSelectionSheet> {
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Text('Platform & Format Seçin', style: AppTypography.headlineMedium),
             const SizedBox(height: AppDimensions.spacing4),
-            Text('Her platform için AI farklı format üretir', style: AppTypography.bodyMedium.copyWith(color: AppColors.textHint)),
+            Text('Her platform için AI farklı format üretir', style: AppTypography.bodyMedium.copyWith(color: theme.hintColor)),
           ]),
         ),
         const SizedBox(height: AppDimensions.spacing16),

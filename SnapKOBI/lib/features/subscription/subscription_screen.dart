@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_dimensions.dart';
 import '../../core/theme/app_typography.dart';
 import 'subscription_provider.dart';
@@ -19,16 +18,18 @@ class SubscriptionScreen extends ConsumerWidget {
     final state = ref.watch(subscriptionProvider);
     final starterPrice = state.isYearly ? planStarter.priceYearly : planStarter.priceMonthly;
     final proPrice = state.isYearly ? planPro.priceYearly : planPro.priceMonthly;
+    final theme = Theme.of(context);
+
     return Scaffold(
-      backgroundColor: AppColors.backgroundLight,
+      backgroundColor: theme.scaffoldBackgroundColor,
       appBar: AppBar(
-        backgroundColor: AppColors.white,
-        surfaceTintColor: AppColors.transparent,
-        leading: IconButton(icon: const Icon(Icons.arrow_back, color: AppColors.textPrimary), onPressed: () => Navigator.of(context).pop()),
-        title: Text('Planınızı Seçin', style: AppTypography.headlineMedium.copyWith(color: AppColors.textPrimary)),
+        backgroundColor: theme.appBarTheme.backgroundColor,
+        surfaceTintColor: Colors.transparent,
+        leading: IconButton(icon: Icon(Icons.arrow_back, color: theme.iconTheme.color), onPressed: () => Navigator.of(context).pop()),
+        title: Text('Planınızı Seçin', style: AppTypography.headlineMedium.copyWith(color: theme.textTheme.headlineMedium?.color ?? theme.colorScheme.onSurface)),
         centerTitle: true,
         actions: [
-          IconButton(icon: const Icon(Icons.help_outline, color: AppColors.textPrimary), onPressed: () {}),
+          IconButton(icon: Icon(Icons.help_outline, color: theme.iconTheme.color), onPressed: () {}),
         ],
       ),
       body: SingleChildScrollView(
@@ -44,10 +45,10 @@ class SubscriptionScreen extends ConsumerWidget {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: AppDimensions.spacing16),
             child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-              const Icon(Icons.lock_outline, size: 14, color: AppColors.textHint),
+              Icon(Icons.lock_outline, size: 14, color: theme.hintColor),
               const SizedBox(width: AppDimensions.spacing4),
               Text('iyzico güvenli ödeme • İstediğiniz zaman iptal',
-                style: AppTypography.labelSmall.copyWith(color: AppColors.textHint)),
+                style: AppTypography.labelSmall.copyWith(color: theme.hintColor)),
             ]),
           ),
         ]),
