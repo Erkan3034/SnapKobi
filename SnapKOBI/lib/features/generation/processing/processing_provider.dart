@@ -21,6 +21,7 @@ class ProcessingNotifier extends AsyncNotifier<Generation?> {
     required String localImagePath,
     required SectorType sector,
     required PlatformType platform,
+    required String backgroundTheme,
     String? templateId,
   }) async {
     state = const AsyncLoading();
@@ -30,6 +31,7 @@ class ProcessingNotifier extends AsyncNotifier<Generation?> {
       localImagePath: localImagePath,
       sector: sector,
       platform: platform,
+      backgroundTheme: backgroundTheme,
       templateId: templateId,
     );
 

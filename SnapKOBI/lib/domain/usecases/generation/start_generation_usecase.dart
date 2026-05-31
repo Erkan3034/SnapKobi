@@ -13,12 +13,14 @@ class StartGenerationUseCase {
     required String localImagePath,
     required SectorType sector,
     required PlatformType platform,
+    required String backgroundTheme,
     String? templateId,
   }) {
     return _repository.startGeneration(
       localImagePath: localImagePath,
       sector: sector,
       platform: platform,
+      backgroundTheme: backgroundTheme,
       templateId: templateId,
     );
   }

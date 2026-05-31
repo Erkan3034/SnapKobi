@@ -49,21 +49,25 @@ async function updateConfigHandler(request, reply) {
                 details: result.error.format(),
             });
         }
-        const { activeModel, apiKey, apiUrl } = result.data;
+        const { provider, activeModel, apiKey, apiUrl, settings } = result.data;
         // Build update data object
-        const updateData = { activeModel };
-        if (apiKey !== undefined)
+        const updateData = { provider, activeModel };
+        if (apiKey !== undefined && apiKey !== '')
             updateData.apiKey = apiKey;
         if (apiUrl !== undefined)
             updateData.apiUrl = apiUrl;
+        if (settings !== undefined)
+            updateData.settings = settings;
         const updated = await database_1.prisma.aiConfig.upsert({
             where: { taskType },
             update: updateData,
             create: {
                 taskType,
+                provider,
                 activeModel,
                 apiKey: apiKey || null,
                 apiUrl: apiUrl || null,
+                settings: settings || {},
             },
         });
         return reply.send({

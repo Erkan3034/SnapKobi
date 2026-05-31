@@ -1,5 +1,5 @@
 import { FastifyInstance } from 'fastify';
-import { authenticate } from '../../middleware/auth.middleware';
+import { authenticate, requireAdmin } from '../../middleware/auth.middleware';
 import {
   getConfigByTaskHandler,
   getConfigsHandler,
@@ -9,6 +9,7 @@ import {
 export async function aiConfigRoutes(fastify: FastifyInstance) {
   // Apply JWT authentication preHandler hook to all ai-config routes
   fastify.addHook('preHandler', authenticate);
+  fastify.addHook('preHandler', requireAdmin);
 
   fastify.get('/', getConfigsHandler);
   fastify.get('/:taskType', getConfigByTaskHandler);

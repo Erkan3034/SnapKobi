@@ -38,12 +38,14 @@ class _ProcessingScreenState extends ConsumerState<ProcessingScreen> {
       final platform = create.selectedPlatform;
       final sector = user?.sector ?? SectorType.other;
       final templateId = create.selectedTemplateId;
+      final backgroundTheme = create.selectedBackgroundTheme;
 
       if (path != null) {
         ref.read(processingProvider.notifier).startGeneration(
           localImagePath: path,
           sector: sector,
           platform: platform,
+          backgroundTheme: backgroundTheme,
           templateId: templateId,
         );
       }

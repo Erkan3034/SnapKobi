@@ -17,6 +17,8 @@ const envSchema = zod_1.z.object({
     GOOGLE_AI_API_KEY: zod_1.z.string().optional(),
     ANTHROPIC_API_KEY: zod_1.z.string().optional(),
     FAL_KEY: zod_1.z.string().optional(),
+    POLLINATIONS_KEY: zod_1.z.string().optional(),
+    OPENAI_API_KEY: zod_1.z.string().optional(),
     GEMINI_MODEL: zod_1.z.string().optional(),
     PORT: zod_1.z.coerce.number().default(3000),
     NODE_ENV: zod_1.z.enum(['development', 'staging', 'production']).default('development'),

@@ -8,6 +8,7 @@ abstract interface class GenerationRepository {
     required String localImagePath,
     required SectorType sector,
     required PlatformType platform,
+    required String backgroundTheme,
     String? templateId,
   });
 

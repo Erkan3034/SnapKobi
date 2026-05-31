@@ -7,6 +7,8 @@ import { brandKitRoutes } from './modules/brand-kit/brand-kit.routes';
 import { productRoutes } from './modules/product/product.routes';
 import { generationRoutes } from './modules/generation/generation.routes';
 import { seedAiConfigs } from './config/seed';
+import { adminRoutes } from './modules/admin/admin.routes';
+import { env } from './config/env';
 
 const app = fastify({
   logger: {
@@ -47,12 +49,23 @@ app.get('/health', async () => {
   return { status: 'healthy', timestamp: new Date().toISOString() };
 });
 
+// Public browser configuration. The anon key is intentionally safe for clients;
+// service-role and provider secrets must never be exposed here.
+app.get('/v1/public-config', async (_request, reply) => {
+  reply.header('Cache-Control', 'no-store');
+  return {
+    supabaseUrl: env.SUPABASE_URL,
+    supabaseAnonKey: env.SUPABASE_ANON_KEY,
+  };
+});
+
 // Register Modules
 app.register(aiConfigRoutes, { prefix: '/v1/ai-configs' });
 app.register(userRoutes, { prefix: '/v1/users' });
 app.register(brandKitRoutes, { prefix: '/v1/brand-kit' });
 app.register(productRoutes, { prefix: '/v1/products' });
 app.register(generationRoutes, { prefix: '/v1/generations' });
+app.register(adminRoutes, { prefix: '/v1/admin' });
 
 // App ready hook to trigger DB seeding
 app.addHook('onReady', async () => {

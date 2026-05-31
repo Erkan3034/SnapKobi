@@ -4,8 +4,8 @@ export type Platform =
   | 'instagram'
   | 'trendyol'
   | 'hepsiburada'
-  | 'website'
-  | 'facebook'
+  | 'web'
+  | 'whatsapp'
   | 'tiktok';
 
 export type BackgroundStyle =
@@ -18,6 +18,7 @@ export type BackgroundStyle =
 
 export interface PlatformPrompts {
   backgroundPrompt: string;
+  emptyBackdropPrompt?: string;
   videoPrompt: string;
   captionSystemPrompt: string;
   captionUserPrompt: string;
@@ -196,7 +197,7 @@ Bu ürün için HepsiBurada ürün açıklaması yaz.
         notes: 'Min 500x500px. Beyaz arka plan zorunlu.',
       },
     },
-    website: {
+    web: {
       backgroundPrompt: buildBackgroundPrompt(backgroundStyle, analysis, {
         style: 'premium, brand-consistent, editorial',
         lighting: 'professional with creative latitude',
@@ -246,7 +247,7 @@ Bu ürün için web sitesi ürün sayfası metinleri yaz.
         notes: 'Hero banner için. Ayrıca 1:1 ürün karesi de üret.',
       },
     },
-    facebook: {
+    whatsapp: {
       backgroundPrompt: buildBackgroundPrompt(backgroundStyle, analysis, {
         style: 'relatable, lifestyle, warm',
         lighting: 'natural, warm tones',
@@ -337,7 +338,83 @@ TikTok video için script hook ve caption yaz.
     },
   };
 
-  return platformConfigs[platform];
+  const config = platformConfigs[platform];
+  const hints = platformHintsMap[platform];
+  if (config && hints) {
+    config.emptyBackdropPrompt = buildEmptyBackdropPrompt(backgroundStyle, hints);
+  }
+
+  return config;
+}
+
+const platformHintsMap: Record<Platform, { style: string; lighting: string; mood: string; notes: string }> = {
+  instagram: {
+    style: 'editorial, lifestyle, aesthetically pleasing',
+    lighting: 'soft natural light, golden hour glow',
+    mood: 'aspirational, premium, Instagram-worthy',
+    notes: 'Arka plan ürünü gölgede bırakmamalı. Renk paleti pastel veya muted tonlarda olmalı.',
+  },
+  trendyol: {
+    style: 'clean, professional, e-commerce catalog',
+    lighting: 'even studio lighting, no harsh shadows',
+    mood: 'trustworthy, clear, marketplace-ready',
+    notes: 'Saf beyaz veya açık gri arka plan tercih edilmeli. Ürün tam görünür ve merkezi olmalı.',
+  },
+  hepsiburada: {
+    style: 'clean catalog, marketplace standard',
+    lighting: 'bright, even, professional studio',
+    mood: 'reliable, clear, detailed',
+    notes: 'HepsiBurada standartları: beyaz arka plan, gölgesiz, ürün merkezi.',
+  },
+  web: {
+    style: 'premium, brand-consistent, editorial',
+    lighting: 'professional with creative latitude',
+    mood: 'brand premium, storytelling',
+    notes: 'Web sitesi için arkaplan marka kimliğini yansıtmalı. Lifestyle veya stüdyo her ikisi de uygun.',
+  },
+  whatsapp: {
+    style: 'relatable, lifestyle, warm',
+    lighting: 'natural, warm tones',
+    mood: 'trustworthy, community, value-for-money',
+    notes: 'Facebook demografisi için güven veren, samimi arka planlar. Aşırı polished görünmemeli.',
+  },
+  tiktok: {
+    style: 'vibrant, trendy, Gen-Z aesthetic',
+    lighting: 'ring light aesthetic or colorful studio',
+    mood: 'fun, energetic, viral-potential',
+    notes: 'TikTok için arkaplan canlı, dikkat çekici olmalı. Trend renkler ve dokular tercih edilmeli.',
+  },
+};
+
+export function buildEmptyBackdropPrompt(
+  style: BackgroundStyle,
+  platformHints: {
+    style: string;
+    lighting: string;
+    mood: string;
+    notes: string;
+  }
+): string {
+  const styleDescriptions: Record<BackgroundStyle, string> = {
+    studio_white: 'An empty white commercial photography set with a clean matte tabletop across the lower third, seamless paper backdrop, soft studio lighting',
+    studio_dark: 'An empty dark charcoal commercial photography set with a clean matte tabletop across the lower third, subtle luxury backdrop, controlled rim lighting',
+    nature_outdoor: 'An empty natural flat stone or wooden tabletop across the lower third, realistic outdoor environment, soft bokeh background, warm daylight',
+    minimalist: 'An empty Scandinavian-style commercial photography set with a clean matte tabletop across the lower third, subtle pastel wall, soft window light',
+    lifestyle: 'An empty realistic tabletop or kitchen counter across the lower third in a modern home interior, soft window light, shallow depth of field',
+    ai_generated: 'An empty creative but photorealistic tabletop across the lower third, tasteful commercial backdrop, colors suited to a product showcase',
+  };
+
+  return `
+Scenario: A photorealistic commercial product photography scene before the product has been placed. Include one clear, level, uninterrupted landing surface across the lower third of the image.
+Background style: ${styleDescriptions[style]}.
+Platform requirements: ${platformHints.style}.
+Lighting: ${platformHints.lighting}.
+Mood: ${platformHints.mood}.
+Camera: eye-level or slightly elevated front-facing product photography angle, realistic perspective, 50mm lens feel.
+Composition: Keep a generous empty placement area in the horizontal center. The landing surface should sit around 75 to 80 percent of the image height so a product can rest naturally on it.
+Important: No products, bottles, mugs, packages, hands, decorations, props, foreground objects, text, or watermarks. Do not generate a pedestal that blocks the center. The scene must be empty and ready for one product cutout.
+Photorealistic commercial photography, realistic materials, natural shadows, restrained depth of field, high resolution.
+  `.trim();
 }
 
 function buildBackgroundPrompt(

@@ -3,7 +3,8 @@ import { getGeminiModel, buildGeminiEndpoint, executeGeminiRequest } from '../..
 
 export async function generateCaptionWithGemini(
   prompt: string,
-  customApiKey?: string | null
+  customApiKey?: string | null,
+  customModel?: string | null
 ): Promise<{ caption: string; hashtags: string[] }> {
   const apiKey = customApiKey || env.GOOGLE_AI_API_KEY;
 
@@ -12,7 +13,7 @@ export async function generateCaptionWithGemini(
     return generateMockCaption(prompt);
   }
 
-  const model = getGeminiModel();
+  const model = customModel || getGeminiModel();
   const url = buildGeminiEndpoint(model, apiKey);
 
   try {

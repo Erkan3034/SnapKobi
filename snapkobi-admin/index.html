@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SnapKOBI Admin</title>
+    <link rel="stylesheet" href="./styles.css?v=20260531-2" />
+  </head>
+  <body>
+    <main class="shell">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">SNAPKOBI</p>
+          <h1>Yonetim Paneli</h1>
+        </div>
+        <button id="logoutButton" class="button secondary hidden">Cikis Yap</button>
+      </header>
+
+      <section id="loginView" class="panel auth-panel">
+        <h2>Admin Girisi</h2>
+        <p>Supabase hesabinizla giris yapin. Yalnizca admin rolune sahip hesaplar kabul edilir.</p>
+        <form id="loginForm" class="form-grid">
+          <label>Backend URL<input id="backendUrl" required value="http://localhost:3000/v1" /></label>
+          <p id="configMessage" class="message">Backend ayarlari yukleniyor...</p>
+          <label>E-posta<input id="email" required type="email" /></label>
+          <label>Sifre<input id="password" required type="password" /></label>
+          <button class="button primary" type="submit">Giris Yap</button>
+          <button id="googleLoginButton" class="button google" type="button">Google ile Giris Yap</button>
+        </form>
+        <p id="loginMessage" class="message"></p>
+      </section>
+
+      <section id="adminView" class="hidden">
+        <nav class="tabs">
+          <button class="tab active" data-tab="templates">Sablonlar</button>
+          <button class="tab" data-tab="providers">AI Saglayicilari</button>
+          <button class="tab" data-tab="credits">Kredi Kurallari</button>
+        </nav>
+
+        <section id="templatesTab" class="tab-content">
+          <div class="section-heading">
+            <div><h2>Sablonlar</h2><p>Mobil ana akista gosterilen sahne ve tanitim sablonlari.</p></div>
+            <button id="newTemplateButton" class="button primary">Yeni Sablon</button>
+          </div>
+          <div id="templateList" class="card-grid"></div>
+        </section>
+
+        <section id="providersTab" class="tab-content hidden">
+          <div class="section-heading">
+            <div><h2>AI Saglayicilari</h2><p>Degisiklikler sonraki uretim isteginde otomatik kullanilir.</p></div>
+          </div>
+          <div id="providerList" class="stack"></div>
+        </section>
+
+        <section id="creditsTab" class="tab-content hidden">
+          <div class="section-heading">
+            <div><h2>Kredi Kurallari</h2><p>Plan limitlerini ve bir uretimin kredi maliyetini yonetin.</p></div>
+          </div>
+          <form id="creditForm" class="panel form-grid three-columns">
+            <label>Ucretsiz plan kredisi<input name="free" min="0" required type="number" /></label>
+            <label>Baslangic plan kredisi<input name="starter" min="0" required type="number" /></label>
+            <label>Pro plan kredisi<input name="pro" min="0" required type="number" /></label>
+            <label>Gorsel maliyeti<input name="image" min="0" required type="number" /></label>
+            <label>Video maliyeti<input name="video" min="0" required type="number" /></label>
+            <label>Metin maliyeti<input name="caption" min="0" required type="number" /></label>
+            <button class="button primary" type="submit">Kredi Kurallarini Kaydet</button>
+          </form>
+        </section>
+
+        <p id="adminMessage" class="message"></p>
+      </section>
+    </main>
+
+    <dialog id="templateDialog">
+      <form id="templateForm" class="form-grid dialog-form">
+        <input name="id" type="hidden" />
+        <div class="dialog-heading"><h2>Sablon</h2><button type="button" class="icon-button" id="closeTemplateButton">x</button></div>
+        <label>Ad<input name="name" required /></label>
+        <label>Slug<input name="slug" required pattern="[a-z0-9]+(?:-[a-z0-9]+)*" /></label>
+        <label>Aciklama<textarea name="description"></textarea></label>
+        <label>Onizleme URL<input name="thumbnailUrl" type="url" /></label>
+        <label>Kategori<input name="category" required /></label>
+        <label>Siralama<input name="sortOrder" required type="number" value="0" /></label>
+        <label>Platformlar<input name="applicablePlatforms" placeholder="instagram,trendyol,web" /></label>
+        <label>Varsayilan sahne
+          <select name="defaultBackgroundStyle">
+            <option value="studio_white">Beyaz Studyo</option><option value="studio_dark">Koyu Studyo</option>
+            <option value="nature_outdoor">Outdoor</option><option value="minimalist">Minimal</option>
+            <option value="lifestyle">Lifestyle</option><option value="ai_generated">AI Uretimi</option>
+          </select>
+        </label>
+        <label>Arka plan promptu<textarea name="backgroundSystemPrompt"></textarea></label>
+        <label>Video promptu<textarea name="videoSystemPrompt"></textarea></label>
+        <label>Caption sistem promptu<textarea name="captionSystemPrompt"></textarea></label>
+        <label>Caption ek notu<textarea name="captionUserPromptSuffix"></textarea></label>
+        <div class="checks">
+          <label><input name="isActive" type="checkbox" checked /> Aktif</label>
+          <label><input name="isFeatured" type="checkbox" /> One Cikan</label>
+        </div>
+        <button class="button primary" type="submit">Kaydet</button>
+      </form>
+    </dialog>
+    <script type="module" src="./app.js?v=20260531-2"></script>
+  </body>
+</html>

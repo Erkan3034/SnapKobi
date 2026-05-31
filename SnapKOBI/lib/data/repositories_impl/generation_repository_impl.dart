@@ -27,6 +27,7 @@ class GenerationRepositoryImpl implements GenerationRepository {
     required String localImagePath,
     required SectorType sector,
     required PlatformType platform,
+    required String backgroundTheme,
     String? templateId,
   }) async {
     try {
@@ -38,7 +39,10 @@ class GenerationRepositoryImpl implements GenerationRepository {
         originalImagePath: relativePath,
         sector: sector.name,
         platform: platform.name,
-        options: templateId != null ? {'templateId': templateId} : {},
+        options: {
+          'imageStyle': backgroundTheme,
+          if (templateId != null) 'templateId': templateId,
+        },
       );
 
       final generation = GenerationModel.fromJson(result).toEntity();

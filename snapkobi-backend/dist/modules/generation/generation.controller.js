@@ -27,7 +27,12 @@ async function createGenerationHandler(request, reply) {
         if (!user) {
             return reply.status(404).send({ error: 'Not Found', message: 'User not found' });
         }
-        if (user.creditsLeft <= 0) {
+        const creditRules = await database_1.prisma.appSetting.findUnique({ where: { key: 'credit_rules' } });
+        const configuredCosts = creditRules?.value?.costs;
+        const generationCreditCost = Math.max(0, Number(configuredCosts?.image ?? 1) +
+            Number(configuredCosts?.video ?? 1) +
+            Number(configuredCosts?.caption ?? 0));
+        if (user.creditsLeft < generationCreditCost) {
             return reply.status(403).send({ error: 'Forbidden', message: 'Insufficient credits' });
         }
         const { originalImagePath, originalImageSize, sector, platform, options } = result.data;
@@ -35,7 +40,7 @@ async function createGenerationHandler(request, reply) {
         const [_, generation] = await database_1.prisma.$transaction([
             database_1.prisma.appUser.update({
                 where: { id: userId },
-                data: { creditsLeft: { decrement: 1 } },
+                data: { creditsLeft: { decrement: generationCreditCost } },
             }),
             database_1.prisma.generation.create({
                 data: {

@@ -28,7 +28,16 @@ export async function createGenerationHandler(request: FastifyRequest, reply: Fa
       return reply.status(404).send({ error: 'Not Found', message: 'User not found' });
     }
 
-    if (user.creditsLeft <= 0) {
+    const creditRules = await prisma.appSetting.findUnique({ where: { key: 'credit_rules' } });
+    const configuredCosts = (creditRules?.value as any)?.costs;
+    const generationCreditCost = Math.max(
+      0,
+      Number(configuredCosts?.image ?? 1) +
+        Number(configuredCosts?.video ?? 1) +
+        Number(configuredCosts?.caption ?? 0)
+    );
+
+    if (user.creditsLeft < generationCreditCost) {
       return reply.status(403).send({ error: 'Forbidden', message: 'Insufficient credits' });
     }
 
@@ -38,7 +47,7 @@ export async function createGenerationHandler(request: FastifyRequest, reply: Fa
     const [_, generation] = await prisma.$transaction([
       prisma.appUser.update({
         where: { id: userId },
-        data: { creditsLeft: { decrement: 1 } },
+        data: { creditsLeft: { decrement: generationCreditCost } },
       }),
       prisma.generation.create({
         data: {

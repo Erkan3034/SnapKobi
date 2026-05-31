@@ -17,6 +17,7 @@ class ResultVideoSection extends ConsumerWidget {
     final s = ref.watch(resultProvider);
     final dur = s.videoDuration;
     final theme = Theme.of(context);
+    final hasVideo = s.videoUrl?.isNotEmpty ?? false;
 
     Future<void> playVideo() async {
       final url = s.videoUrl;
@@ -97,31 +98,41 @@ class ResultVideoSection extends ConsumerWidget {
           Row(children: [
             Text('Tanıtım Videosu', style: AppTypography.titleLarge),
             const Spacer(),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: AppDimensions.spacing8, vertical: AppDimensions.spacing4),
-              decoration: BoxDecoration(color: AppColors.primaryLightest, borderRadius: BorderRadius.circular(AppDimensions.radiusSmall)),
-              child: Text(dur, style: AppTypography.labelSmall.copyWith(color: AppColors.primary)),
-            ),
+            if (hasVideo)
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: AppDimensions.spacing8, vertical: AppDimensions.spacing4),
+                decoration: BoxDecoration(color: AppColors.primaryLightest, borderRadius: BorderRadius.circular(AppDimensions.radiusSmall)),
+                child: Text(dur, style: AppTypography.labelSmall.copyWith(color: AppColors.primary)),
+              ),
           ]),
           const SizedBox(height: AppDimensions.spacing8),
           GestureDetector(
-            onTap: playVideo,
+            onTap: hasVideo ? playVideo : null,
             child: ClipRRect(
               borderRadius: BorderRadius.circular(AppDimensions.radiusSmall),
               child: Container(
                 height: 160,
                 decoration: const BoxDecoration(gradient: AppColors.splashGradient),
-                child: const Center(
-                  child: Icon(Icons.play_circle_fill, size: 56, color: AppColors.white),
+                child: Center(
+                  child: hasVideo
+                      ? const Icon(Icons.play_circle_fill, size: 56, color: AppColors.white)
+                      : const Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(Icons.videocam_off_outlined, size: 42, color: AppColors.white),
+                            SizedBox(height: AppDimensions.spacing8),
+                            Text('Video uretilemedi', style: TextStyle(color: AppColors.white, fontWeight: FontWeight.w700)),
+                          ],
+                        ),
                 ),
               ),
             ),
           ),
           const SizedBox(height: AppDimensions.spacing8),
           Row(children: [
-            Expanded(child: OutlinedButton(onPressed: playVideo, child: const Text('▶ Oynat'))),
+            Expanded(child: OutlinedButton(onPressed: hasVideo ? playVideo : null, child: const Text('▶ Oynat'))),
             const SizedBox(width: AppDimensions.spacing8),
-            Expanded(child: OutlinedButton(onPressed: downloadVideo, child: const Text('⬇ İndir'))),
+            Expanded(child: OutlinedButton(onPressed: hasVideo ? downloadVideo : null, child: const Text('⬇ İndir'))),
           ]),
         ]),
       ),

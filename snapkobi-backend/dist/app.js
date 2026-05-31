@@ -12,6 +12,8 @@ const brand_kit_routes_1 = require("./modules/brand-kit/brand-kit.routes");
 const product_routes_1 = require("./modules/product/product.routes");
 const generation_routes_1 = require("./modules/generation/generation.routes");
 const seed_1 = require("./config/seed");
+const admin_routes_1 = require("./modules/admin/admin.routes");
+const env_1 = require("./config/env");
 const app = (0, fastify_1.default)({
     logger: {
         level: process.env.NODE_ENV === 'development' ? 'info' : 'warn',
@@ -44,12 +46,22 @@ app.setErrorHandler((error, request, reply) => {
 app.get('/health', async () => {
     return { status: 'healthy', timestamp: new Date().toISOString() };
 });
+// Public browser configuration. The anon key is intentionally safe for clients;
+// service-role and provider secrets must never be exposed here.
+app.get('/v1/public-config', async (_request, reply) => {
+    reply.header('Cache-Control', 'no-store');
+    return {
+        supabaseUrl: env_1.env.SUPABASE_URL,
+        supabaseAnonKey: env_1.env.SUPABASE_ANON_KEY,
+    };
+});
 // Register Modules
 app.register(ai_config_routes_1.aiConfigRoutes, { prefix: '/v1/ai-configs' });
 app.register(users_routes_1.userRoutes, { prefix: '/v1/users' });
 app.register(brand_kit_routes_1.brandKitRoutes, { prefix: '/v1/brand-kit' });
 app.register(product_routes_1.productRoutes, { prefix: '/v1/products' });
 app.register(generation_routes_1.generationRoutes, { prefix: '/v1/generations' });
+app.register(admin_routes_1.adminRoutes, { prefix: '/v1/admin' });
 // App ready hook to trigger DB seeding
 app.addHook('onReady', async () => {
     await (0, seed_1.seedAiConfigs)();

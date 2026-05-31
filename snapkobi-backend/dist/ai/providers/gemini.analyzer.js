@@ -23,13 +23,13 @@ JSON ŞEMASI:
   "rawDescription": "string (max 2 cümle)"
 }
 `;
-async function analyzeProductImage(imageUrl, customApiKey) {
+async function analyzeProductImage(imageUrl, customApiKey, customModel) {
     const apiKey = customApiKey || env_1.env.GOOGLE_AI_API_KEY;
     if (!apiKey) {
         console.warn('⚠️ No GOOGLE_AI_API_KEY found for analyzer. Returning mock product analysis.');
         return getMockAnalysis();
     }
-    const model = (0, gemini_config_1.getGeminiModel)();
+    const model = customModel || (0, gemini_config_1.getGeminiModel)();
     const url = (0, gemini_config_1.buildGeminiEndpoint)(model, apiKey);
     try {
         console.log(`🔍 Downloading image for Gemini analysis: ${imageUrl}`);

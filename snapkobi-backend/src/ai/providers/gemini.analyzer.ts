@@ -34,7 +34,8 @@ JSON ŞEMASI:
 
 export async function analyzeProductImage(
   imageUrl: string,
-  customApiKey?: string | null
+  customApiKey?: string | null,
+  customModel?: string | null
 ): Promise<ProductAnalysis> {
   const apiKey = customApiKey || env.GOOGLE_AI_API_KEY;
 
@@ -43,7 +44,7 @@ export async function analyzeProductImage(
     return getMockAnalysis();
   }
 
-  const model = getGeminiModel();
+  const model = customModel || getGeminiModel();
   const url = buildGeminiEndpoint(model, apiKey);
 
   try {

@@ -1,17 +1,36 @@
 export const DEFAULT_AI_CONFIGS = [
   {
     taskType: 'image',
-    activeModel: 'pollinations',
-    apiUrl: 'https://image.pollinations.ai/prompt',
+    provider: 'pollinations',
+    activeModel: 'zimage',
+    apiUrl: 'https://gen.pollinations.ai/image',
+  },
+  {
+    taskType: 'analysis',
+    provider: 'gemini',
+    activeModel: 'gemini-2.5-flash',
+    apiUrl: 'https://generativelanguage.googleapis.com',
   },
   {
     taskType: 'caption',
-    activeModel: 'gemini-flash',
+    provider: 'gemini',
+    activeModel: 'gemini-2.5-flash',
     apiUrl: 'https://generativelanguage.googleapis.com',
   },
   {
     taskType: 'video',
-    activeModel: 'fal-kaiber',
-    apiUrl: 'https://fal.run/fal-ai/luma-dream-machine',
+    provider: 'pollinations',
+    activeModel: 'ltx-2',
+    apiUrl: 'https://gen.pollinations.ai/video',
+  },
+];
+
+export const DEFAULT_APP_SETTINGS = [
+  {
+    key: 'credit_rules',
+    value: {
+      plans: { free: 5, starter: 100, pro: 500 },
+      costs: { image: 1, video: 1, caption: 0 },
+    },
   },
 ];

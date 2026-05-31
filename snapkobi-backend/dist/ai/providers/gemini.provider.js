@@ -3,13 +3,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.generateCaptionWithGemini = generateCaptionWithGemini;
 const env_1 = require("../../config/env");
 const gemini_config_1 = require("../../lib/ai/gemini-config");
-async function generateCaptionWithGemini(prompt, customApiKey) {
+async function generateCaptionWithGemini(prompt, customApiKey, customModel) {
     const apiKey = customApiKey || env_1.env.GOOGLE_AI_API_KEY;
     if (!apiKey) {
         console.warn('⚠️ No GOOGLE_AI_API_KEY found. Falling back to mock caption generator.');
         return generateMockCaption(prompt);
     }
-    const model = (0, gemini_config_1.getGeminiModel)();
+    const model = customModel || (0, gemini_config_1.getGeminiModel)();
     const url = (0, gemini_config_1.buildGeminiEndpoint)(model, apiKey);
     try {
         const jsonPrompt = `${prompt}\n\nYou MUST return the response strictly as a JSON object with the following keys:\n{\n  "caption": "Your generated platform-specific caption text (String)",\n  "hashtags": ["list", "of", "hashtags"] (Array of Strings)\n}`;

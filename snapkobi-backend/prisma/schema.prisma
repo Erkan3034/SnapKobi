@@ -20,6 +20,7 @@ model AppUser {
   sector       SectorType    @default(other)
   language     Language      @default(tr)
   planType     PlanType      @default(free) @map("plan_type")
+  role         UserRole      @default(user)
   brandKit     BrandKit?
   generations  Generation[]
   payments     Payment[]
@@ -128,12 +129,22 @@ model Payment {
 model AiConfig {
   id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   taskType    String   @unique @map("task_type")
+  provider    String
   activeModel String   @map("active_model")
   apiKey      String?  @map("api_key")
   apiUrl      String?  @map("api_url")
+  settings    Json     @default("{}")
   updatedAt   DateTime @updatedAt @map("updated_at")
 
   @@map("ai_configs")
+}
+
+model AppSetting {
+  key       String   @id
+  value     Json
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("app_settings")
 }
 
 enum SectorType {
@@ -193,6 +204,11 @@ enum PaymentStatus {
   refunded
 }
 
+enum UserRole {
+  user
+  admin
+}
+
 model AdminTemplate {
   id                      String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   name                    String
@@ -215,4 +231,3 @@ model AdminTemplate {
 
   @@map("admin_templates")
 }
-
