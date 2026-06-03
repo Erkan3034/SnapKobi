@@ -2,6 +2,7 @@ import { SectorType } from '@prisma/client';
 import { env } from '../../config/env';
 import { uploadToSupabaseStorage } from './storage.helper';
 import { AiProviderConfig } from './provider-config';
+import { generateKenBurnsVideo } from './ffmpeg-video.helper';
 
 interface VideoGenerationInput {
   imageUrl: string;
@@ -11,19 +12,36 @@ interface VideoGenerationInput {
   config?: AiProviderConfig;
 }
 
-export async function generateVideo(input: VideoGenerationInput): Promise<string | null> {
+/**
+ * Hibrit, ucretsiz-oncelikli video uretimi:
+ *   1) Yapilandirilmis AI saglayici (Pollinations/FAL) — yalnizca kullanilabilir bir anahtar varsa
+ *   2) FAL fallback — FAL_KEY varsa
+ *   3) YEREL ffmpeg "Ken Burns" — her zaman calisir, kota/maliyet yok (garanti)
+ * Bu yuzden donus daima bir string'dir (en kotu ihtimalde yerel video).
+ */
+export async function generateVideo(input: VideoGenerationInput): Promise<string> {
   const provider = (input.config?.provider || 'pollinations').toLowerCase();
 
+  // 1. Yapilandirilmis AI saglayici — yalnizca o saglayici secili VE anahtar varsa dene.
+  //    Admin ai_configs.video.provider='local' (vb.) yaparsa dis servisi atlayip dogrudan
+  //    yerel ffmpeg'e gider (hizli, kotasiz).
   try {
     if (provider === 'fal' || provider === 'fal.ai') {
-      return await generateWithFal(input);
+      if (input.config?.apiKey || env.FAL_KEY) {
+        return await generateWithFal(input);
+      }
+    } else if (provider === 'pollinations' && (input.config?.apiKey || env.POLLINATIONS_KEY)) {
+      return await generateWithPollinations(input);
     }
-    return await generateWithPollinations(input);
   } catch (primaryError: any) {
     console.error(`❌ ${provider} video generation failed:`, primaryError.message);
-    if (provider !== 'fal' && provider !== 'fal.ai' && env.FAL_KEY) {
+  }
+
+  // 2. FAL fallback (FAL_KEY varsa ve henuz FAL denenmediyse)
+  if (provider !== 'fal' && provider !== 'fal.ai' && env.FAL_KEY) {
+    try {
       console.warn('⚠️ Retrying video generation with fal.ai fallback.');
-      return generateWithFal({
+      return await generateWithFal({
         ...input,
         config: {
           provider: 'fal',
@@ -31,9 +49,19 @@ export async function generateVideo(input: VideoGenerationInput): Promise<string
           apiKey: env.FAL_KEY,
         },
       });
+    } catch (falError: any) {
+      console.error('❌ fal.ai fallback failed:', falError.message);
     }
-    return null;
   }
+
+  // 3. Garanti yerel fallback: islenmis gorselden ffmpeg Ken Burns videosu
+  console.warn('🎞️ Falling back to local ffmpeg Ken Burns video generation.');
+  const imageRes = await fetch(input.imageUrl);
+  if (!imageRes.ok) {
+    throw new Error(`Ken Burns icin gorsel indirilemedi: ${imageRes.status}`);
+  }
+  const imageBuffer = Buffer.from(await imageRes.arrayBuffer());
+  return generateKenBurnsVideo(imageBuffer, input.generationId);
 }
 
 async function generateWithPollinations(input: VideoGenerationInput): Promise<string> {
@@ -50,8 +78,10 @@ async function generateWithPollinations(input: VideoGenerationInput): Promise<st
   url.searchParams.set('aspectRatio', '9:16');
   url.searchParams.set('safe', 'true');
 
+  // 504/aski durumlarinda 3+ dk beklememek icin hizli timeout → fallback'e gec.
   const response = await fetch(url, {
     headers: { Authorization: `Bearer ${apiKey}` },
+    signal: AbortSignal.timeout(45000),
   });
   if (!response.ok) {
     throw new Error(`Pollinations API responded with status ${response.status}: ${await response.text()}`);
@@ -85,7 +115,7 @@ async function generateWithFal(input: VideoGenerationInput): Promise<string> {
     throw new Error('fal.ai returned an invalid queue response');
   }
 
-  for (let attempts = 0; attempts < 180; attempts++) {
+  for (let attempts = 0; attempts < 45; attempts++) {
     const statusResponse = await fetch(queueData.status_url, {
       headers: { Authorization: `Key ${apiKey}` },
     });

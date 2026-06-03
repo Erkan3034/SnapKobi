@@ -54,7 +54,9 @@ class CommunityPostHeader extends StatelessWidget {
         ),
         IconButton(
           icon: Icon(Icons.more_vert, color: theme.hintColor),
-          onPressed: () {},
+          onPressed: () => ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Gönderi seçenekleri yakında eklenecek.')),
+          ),
         ),
       ],
     );

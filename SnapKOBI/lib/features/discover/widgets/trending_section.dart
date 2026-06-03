@@ -27,7 +27,7 @@ class TrendingSection extends StatelessWidget {
         ]),
       ),
       SizedBox(
-        height: 180,
+        height: 200,
         child: ListView.builder(
           scrollDirection: Axis.horizontal,
           padding: const EdgeInsets.symmetric(horizontal: AppDimensions.spacing16),

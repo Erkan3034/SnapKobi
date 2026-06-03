@@ -1,8 +1,18 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/di/providers.dart';
-
+import '../../domain/entities/sector.dart';
 
 enum HistoryFilter { all, thisWeek, images, videos }
+
+const _sectorTitles = {
+  SectorType.food: 'Gıda Tanıtımı',
+  SectorType.textile: 'Tekstil Tanıtımı',
+  SectorType.electronics: 'Elektronik Tanıtımı',
+  SectorType.jewelry: 'Takı Tanıtımı',
+  SectorType.beauty: 'Kozmetik Tanıtımı',
+  SectorType.furniture: 'Mobilya Tanıtımı',
+  SectorType.other: 'Ürün Tanıtımı',
+};
 
 class HistoryItem {
   final String id;
@@ -11,6 +21,10 @@ class HistoryItem {
   final String timeAgo;
   final String imageUrl;
   final String beforeUrl;
+  final String? videoUrl;
+  final String caption;
+  final List<String> hashtags;
+  final DateTime createdAt;
 
   const HistoryItem({
     required this.id,
@@ -19,7 +33,13 @@ class HistoryItem {
     required this.timeAgo,
     required this.imageUrl,
     required this.beforeUrl,
+    required this.createdAt,
+    this.videoUrl,
+    this.caption = '',
+    this.hashtags = const [],
   });
+
+  bool get hasVideo => (videoUrl != null && videoUrl!.trim().isNotEmpty);
 }
 
 class HistoryState {
@@ -29,6 +49,21 @@ class HistoryState {
   const HistoryState({this.filter = HistoryFilter.all, this.items = const [], this.isLoading = true});
   HistoryState copyWith({HistoryFilter? filter, List<HistoryItem>? items, bool? isLoading}) =>
       HistoryState(filter: filter ?? this.filter, items: items ?? this.items, isLoading: isLoading ?? this.isLoading);
+
+  /// Seçili filtreye göre süzülmüş liste (UI bunu kullanır).
+  List<HistoryItem> get visibleItems {
+    switch (filter) {
+      case HistoryFilter.thisWeek:
+        final weekAgo = DateTime.now().subtract(const Duration(days: 7));
+        return items.where((i) => i.createdAt.isAfter(weekAgo)).toList();
+      case HistoryFilter.videos:
+        return items.where((i) => i.hasVideo).toList();
+      case HistoryFilter.images:
+        return items.where((i) => !i.hasVideo).toList();
+      case HistoryFilter.all:
+        return items;
+    }
+  }
 }
 
 class HistoryNotifier extends StateNotifier<HistoryState> {
@@ -47,12 +82,9 @@ class HistoryNotifier extends StateNotifier<HistoryState> {
       result.fold(
         onSuccess: (list) {
           final items = list.map((gen) {
-            final title = '${gen.sector.name.toUpperCase()} Reklamı';
-            final platformLabel = gen.platform.name.toUpperCase();
-
             final dt = gen.createdAt;
             final diff = DateTime.now().difference(dt);
-            String timeAgo = 'Bilinmiyor';
+            String timeAgo;
             if (diff.inMinutes < 60) {
               timeAgo = '${diff.inMinutes} dk önce';
             } else if (diff.inHours < 24) {
@@ -63,11 +95,15 @@ class HistoryNotifier extends StateNotifier<HistoryState> {
 
             return HistoryItem(
               id: gen.id,
-              title: title,
-              platformLabel: platformLabel,
+              title: _sectorTitles[gen.sector] ?? 'Ürün Tanıtımı',
+              platformLabel: gen.platform.name.toUpperCase(),
               timeAgo: timeAgo,
-              imageUrl: gen.processedImageUrl ?? 'https://images.unsplash.com/photo-1600185365926-3a2ce3cdb9eb?w=400&q=80',
+              imageUrl: gen.processedImageUrl ?? gen.originalImageUrl,
               beforeUrl: gen.originalImageUrl,
+              videoUrl: gen.videoUrl,
+              caption: gen.caption ?? '',
+              hashtags: gen.hashtags,
+              createdAt: dt,
             );
           }).toList();
 

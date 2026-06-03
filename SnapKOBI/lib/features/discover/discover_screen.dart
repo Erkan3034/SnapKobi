@@ -8,7 +8,6 @@ import '../../core/theme/app_dimensions.dart';
 import '../../core/theme/app_icons.dart';
 import '../../core/theme/app_typography.dart';
 import '../../shared/navigation/routes.dart';
-import '../create/create_screen.dart';
 import 'discover_provider.dart';
 import 'widgets/community_section.dart';
 import 'widgets/discover_helpers.dart';
@@ -50,7 +49,7 @@ class DiscoverScreen extends ConsumerWidget {
       body: SingleChildScrollView(
         padding: state.isLoading ? const EdgeInsets.symmetric(horizontal: AppDimensions.spacing16) : EdgeInsets.zero,
         child: state.isLoading ? buildDiscoverShimmer() : Column(children: [
-          QuickStartBanner(onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const CreateScreen()))),
+          QuickStartBanner(onTap: () => context.push(AppRoutes.create)),
           TrendingSection(items: state.trends),
           const SizedBox(height: AppDimensions.spacing16),
           PopularTemplatesSection(items: state.templates),

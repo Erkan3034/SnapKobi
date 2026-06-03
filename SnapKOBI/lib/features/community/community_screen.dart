@@ -20,8 +20,14 @@ class CommunityScreen extends ConsumerStatefulWidget {
   ConsumerState<CommunityScreen> createState() => _CommunityScreenState();
 }
 
+// community_posts.category -> Turkce etiket
+const _catLabels = {
+  'fashion': 'Moda', 'textile': 'Tekstil', 'tech': 'Teknoloji', 'electronics': 'Elektronik',
+  'beauty': 'Kozmetik', 'food': 'Gıda', 'jewelry': 'Takı', 'furniture': 'Mobilya', 'other': 'Diğer',
+};
+
 class _CommunityScreenState extends ConsumerState<CommunityScreen> {
-  int _selectedCatIndex = 0;
+  String _selectedCat = 'all';
 
   @override
   Widget build(BuildContext context) {
@@ -29,6 +35,7 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
     final state = ref.watch(discoverProvider);
     final user = ref.watch(authNotifierProvider).valueOrNull;
     final initials = (user?.displayName?.isNotEmpty ?? false) ? user!.displayName![0].toUpperCase() : 'U';
+    final categories = _buildCategories(state.community);
     final filtered = _getFiltered(state.community);
 
     return Scaffold(
@@ -52,24 +59,59 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
       ),
       body: Column(children: [
         const SizedBox(height: AppDimensions.spacing16),
-        CommunityCategoryList(onCategorySelected: (idx) => setState(() => _selectedCatIndex = idx)),
+        if (!state.isLoading && categories.length > 1)
+          CommunityCategoryList(
+            categories: categories,
+            selectedKey: _selectedCat,
+            onSelected: (key) => setState(() => _selectedCat = key),
+          ),
         const SizedBox(height: AppDimensions.spacing8),
-        Expanded(child: state.isLoading ? _buildShimmer() : filtered.isEmpty ? _buildEmpty(theme) : ListView.builder(
-          padding: const EdgeInsets.only(bottom: AppDimensions.spacing24),
-          itemCount: filtered.length,
-          itemBuilder: (_, i) => CommunityPostCard(item: filtered[i]),
-        )),
+        Expanded(
+          child: RefreshIndicator(
+            onRefresh: () => ref.read(discoverProvider.notifier).refresh(),
+            child: state.isLoading
+                ? _buildShimmer()
+                : filtered.isEmpty
+                    ? ListView(children: [SizedBox(height: MediaQuery.of(context).size.height * 0.3, child: _buildEmpty(theme))])
+                    : ListView.builder(
+                        padding: const EdgeInsets.only(bottom: AppDimensions.spacing24),
+                        itemCount: filtered.length,
+                        itemBuilder: (_, i) => CommunityPostCard(item: filtered[i]),
+                      ),
+          ),
+        ),
       ]),
     );
   }
 
+  /// Kategori daireleri tamamen veriden turetilir: Tumu + Populer (hesaplanan)
+  /// + community_posts icindeki gercek kategoriler (gorseli de gercek gonderiden).
+  List<CommunityCatChip> _buildCategories(List<CommunityItem> all) {
+    final chips = <CommunityCatChip>[
+      const CommunityCatChip(key: 'all', label: 'Tümü', icon: Icons.star),
+    ];
+    if (all.any((e) => (e.likesCount ?? 0) > 500)) {
+      chips.add(const CommunityCatChip(key: '__popular__', label: 'Popüler', icon: Icons.trending_up));
+    }
+    final seen = <String>{};
+    for (final e in all) {
+      final c = e.category;
+      if (c == null || c.isEmpty || seen.contains(c)) continue;
+      seen.add(c);
+      chips.add(CommunityCatChip(key: c, label: _catLabels[c] ?? c, imageUrl: e.afterUrl));
+    }
+    return chips;
+  }
+
   List<CommunityItem> _getFiltered(List<CommunityItem> all) {
-    if (_selectedCatIndex == 1) return all.where((e) => (e.likesCount ?? 0) > 500).toList();
-    if (_selectedCatIndex == 3) return all.where((e) => e.userName == 'butik_moda' || e.userName == 'ayakkabi_dunyasi').toList();
-    if (_selectedCatIndex == 4) return all.where((e) => e.userName == 'kozmetik_dunyam').toList();
-    if (_selectedCatIndex == 5) return all.where((e) => e.userName == 'lezzet_sofrasi').toList();
-    if (_selectedCatIndex == 6) return all.where((e) => e.userName == 'tech_store_tr').toList();
-    return all;
+    switch (_selectedCat) {
+      case 'all':
+        return all;
+      case '__popular__':
+        return all.where((e) => (e.likesCount ?? 0) > 500).toList();
+      default:
+        return all.where((e) => e.category == _selectedCat).toList();
+    }
   }
 
   Widget _buildEmpty(ThemeData theme) => Center(child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [

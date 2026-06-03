@@ -13,9 +13,9 @@ class ProfileInfoScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final user = ref.watch(authNotifierProvider).valueOrNull;
-    final nameCtrl = TextEditingController(text: user?.displayName ?? 'Mehmet Yılmaz');
-    final emailCtrl = TextEditingController(text: user?.email ?? 'mehmet@example.com');
-    final phoneCtrl = TextEditingController(text: user?.phone ?? '+90 555 123 4567');
+    final nameCtrl = TextEditingController(text: user?.displayName ?? '');
+    final emailCtrl = TextEditingController(text: user?.email ?? '');
+    final phoneCtrl = TextEditingController(text: user?.phone ?? '');
     final theme = Theme.of(context);
 
     return Scaffold(
@@ -32,7 +32,7 @@ class ProfileInfoScreen extends ConsumerWidget {
           Center(
             child: CircleAvatar(
               radius: 50, backgroundColor: theme.colorScheme.primary,
-              child: Text(user?.displayName?.substring(0, 2).toUpperCase() ?? 'MY',
+              child: Text(user?.displayName?.substring(0, 2).toUpperCase() ?? '?',
                 style: AppTypography.displayMedium.copyWith(color: AppColors.white)),
             ),
           ),

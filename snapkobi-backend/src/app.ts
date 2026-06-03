@@ -6,7 +6,6 @@ import { userRoutes } from './modules/users/users.routes';
 import { brandKitRoutes } from './modules/brand-kit/brand-kit.routes';
 import { productRoutes } from './modules/product/product.routes';
 import { generationRoutes } from './modules/generation/generation.routes';
-import { seedAiConfigs } from './config/seed';
 import { adminRoutes } from './modules/admin/admin.routes';
 import { env } from './config/env';
 
@@ -67,9 +66,8 @@ app.register(productRoutes, { prefix: '/v1/products' });
 app.register(generationRoutes, { prefix: '/v1/generations' });
 app.register(adminRoutes, { prefix: '/v1/admin' });
 
-// App ready hook to trigger DB seeding
-app.addHook('onReady', async () => {
-  await seedAiConfigs();
-});
+// Not: AI config seed'i artik sunucu listen ettikten SONRA (index.ts'de) arka planda
+// calisir. onReady icinde await edilmesi remote pooler gecikmesinde Fastify plugin
+// timeout'una takilip sunucunun hic listen etmemesine yol aciyordu.
 
 export default app;

@@ -1,22 +1,38 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
+import '../../../core/constants/app_constants.dart';
 import '../../../core/di/providers.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_dimensions.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../core/theme/app_shadows.dart';
+import '../../../domain/entities/subscription.dart';
+import '../../../shared/navigation/routes.dart';
 
 class UsageBanner extends ConsumerWidget {
   const UsageBanner({super.key});
+
+  int _planTotalCredits(PlanType plan) {
+    switch (plan) {
+      case PlanType.free:
+        return AppConstants.freeMonthlyCredits;
+      case PlanType.starter:
+        return AppConstants.starterMonthlyCredits;
+      case PlanType.pro:
+      case PlanType.enterprise:
+        return AppConstants.proMonthlyCredits;
+    }
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final user = ref.watch(authNotifierProvider).valueOrNull;
-    final creditsLeft = user?.creditsLeft ?? 7;
-    const totalCredits = 10;
-    final remainingPercent = creditsLeft / totalCredits;
+    final creditsLeft = user?.creditsLeft ?? 0;
+    final totalCredits = _planTotalCredits(user?.planType ?? PlanType.free);
+    final remainingPercent = totalCredits == 0 ? 0.0 : creditsLeft / totalCredits;
 
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: AppDimensions.spacing24),
@@ -76,7 +92,7 @@ class UsageBanner extends ConsumerWidget {
             ),
           ),
           InkWell(
-            onTap: () {},
+            onTap: () => context.push(AppRoutes.subscription),
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [

@@ -8,12 +8,21 @@ abstract final class ApiConstants {
 	static const String _baseUrlDev = 'http://localhost:3000/v1';
 	static const String _baseUrlAndroidEmulator = 'http://10.0.2.2:3000/v1';
 
-	static String get baseUrl {
-		if (const bool.fromEnvironment('dart.vm.product')) return _baseUrlProd;
+	// APK/release dahil her ortamda calisir. Oncelik sirasi:
+	//   1) --dart-define=BACKEND_URL=...  (derleme zamani, release-guvenli)
+	//   2) gomulu .env'deki BACKEND_URL   (.env pubspec asset oldugu icin APK'da da okunur)
+	//   3) platform varsayilanlari        (yalnizca debug/gelistirme)
+	// Gercek telefonda 'localhost'/'10.0.2.2' erisilemez; APK build'inde BACKEND_URL
+	// mutlaka public HTTPS backend adresine (orn. Railway) ayarlanmalidir.
+	static const String _compileTimeBackendUrl = String.fromEnvironment('BACKEND_URL');
 
-		final override = dotenv.env['BACKEND_URL'];
+	static String get baseUrl {
+		if (_compileTimeBackendUrl.isNotEmpty) return _compileTimeBackendUrl;
+
+		final override = dotenv.isInitialized ? dotenv.env['BACKEND_URL'] : null;
 		if (override != null && override.isNotEmpty) return override;
 
+		if (kReleaseMode) return _baseUrlProd;
 		if (kIsWeb) return _baseUrlDev;
 		if (Platform.isAndroid) return _baseUrlAndroidEmulator;
 

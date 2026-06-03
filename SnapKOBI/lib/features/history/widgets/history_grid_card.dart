@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/app_dimensions.dart';
 import '../../../core/theme/app_shadows.dart';
 import '../../../core/theme/app_typography.dart';
+import '../../../core/utils/helpers/file_helper.dart';
+import '../../../shared/navigation/routes.dart';
+import '../../../shared/widgets/image/app_network_image.dart';
 import '../history_provider.dart';
-import '../project_detail_screen.dart';
 
 class HistoryGridCard extends StatelessWidget {
   final HistoryItem item;
@@ -14,9 +17,7 @@ class HistoryGridCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return GestureDetector(
-      onTap: () => Navigator.of(context).push(
-        MaterialPageRoute(builder: (_) => ProjectDetailScreen(item: item)),
-      ),
+      onTap: () => context.push(AppRoutes.projectDetail, extra: item),
       child: Container(
       decoration: BoxDecoration(
         color: theme.cardTheme.color ?? theme.cardColor,
@@ -24,11 +25,12 @@ class HistoryGridCard extends StatelessWidget {
         boxShadow: const [AppShadows.cardShadow],
       ),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        ClipRRect(
-          borderRadius: const BorderRadius.vertical(top: Radius.circular(AppDimensions.radiusMedium)),
-          child: AspectRatio(
-            aspectRatio: 1.1,
-            child: Image.network(item.imageUrl, fit: BoxFit.cover),
+        AspectRatio(
+          aspectRatio: 1.1,
+          child: AppNetworkImage(
+            url: item.imageUrl,
+            width: double.infinity,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(AppDimensions.radiusMedium)),
           ),
         ),
         Padding(
@@ -54,13 +56,20 @@ class HistoryGridCard extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: AppDimensions.spacing4),
           child: Row(children: [
             TextButton.icon(
-              onPressed: () {},
+              onPressed: () async {
+                final messenger = ScaffoldMessenger.of(context);
+                try {
+                  await FileHelper.shareAll(imageUrl: item.imageUrl, caption: item.title, hashtags: const []);
+                } catch (e) {
+                  messenger.showSnackBar(SnackBar(content: Text('Paylaşım başarısız: $e')));
+                }
+              },
               icon: Icon(Icons.ios_share, size: 14, color: theme.textTheme.bodyMedium?.color),
               label: Text('Paylaş', style: AppTypography.labelSmall.copyWith(color: theme.textTheme.bodyMedium?.color)),
               style: TextButton.styleFrom(padding: const EdgeInsets.symmetric(horizontal: AppDimensions.spacing4), minimumSize: Size.zero, tapTargetSize: MaterialTapTargetSize.shrinkWrap),
             ),
             TextButton.icon(
-              onPressed: () {},
+              onPressed: () => context.push(AppRoutes.create),
               icon: Icon(Icons.bolt, size: 14, color: theme.colorScheme.primary),
               label: Text('Yeniden', style: AppTypography.labelSmall.copyWith(color: theme.colorScheme.primary)),
               style: TextButton.styleFrom(padding: const EdgeInsets.symmetric(horizontal: AppDimensions.spacing4), minimumSize: Size.zero, tapTargetSize: MaterialTapTargetSize.shrinkWrap),

@@ -56,6 +56,8 @@ class _ProcessingScreenState extends ConsumerState<ProcessingScreen> {
   Widget build(BuildContext context) {
     ref.listen<AsyncValue<Generation?>>(processingProvider, (previous, next) {
       if (next.hasValue && next.value != null && next.value!.isCompleted) {
+        // Uretim bitti: Create ekrani bir sonraki sefer temiz acilsin (eski foto/sablon kalmasin).
+        ref.read(createProvider.notifier).reset();
         context.go(AppRoutes.results);
       }
       if (next.hasError && !next.isLoading) {

@@ -1,9 +1,5 @@
-# Snapkobi — AI Editör Prompt'u
-## Konu: Sistem Prompt Mimarisi + Admin Şablon Yönetimi
 
----
-
-## BAĞLAM (Bu dosyayı editörüne ver)
+## BAĞLAM
 
 Snapkobi, e-ticaret satıcıları (Trendyol, HepsiBurada, Instagram, web sitesi gibi platformlarda satan işletmeler) için ürün görselini yükleyip platform seçerek şunları otomatik ürettiren bir SaaS uygulaması:
 

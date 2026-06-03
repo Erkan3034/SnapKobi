@@ -66,16 +66,16 @@ Background: ${getBackgroundDescription(backgroundStyle)}.
       captionSystemPrompt: `
 Sen Snapkobi'nin Instagram içerik yazarısın. 
 Türkçe, genç ve enerjik ama premium bir ton kullan.
-Her zaman şu yapıyı takip et:
+caption metni şu yapıyı takip etsin:
 1. Hook cümlesi (dikkat çekici, emoji ile başla)
 2. Ürün faydası (1-2 cümle)
 3. CTA (call-to-action)
-4. Hashtag bloğu (15-20 hashtag, Türkçe + İngilizce karışık)
+
+hashtags alanına 15-20 hashtag koy (Türkçe + İngilizce karışık), caption içine yazma.
 
 KURALLAR:
 - Maksimum 2200 karakter
 - Emoji kullan ama abartma (her cümlede max 1)
-- Hashtag'leri ayrı satırda ver
 - Fiyat yazma (kullanıcı ekleyecek)
 - "Satın al" yerine "Keşfet", "İncele", "Sahip ol" gibi ifadeler kullan
       `.trim(),
@@ -112,7 +112,7 @@ Sen Trendyol ürün listeleme uzmanısın.
 SEO odaklı, bilgi yoğun, güven veren açıklamalar yaz.
 Şu yapıyı kullan:
 
-BAŞLIK: [Marka] [Ürün Adı] [Ana Özellik] (max 80 karakter)
+BAŞLIK: [Ürün Adı] [Ana Özellik] (max 80 karakter; marka adı YALNIZCA açıkça verildiyse başa ekle, yoksa yazma)
 
 KISA AÇIKLAMA: 2-3 cümle, ürünün temel faydası
 
@@ -344,8 +344,24 @@ TikTok video için script hook ve caption yaz.
     config.emptyBackdropPrompt = buildEmptyBackdropPrompt(backgroundStyle, hints);
   }
 
+  // Tum caption sistem prompt'larina evrensel kurallari ekle (en yuksek oncelik).
+  config.captionSystemPrompt = `${config.captionSystemPrompt}\n\n${UNIVERSAL_CAPTION_RULES}`;
+
   return config;
 }
+
+// Platformdan bagimsiz, ihlal edilemez caption kurallari. gemini.provider ciktiyi
+// { caption, hashtags } JSON'a zorladigi icin hashtag'ler caption metnine DEGIL
+// ayri alana yazilmalidir.
+const UNIVERSAL_CAPTION_RULES = `
+EVRENSEL KURALLAR (yukaridaki tum format yonergelerinden ONCELIKLIDIR):
+- Marka, kisi, magaza veya sirket adi UYDURMA ve EKLEME. Sana acikca bir "Marka:" verilmediyse hicbir isim kullanma. "[Marka]", "[Magaza]" gibi yer tutucu da YAZMA; o kismi tamamen atla.
+- Hashtag'leri caption metninin ICINE yazma. Hashtag'ler YALNIZCA ayri "hashtags" JSON alaninda yer alir.
+- Fiyat, indirim orani, kampanya, garanti/iade vaadi veya kesin teknik olcu/malzeme UYDURMA. Yalnizca urun analizinden kesin olan bilgileri kullan; emin olmadigin seyleri genel ifadelerle gec.
+- Abartili/yaniltici iddialar yasak: "en iyi", "1 numara", "%100 garanti", "dunyanin en..." yazma.
+- Dil: dogal, akici Turkce; platforma uygun ton.
+- Tum cikti TEK BIR caption metni olarak "caption" alanina yazilir (cok bolumlu formatlar bu tek metin icinde duzenli olmali). Asla sahte veri ekleme.
+`.trim();
 
 const platformHintsMap: Record<Platform, { style: string; lighting: string; mood: string; notes: string }> = {
   instagram: {

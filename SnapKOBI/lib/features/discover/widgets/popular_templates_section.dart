@@ -33,7 +33,7 @@ class PopularTemplatesSection extends StatelessWidget {
           physics: const NeverScrollableScrollPhysics(),
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 3, crossAxisSpacing: AppDimensions.spacing8,
-            mainAxisSpacing: AppDimensions.spacing8, childAspectRatio: 0.78,
+            mainAxisSpacing: AppDimensions.spacing8, childAspectRatio: 0.70,
           ),
           itemCount: items.length,
           itemBuilder: (_, i) => TemplateCard(item: items[i]),

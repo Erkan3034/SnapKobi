@@ -56,12 +56,19 @@ class HistoryScreen extends ConsumerWidget {
                   itemCount: 4,
                   itemBuilder: (_, __) => const ShimmerLoading(width: double.infinity, height: double.infinity, borderRadius: 16),
                 )
-              : GridView.builder(
-                  padding: const EdgeInsets.symmetric(horizontal: AppDimensions.spacing16),
-                  gridDelegate: gridDel,
-                  itemCount: state.items.length,
-                  itemBuilder: (_, i) => HistoryGridCard(item: state.items[i]),
-                ),
+              : Builder(builder: (_) {
+                  final items = state.visibleItems;
+                  if (items.isEmpty) {
+                    return Center(child: Text('Bu filtrede proje bulunmuyor.',
+                        style: AppTypography.bodyMedium.copyWith(color: theme.hintColor)));
+                  }
+                  return GridView.builder(
+                    padding: const EdgeInsets.symmetric(horizontal: AppDimensions.spacing16),
+                    gridDelegate: gridDel,
+                    itemCount: items.length,
+                    itemBuilder: (_, i) => HistoryGridCard(item: items[i]),
+                  );
+                }),
         ),
       ]),
     );

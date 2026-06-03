@@ -56,7 +56,9 @@ class PlanCardPro extends StatelessWidget {
         const SizedBox(height: AppDimensions.spacing16),
         Center(
           child: TextButton(
-            onPressed: () {},
+            onPressed: () => ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Ödeme entegrasyonu (iyzico) yakında eklenecek.')),
+            ),
             child: Text("Pro'ya Geç", style: AppTypography.labelLarge.copyWith(color: theme.colorScheme.primary)),
           ),
         ),

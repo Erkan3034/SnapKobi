@@ -1,8 +1,78 @@
--- SnapKOBİ showcase seed verisi — admin tarafindan eklenmis gibi 5'er gercek kayit.
--- Idempotent: admin_templates slug cakismasinda atlar; trends/community_posts yalnizca bos tabloda doldurulur.
--- Gorseller gercek urun fotograflari (Unsplash) — uretim asamasinda gercek ciktilarla degisecek.
+-- ════════════════════════════════════════════════════════════════════════════
+-- SnapKOBİ — Showcase kurulumu (TEK DOSYA)
+-- Supabase Dashboard → SQL Editor'e yapıştır → Run.
+-- Idempotent: tekrar çalıştırmak güvenli (IF NOT EXISTS / ON CONFLICT / guard).
+-- enum tipleri "SectorType" ve "PlatformType" Prisma tarafindan zaten olusturuldu
+-- (generations tablosu bunlari kullaniyor).
+-- ════════════════════════════════════════════════════════════════════════════
 
--- ─── ADMIN_TEMPLATES (5) ─────────────────────────────────────────────────────
+-- ─── 1. ADMIN_TEMPLATES yeni kolonlar ────────────────────────────────────────
+alter table public.admin_templates add column if not exists usage_count integer not null default 0;
+alter table public.admin_templates add column if not exists is_premium  boolean not null default false;
+
+-- ─── 2. TRENDS tablosu ───────────────────────────────────────────────────────
+create table if not exists public.trends (
+  id          uuid primary key default gen_random_uuid(),
+  title       text not null,
+  image_url   text not null,
+  before_url  text not null,
+  usage_count integer not null default 0,
+  category    text not null,
+  popularity  integer not null default 0,
+  sector      "SectorType" not null,
+  platform    "PlatformType" not null,
+  caption     text not null default '',
+  hashtags    text[] not null default '{}',
+  scenes      text[] not null default '{}',
+  is_active   boolean not null default true,
+  sort_order  integer not null default 0,
+  created_at  timestamptz not null default now(),
+  updated_at  timestamptz not null default now()
+);
+create index if not exists trends_active_sort_idx on public.trends (is_active, sort_order);
+
+-- ─── 3. COMMUNITY_POSTS tablosu ──────────────────────────────────────────────
+create table if not exists public.community_posts (
+  id             uuid primary key default gen_random_uuid(),
+  user_name      text not null,
+  avatar_url     text,
+  before_url     text not null,
+  after_url      text not null,
+  platform       "PlatformType" not null,
+  category       text not null default 'other',
+  likes_count    integer not null default 0,
+  comments_count integer not null default 0,
+  is_active      boolean not null default true,
+  sort_order     integer not null default 0,
+  created_at     timestamptz not null default now()
+);
+create index if not exists community_active_created_idx on public.community_posts (is_active, created_at desc);
+
+-- ─── 4. RLS + GRANT (Flutter anon key ile DOGRUDAN okuyor) ───────────────────
+alter table public.trends           enable row level security;
+alter table public.community_posts  enable row level security;
+alter table public.admin_templates  enable row level security;
+
+drop policy if exists "trends_public_read" on public.trends;
+create policy "trends_public_read" on public.trends for select using (is_active = true);
+drop policy if exists "trends_service_all" on public.trends;
+create policy "trends_service_all" on public.trends for all using (auth.role() = 'service_role') with check (auth.role() = 'service_role');
+
+drop policy if exists "community_public_read" on public.community_posts;
+create policy "community_public_read" on public.community_posts for select using (is_active = true);
+drop policy if exists "community_service_all" on public.community_posts;
+create policy "community_service_all" on public.community_posts for all using (auth.role() = 'service_role') with check (auth.role() = 'service_role');
+
+drop policy if exists "admin_templates_public_read" on public.admin_templates;
+create policy "admin_templates_public_read" on public.admin_templates for select using (is_active = true);
+drop policy if exists "admin_templates_service_all" on public.admin_templates;
+create policy "admin_templates_service_all" on public.admin_templates for all using (auth.role() = 'service_role') with check (auth.role() = 'service_role');
+
+grant select on public.trends, public.community_posts, public.admin_templates to anon, authenticated;
+
+-- ─── 5. SEED — 5'er gercek kayit ─────────────────────────────────────────────
+
+-- admin_templates (slug unique → ON CONFLICT)
 insert into public.admin_templates
   (name, slug, description, thumbnail_url, category, usage_count, is_active, is_featured, is_premium, sort_order, applicable_platforms, default_background_style, background_system_prompt, caption_system_prompt)
 values
@@ -13,7 +83,7 @@ values
   ('Neon Cyber', 'neon-cyber', 'Dinamik pembe-mavi neon ışıklar, teknoloji ürünleri için.', 'https://images.unsplash.com/photo-1557682250-33bd709cbe85?w=400&q=80', 'tech', 870, true, true, true, 5, array['instagram','tiktok','web'], 'neon_cyber', 'Place the product in a dynamic neon-lit scene with pink and blue cyberpunk lighting, glossy reflective surface, conveying a modern high-tech mood.', 'Dinamik, modern ve dikkat çekici bir Türkçe metin yaz. Teknolojik üstünlüğü vurgula.')
 on conflict (slug) do nothing;
 
--- ─── TRENDS (5) ──────────────────────────────────────────────────────────────
+-- trends (yalnizca bos tabloda)
 do $$
 begin
   if not exists (select 1 from public.trends) then
@@ -43,7 +113,7 @@ begin
   end if;
 end $$;
 
--- ─── COMMUNITY_POSTS (5) ─────────────────────────────────────────────────────
+-- community_posts (yalnizca bos tabloda)
 do $$
 begin
   if not exists (select 1 from public.community_posts) then
@@ -57,3 +127,8 @@ begin
       ('lezzet_sofrasi', 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=80&q=80', 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=400&q=80', 'https://images.unsplash.com/photo-1513104890138-7c749659a591?w=400&q=80', 'trendyol', 'food', 450, 12, true, 5);
   end if;
 end $$;
+
+-- ─── 6. Dogrulama ────────────────────────────────────────────────────────────
+-- select count(*) from public.trends;            -- 5 beklenir
+-- select count(*) from public.community_posts;   -- 5 beklenir
+-- select count(*) from public.admin_templates;   -- 5 beklenir

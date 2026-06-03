@@ -41,7 +41,10 @@ class _TrendingScreenState extends ConsumerState<TrendingScreen> {
         leading: IconButton(icon: const Icon(AppIcons.back, color: AppColors.primaryDark), onPressed: () => context.pop()),
         title: Text('Bu Hafta Trend', style: AppTypography.headlineMedium.copyWith(color: AppColors.primaryDark, fontSize: 20, fontWeight: FontWeight.bold)),
         centerTitle: true,
-        actions: [IconButton(icon: const Icon(AppIcons.notification, color: AppColors.primaryDark), onPressed: () {})],
+        actions: [IconButton(icon: const Icon(AppIcons.notification, color: AppColors.primaryDark),
+          onPressed: () => ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Şu an yeni bildiriminiz yok 🔔')),
+          ))],
       ),
       body: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
         TrendingSearchField(onChanged: (val) => setState(() => _searchQuery = val)),

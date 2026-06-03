@@ -6,10 +6,13 @@ import '../../features/auth/login_screen.dart';
 import '../../features/auth/register_screen.dart';
 import '../../features/auth/reset_password_screen.dart';
 import '../../features/community/community_screen.dart';
+import '../../features/create/create_screen.dart';
 import '../../features/discover/discover_provider.dart';
 import '../../features/generation/processing/processing_screen.dart';
 import '../../features/generation/result/result_screen.dart';
+import '../../features/history/history_provider.dart';
 import '../../features/history/history_screen.dart';
+import '../../features/history/project_detail_screen.dart';
 import '../../features/onboarding/onboarding_screen.dart';
 import '../../features/onboarding/onboarding_sector_screen.dart';
 import '../../features/settings/screens/help_faq_screen.dart';
@@ -23,7 +26,9 @@ import '../../features/subscription/payment_history_screen.dart';
 import '../../features/subscription/subscription_screen.dart';
 import '../../features/trend/trend_details_screen.dart';
 import '../../features/trend/trending_screen.dart';
+import '../../features/library/library_provider.dart';
 import '../../features/library/library_screen.dart';
+import '../../features/library/template_detail_screen.dart';
 import '../widgets/layout/main_scaffold.dart';
 import 'routes.dart';
 
@@ -37,8 +42,17 @@ final List<RouteBase> appRoutesList = [
   GoRoute(path: AppRoutes.resetPassword, builder: (_, __) => const ResetPasswordScreen()),
   GoRoute(path: AppRoutes.verifyEmail, builder: (_, state) => EmailVerificationScreen(email: state.uri.queryParameters['email'])),
   GoRoute(path: AppRoutes.home, builder: (_, __) => const MainScaffold()),
+  GoRoute(
+    path: AppRoutes.create,
+    builder: (_, state) {
+      final extra = state.extra;
+      final templateId = extra is Map ? extra['templateId'] as String? : null;
+      return CreateScreen(initialTemplateId: templateId);
+    },
+  ),
   GoRoute(path: AppRoutes.results, builder: (_, __) => const ResultScreen()),
   GoRoute(path: AppRoutes.history, builder: (_, __) => const HistoryScreen()),
+  GoRoute(path: AppRoutes.projectDetail, builder: (_, state) => ProjectDetailScreen(item: state.extra as HistoryItem)),
   GoRoute(path: AppRoutes.settings, builder: (_, __) => const SettingsScreen()),
   GoRoute(path: AppRoutes.subscription, builder: (_, __) => const SubscriptionScreen()),
   GoRoute(path: AppRoutes.profileInfo, builder: (_, __) => const ProfileInfoScreen()),
@@ -52,4 +66,5 @@ final List<RouteBase> appRoutesList = [
   GoRoute(path: AppRoutes.communityShowcase, builder: (_, __) => const CommunityScreen()),
   GoRoute(path: AppRoutes.processing, builder: (_, __) => const ProcessingScreen()),
   GoRoute(path: AppRoutes.library, builder: (_, __) => const LibraryScreen()),
+  GoRoute(path: AppRoutes.templateDetail, builder: (_, state) => TemplateDetailScreen(template: state.extra as LibraryTemplate)),
 ];

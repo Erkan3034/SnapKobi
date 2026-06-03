@@ -23,25 +23,20 @@ class ResultState {
     this.qualityScore = 5,
   });
 
-  factory ResultState.mock() => const ResultState(
-        originalImageUrl:
-            'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&q=80',
-        processedImageUrl:
-            'https://images.unsplash.com/photo-1600185365926-3a2ce3cdb9eb?w=400&q=80',
-        caption:
-            'Yeni sezon spor ayakkabılarımız stoklarda! 👟✨ Hem şık hem konforlu '
-            'tasarımıyla günlük kullanıma mükemmel uyum sağlıyor. Sınırlı stok '
-            '— hemen DM at!',
-        hashtags: ['#spor', '#ayakkabı', '#yenisezon', '#moda'],
-        platformLabel: 'Instagram',
-        processingDurationSec: 52,
-        qualityScore: 5,
+  factory ResultState.empty() => const ResultState(
+        originalImageUrl: '',
+        processedImageUrl: '',
+        caption: '',
+        hashtags: [],
+        platformLabel: '',
+        processingDurationSec: 0,
+        qualityScore: 0,
       );
 }
 
 class ResultNotifier extends Notifier<ResultState> {
   @override
-  ResultState build() => ResultState.mock();
+  ResultState build() => ResultState.empty();
 
   void updateCaption(String caption) =>
       state = ResultState(

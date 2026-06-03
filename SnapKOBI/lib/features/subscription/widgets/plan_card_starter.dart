@@ -48,7 +48,9 @@ class PlanCardStarter extends StatelessWidget {
         SizedBox(
           width: double.infinity,
           child: ElevatedButton(
-            onPressed: () {},
+            onPressed: () => ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Ödeme entegrasyonu (iyzico) yakında eklenecek.')),
+            ),
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.white, foregroundColor: AppColors.primary,
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppDimensions.radiusFull)),

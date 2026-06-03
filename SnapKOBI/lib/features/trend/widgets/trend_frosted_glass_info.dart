@@ -1,18 +1,28 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../core/constants/app_constants.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_dimensions.dart';
 import '../../../core/theme/app_icons.dart';
 import '../../../core/theme/app_typography.dart';
+import '../../discover/discover_provider.dart';
 
-class TrendFrostedGlassInfo extends StatelessWidget {
+class TrendFrostedGlassInfo extends ConsumerWidget {
   final String usage;
   const TrendFrostedGlassInfo({super.key, required this.usage});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    // Gercek topluluk kullanici avatarlari (community_posts.avatar_url) - mock degil.
+    final avatarUrls = ref
+        .watch(discoverProvider)
+        .community
+        .map((e) => e.avatarUrl)
+        .whereType<String>()
+        .where((u) => u.trim().isNotEmpty)
+        .take(3)
+        .toList();
     return Positioned(
       bottom: AppDimensions.spacing16,
       left: AppDimensions.spacing16,
@@ -33,7 +43,7 @@ class TrendFrostedGlassInfo extends StatelessWidget {
                   style: AppTypography.bodyLarge.copyWith(color: AppColors.white, fontWeight: FontWeight.bold, fontSize: 14),
                 ),
                 const Spacer(),
-                _buildAvatarStack(),
+                if (avatarUrls.isNotEmpty) _buildAvatarStack(avatarUrls),
               ],
             ),
           ),
@@ -42,8 +52,7 @@ class TrendFrostedGlassInfo extends StatelessWidget {
     );
   }
 
-  Widget _buildAvatarStack() {
-    final avatarUrls = AppConstants.mockAvatars;
+  Widget _buildAvatarStack(List<String> avatarUrls) {
     return SizedBox(
       width: 60,
       height: 28,

@@ -2,7 +2,7 @@ export const DEFAULT_AI_CONFIGS = [
   {
     taskType: 'image',
     provider: 'pollinations',
-    activeModel: 'zimage',
+    activeModel: 'flux',
     apiUrl: 'https://gen.pollinations.ai/image',
   },
   {

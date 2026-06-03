@@ -26,7 +26,7 @@ class PlatformChipButton extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: AppDimensions.spacing16),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Text('Platform', style: AppTypography.headlineMedium.copyWith(fontSize: 16, color: AppColors.textPrimary)),
+        Text('Platform', style: AppTypography.headlineMedium.copyWith(fontSize: 16, color: Theme.of(context).textTheme.titleLarge?.color ?? Theme.of(context).colorScheme.onSurface)),
         const SizedBox(height: AppDimensions.spacing8),
         GestureDetector(
           onTap: onTap,

@@ -29,7 +29,10 @@ class SubscriptionScreen extends ConsumerWidget {
         title: Text('Planınızı Seçin', style: AppTypography.headlineMedium.copyWith(color: theme.textTheme.headlineMedium?.color ?? theme.colorScheme.onSurface)),
         centerTitle: true,
         actions: [
-          IconButton(icon: Icon(Icons.help_outline, color: theme.iconTheme.color), onPressed: () {}),
+          IconButton(icon: Icon(Icons.help_outline, color: theme.iconTheme.color),
+            onPressed: () => ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Planlar hakkında sorularınız için Ayarlar → Yardım & SSS bölümüne bakın.')),
+            )),
         ],
       ),
       body: SingleChildScrollView(

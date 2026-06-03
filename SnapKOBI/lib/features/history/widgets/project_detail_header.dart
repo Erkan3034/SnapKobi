@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_dimensions.dart';
 import '../../../core/theme/app_typography.dart';
+import '../../../shared/widgets/image/app_network_image.dart';
 import '../history_provider.dart';
 
 class ProjectDetailHeader extends StatelessWidget {
@@ -13,9 +14,11 @@ class ProjectDetailHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Column(children: [
-      ClipRRect(
+      AppNetworkImage(
+        url: item.imageUrl,
+        width: double.infinity,
+        height: 280,
         borderRadius: BorderRadius.circular(AppDimensions.radiusMedium),
-        child: Image.network(item.imageUrl, width: double.infinity, height: 280, fit: BoxFit.cover),
       ),
       const SizedBox(height: AppDimensions.spacing16),
       Padding(

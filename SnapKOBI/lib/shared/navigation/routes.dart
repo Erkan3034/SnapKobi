@@ -13,6 +13,7 @@ abstract final class AppRoutes {
   static const String history = '/history';
   static const String projectDetail = '/project-detail';
   static const String library = '/library';
+  static const String templateDetail = '/template-detail';
   static const String settings = '/settings';
   static const String subscription = '/subscription';
   static const String profileInfo = '/profile-info';

@@ -5,10 +5,9 @@ import '../../domain/entities/subscription.dart';
 class SubscriptionState {
   final PlanType currentPlan;
   final bool isYearly;
-  final int creditsLeft;
-  const SubscriptionState({this.currentPlan = PlanType.free, this.isYearly = false, this.creditsLeft = 7});
+  const SubscriptionState({this.currentPlan = PlanType.free, this.isYearly = false});
   SubscriptionState copyWith({bool? isYearly}) =>
-      SubscriptionState(currentPlan: currentPlan, isYearly: isYearly ?? this.isYearly, creditsLeft: creditsLeft);
+      SubscriptionState(currentPlan: currentPlan, isYearly: isYearly ?? this.isYearly);
 }
 
 class PlanFeature {

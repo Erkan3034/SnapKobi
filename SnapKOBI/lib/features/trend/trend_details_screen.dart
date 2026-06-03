@@ -25,7 +25,10 @@ class TrendDetailsScreen extends ConsumerWidget {
         leading: IconButton(icon: Icon(Icons.arrow_back, color: theme.iconTheme.color), onPressed: () => context.pop()),
         title: Text('Trend Detayları', style: AppTypography.headlineMedium.copyWith(color: theme.colorScheme.primary, fontSize: 20, fontWeight: FontWeight.bold)),
         centerTitle: true,
-        actions: [IconButton(icon: Icon(Icons.more_vert, color: theme.iconTheme.color), onPressed: () {})],
+        actions: [IconButton(icon: Icon(Icons.more_vert, color: theme.iconTheme.color),
+          onPressed: () => ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Trend seçenekleri yakında eklenecek.')),
+          ))],
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.only(bottom: AppDimensions.spacing24),

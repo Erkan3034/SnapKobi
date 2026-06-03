@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_dimensions.dart';
 import '../../../core/theme/app_shadows.dart';
 import '../../../core/theme/app_typography.dart';
+import '../../../shared/navigation/routes.dart';
+import '../../../shared/widgets/image/app_network_image.dart';
 import '../library_provider.dart';
-import '../template_detail_screen.dart';
 
 class TemplateGridCard extends StatelessWidget {
   final LibraryTemplate template;
@@ -15,9 +17,7 @@ class TemplateGridCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return GestureDetector(
-      onTap: () => Navigator.of(context).push(
-        MaterialPageRoute(builder: (_) => TemplateDetailScreen(template: template)),
-      ),
+      onTap: () => context.push(AppRoutes.templateDetail, extra: template),
       child: Container(
         decoration: BoxDecoration(
           color: theme.cardTheme.color ?? theme.cardColor,
@@ -27,9 +27,13 @@ class TemplateGridCard extends StatelessWidget {
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Expanded(
             child: Stack(children: [
-              ClipRRect(
-                borderRadius: const BorderRadius.vertical(top: Radius.circular(AppDimensions.radiusMedium)),
-                child: Image.network(template.imageUrl, width: double.infinity, height: double.infinity, fit: BoxFit.cover),
+              Positioned.fill(
+                child: AppNetworkImage(
+                  url: template.imageUrl,
+                  width: double.infinity,
+                  height: double.infinity,
+                  borderRadius: const BorderRadius.vertical(top: Radius.circular(AppDimensions.radiusMedium)),
+                ),
               ),
               if (template.isPremium)
                 Positioned(

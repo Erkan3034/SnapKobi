@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../core/theme/app_dimensions.dart';
 import '../../../core/theme/app_shadows.dart';
 import '../../../core/theme/app_typography.dart';
+import '../../../shared/widgets/image/app_network_image.dart';
 import '../discover_provider.dart';
 
 class TemplateCard extends StatelessWidget {
@@ -22,9 +23,11 @@ class TemplateCard extends StatelessWidget {
           boxShadow: const [AppShadows.cardShadow],
         ),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          ClipRRect(
+          AppNetworkImage(
+            url: item.imageUrl,
+            height: 90,
+            width: double.infinity,
             borderRadius: const BorderRadius.vertical(top: Radius.circular(AppDimensions.radiusMedium)),
-            child: Image.network(item.imageUrl, height: 90, width: double.infinity, fit: BoxFit.cover),
           ),
           Padding(
             padding: const EdgeInsets.all(AppDimensions.spacing8),

@@ -20,6 +20,9 @@ const _sectorLabels = {SectorType.food: 'Gıda', SectorType.textile: 'Tekstil', 
   SectorType.jewelry: 'Takı', SectorType.beauty: 'Kozmetik', SectorType.furniture: 'Mobilya', SectorType.other: 'Diğer'};
 const _planLabels = {PlanType.free: 'Ücretsiz', PlanType.starter: 'Başlangıç', PlanType.pro: 'Pro', PlanType.enterprise: 'Kurumsal'};
 
+/// Bildirim tercihi (şimdilik oturum-içi). İleride local storage / backend'e bağlanabilir.
+final notificationsEnabledProvider = StateProvider<bool>((ref) => true);
+
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
 
@@ -42,7 +45,11 @@ class SettingsScreen extends ConsumerWidget {
             Icon(Icons.chevron_right, color: theme.hintColor),
           ]), onTap: () => context.push(AppRoutes.sectorSettings)),
           SettingsTile(icon: Icons.notifications_outlined, title: 'Bildirimler', showDivider: false,
-            trailing: Switch(value: true, onChanged: (_) {}, activeThumbColor: AppColors.primary)),
+            trailing: Switch(
+              value: ref.watch(notificationsEnabledProvider),
+              onChanged: (val) => ref.read(notificationsEnabledProvider.notifier).state = val,
+              activeThumbColor: AppColors.primary,
+            )),
         ]),
         SettingsSection(title: 'Abonelik', children: [
           SettingsTile(icon: Icons.shield_outlined, title: '$plan Plan', trailing: Row(mainAxisSize: MainAxisSize.min, children: [

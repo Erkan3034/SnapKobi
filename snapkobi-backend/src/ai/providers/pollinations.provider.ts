@@ -23,13 +23,19 @@ export async function generateImageWithPollinations(
     pollinationsUrl.searchParams.set('height', String(height));
     pollinationsUrl.searchParams.set('nologo', 'true');
     pollinationsUrl.searchParams.set('seed', String(seed));
-    if (config?.activeModel && apiKey) {
-      pollinationsUrl.searchParams.set('model', config.activeModel);
-    }
+    // Model her zaman gonderilir (ucretsiz endpoint de destekler). Eski/zayif varsayilan
+    // degerleri ('zimage'/'pollinations') yuksek kaliteli ve metin halusinasyonu daha az
+    // olan 'flux'a haritala. Acik bir iyi model secilmisse ona saygi goster.
+    const rawModel = (config?.activeModel || '').toLowerCase();
+    const model = (!rawModel || rawModel === 'zimage' || rawModel === 'pollinations')
+      ? 'flux'
+      : config!.activeModel;
+    pollinationsUrl.searchParams.set('model', model);
 
     console.log(`🎨 Fetching image from Pollinations AI: ${pollinationsUrl}`);
     const response = await fetch(pollinationsUrl, {
       headers: apiKey ? { Authorization: `Bearer ${apiKey}` } : {},
+      signal: AbortSignal.timeout(60000),
     });
 
     if (!response.ok) {

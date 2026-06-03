@@ -8,6 +8,7 @@ import { GenerationStatus } from '@prisma/client';
 import { getSignedUrlForPath, uploadToSupabaseStorage } from '../providers/storage.helper';
 import { removeProductBackground } from '../providers/background-removal.helper';
 import { compositeProductOnBackground } from '../providers/composite.helper';
+import { normalizeToJpeg } from '../providers/image-normalize.helper';
 
 
 
@@ -59,7 +60,12 @@ export async function runGenerationPipeline(generationId: string): Promise<void>
     const platform = (generation.platform || 'instagram') as Platform;
     const options = (generation.options as any) || {};
     const backgroundStyle = normalizeBackgroundStyle(options.imageStyle);
-    const brandName = generation.user.displayName || undefined;
+    // Marka adi YALNIZCA acikca verildiyse kullanilir. Kullanicinin kisisel displayName'i
+    // (orn. "Erkan Turgut") marka degildir; caption'larda kisi adi kullanmamak icin
+    // displayName'i ENJEKTE ETME. Ileride BrandKit/marka alani options.brandName ile gelebilir.
+    const brandName = (typeof options.brandName === 'string' && options.brandName.trim())
+      ? options.brandName.trim()
+      : undefined;
     const extraContext = options.extraContext || undefined;
     const templateId = options.templateId || undefined;
 
@@ -112,23 +118,32 @@ Important: Generate an empty photorealistic product photography scene with one c
       },
     });
 
+    // Orijinali indir + normalize et (HEIC/HEIF → JPEG). iPhone fotograflari HEIC gelir;
+    // @imgly arka plan kaldirma ve ffmpeg HEIC okuyamaz. Normalize ederek tum downstream
+    // adimlarin (kesim, kompozit, ffmpeg, Flutter render) calismasini garanti ederiz.
+    console.log(`🔄 [Cutout Flow] Downloading original product image from: ${originalUrl}`);
+    const originalRes = await fetch(originalUrl);
+    if (!originalRes.ok) {
+      throw new Error(`Failed to download original product image: ${originalRes.statusText}`);
+    }
+    const rawBuffer = Buffer.from(await originalRes.arrayBuffer());
+    const { buffer: normalizedBuffer } = await normalizeToJpeg(
+      rawBuffer,
+      originalRes.headers.get('content-type'),
+      originalUrl
+    );
+
     let processedImageUrl = '';
     try {
-      console.log(`🔄 [Cutout Flow] Downloading original product image from: ${originalUrl}`);
-      const originalRes = await fetch(originalUrl);
-      if (!originalRes.ok) {
-        throw new Error(`Failed to download original product image: ${originalRes.statusText}`);
-      }
-      const originalBuffer = Buffer.from(await originalRes.arrayBuffer());
-
       console.log('✂️ [Cutout Flow] Extracting transparent product PNG...');
-      const productPngBuffer = await removeProductBackground(
-        originalBuffer,
-        originalRes.headers.get('content-type')
-      );
+      const productPngBuffer = await removeProductBackground(normalizedBuffer, 'image/jpeg');
 
       console.log('🌅 [Cutout Flow] Generating clean empty scene backdrop from Pollinations...');
-      const backdropUrl = await generateImageWithPollinations(emptyBackdropPrompt, generationId, imageConfig);
+      const textFreeBackdropPrompt =
+        `${emptyBackdropPrompt}\n\nCRITICAL: The image must contain ABSOLUTELY NO text, letters, words, numbers, ` +
+        `typography, captions, labels, logos, signs, watermarks or writing of any kind. A clean, empty, ` +
+        `photorealistic background scene only.`;
+      const backdropUrl = await generateImageWithPollinations(textFreeBackdropPrompt, generationId, imageConfig);
 
       console.log(`📥 [Cutout Flow] Downloading generated scene backdrop from: ${backdropUrl}`);
       const backdropRes = await fetch(backdropUrl);
@@ -155,8 +170,16 @@ Important: Generate an empty photorealistic product photography scene with one c
       processedImageUrl = compositedUrl;
       console.log(`✅ [Cutout Flow] Successfully created composited product image! URL: ${processedImageUrl}`);
     } catch (cutoutError: any) {
-      console.warn(`⚠️ [Cutout Flow] Background processing failed. Preserving original product image:`, cutoutError.message);
-      processedImageUrl = originalUrl;
+      console.warn(`⚠️ [Cutout Flow] Background processing failed. Falling back to normalized original:`, cutoutError.message);
+      // Normalize edilmis JPEG'i yukle — hem Flutter render eder hem ffmpeg isleyebilir
+      // (orijinal HEIC yerine). Boylece video fallback'i de calisabilir.
+      const fallbackUrl = await uploadToSupabaseStorage(
+        normalizedBuffer,
+        `images/${generationId}.jpg`,
+        'results',
+        'image/jpeg'
+      );
+      processedImageUrl = fallbackUrl || originalUrl;
     }
 
 
@@ -168,7 +191,7 @@ Important: Generate an empty photorealistic product photography scene with one c
         status: GenerationStatus.generating_caption,
         processedImagePath: processedImageUrl,
         captionModel: captionConfig?.activeModel || 'gemini-flash',
-        videoModel: videoConfig?.activeModel || 'fal-kaiber',
+        videoModel: videoConfig?.activeModel || 'ken-burns-local',
       },
     });
 
@@ -233,12 +256,25 @@ Important: Generate an empty photorealistic product photography scene with one c
 }
 
 function normalizeBackgroundStyle(value: unknown): BackgroundStyle {
+  // Flutter'in gonderdigi tum tema id'lerini gecerli bir BackgroundStyle'a haritala.
+  // Eslesmeyen/bilinmeyen deger 'studio_white'a duser; boylece prompt'a asla
+  // 'undefined' girmez (luxury/neon/gradient daha once undefined uretiyordu).
   const aliases: Record<string, BackgroundStyle> = {
     studio: 'studio_white',
+    studio_white: 'studio_white',
+    studio_dark: 'studio_dark',
+    dark: 'studio_dark',
+    luxury: 'studio_dark',
     outdoor: 'nature_outdoor',
     nature: 'nature_outdoor',
+    nature_outdoor: 'nature_outdoor',
     home: 'lifestyle',
+    lifestyle: 'lifestyle',
+    minimalist: 'minimalist',
+    neon: 'ai_generated',
+    gradient: 'ai_generated',
+    ai_generated: 'ai_generated',
   };
-  const normalized = String(value || 'studio_white');
-  return aliases[normalized] || normalized as BackgroundStyle;
+  const key = String(value || 'studio_white').toLowerCase();
+  return aliases[key] || 'studio_white';
 }

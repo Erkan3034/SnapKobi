@@ -5,6 +5,7 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_dimensions.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../../../../domain/entities/platform_type.dart';
+import '../../../../shared/widgets/image/app_network_image.dart';
 import '../create_provider.dart';
 
 final templatesProvider = FutureProvider.family<List<Map<String, dynamic>>, PlatformType>((ref, platform) async {
@@ -23,49 +24,21 @@ final templatesProvider = FutureProvider.family<List<Map<String, dynamic>>, Plat
       return platforms.isEmpty || platforms.contains(platform.name);
     }).toList();
   } catch (e) {
-    // If the table doesn't exist yet or connection fails, return mock fallback templates
-    return _getMockTemplates(platform);
+    // Tablo/baglanti hatasinda sahte sablon gosterme; bos liste don ("Varsayilan" kalir).
+    return const [];
   }
 });
-
-List<Map<String, dynamic>> _getMockTemplates(PlatformType platform) {
-  return [
-    {
-      'id': 'bahar-koleksiyonu',
-      'name': 'Bahar Esintisi 🌸',
-      'description': 'Bahar temalı soft pastel renkler ve doğal güneş ışığı',
-      'is_featured': true,
-      'category': 'fashion',
-      'thumbnail_url': 'https://images.unsplash.com/photo-1490750967868-88aa4486c946?w=200&q=80',
-    },
-    {
-      'id': 'minimalist-luxe',
-      'name': 'Luxury Minimal 💎',
-      'description': 'Ultra sade mermer yüzey ve profesyonel loş ışıklar',
-      'is_featured': false,
-      'category': 'beauty',
-      'thumbnail_url': 'https://images.unsplash.com/photo-1600185365926-3a2ce3cdb9eb?w=200&q=80',
-    },
-    {
-      'id': 'neon-cyber',
-      'name': 'Neon Cyberpunk ⚡',
-      'description': 'Dinamik pembe-mavi neon ışıklar ve sokak stili',
-      'is_featured': true,
-      'category': 'electronics',
-      'thumbnail_url': 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=200&q=80',
-    },
-  ];
-}
 
 class TemplateFeedWidget extends ConsumerWidget {
   const TemplateFeedWidget({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
     final createState = ref.watch(createProvider);
     final selectedPlatform = createState.selectedPlatform;
     final selectedTemplateId = createState.selectedTemplateId;
-    
+
     final asyncTemplates = ref.watch(templatesProvider(selectedPlatform));
 
     return Column(
@@ -80,13 +53,13 @@ class TemplateFeedWidget extends ConsumerWidget {
                 'Bu Haftanın Popüler Şablonları',
                 style: AppTypography.bodyLarge.copyWith(
                   fontWeight: FontWeight.bold,
-                  color: AppColors.textPrimary,
+                  color: theme.textTheme.bodyLarge?.color ?? theme.colorScheme.onSurface,
                 ),
               ),
               Text(
                 'İsteğe Bağlı',
                 style: AppTypography.labelSmall.copyWith(
-                  color: AppColors.textHint,
+                  color: theme.hintColor,
                 ),
               ),
             ],
@@ -185,7 +158,7 @@ class TemplateFeedWidget extends ConsumerWidget {
                     color: Colors.grey[200],
                     width: double.infinity,
                     child: imageUrl != null
-                        ? Image.network(imageUrl, fit: BoxFit.cover)
+                        ? AppNetworkImage(url: imageUrl, width: double.infinity, fit: BoxFit.cover)
                         : (iconWidget ?? const Icon(Icons.palette_outlined)),
                   ),
                 ),
@@ -196,7 +169,7 @@ class TemplateFeedWidget extends ConsumerWidget {
                 style: AppTypography.labelSmall.copyWith(
                   fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
                   fontSize: 11,
-                  color: AppColors.textPrimary,
+                  color: Theme.of(context).textTheme.bodyMedium?.color ?? Theme.of(context).colorScheme.onSurface,
                 ),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,

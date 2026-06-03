@@ -16,9 +16,11 @@ class LibraryScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(libraryProvider);
-    final filtered = state.selectedCategory == 'all'
-        ? state.templates
-        : state.templates.where((t) => t.category == state.selectedCategory).toList();
+    final query = ref.watch(librarySearchProvider).trim().toLowerCase();
+    final byFilters = state.filtered;
+    final filtered = query.isEmpty
+        ? byFilters
+        : byFilters.where((t) => t.title.toLowerCase().contains(query)).toList();
     final theme = Theme.of(context);
 
     return Scaffold(
@@ -42,21 +44,49 @@ class LibraryScreen extends ConsumerWidget {
         ],
       ),
       body: Column(children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(AppDimensions.spacing16, AppDimensions.spacing8, AppDimensions.spacing16, 0),
+          child: TextField(
+            onChanged: (v) => ref.read(librarySearchProvider.notifier).state = v,
+            style: TextStyle(color: theme.textTheme.bodyLarge?.color),
+            decoration: InputDecoration(
+              hintText: 'Şablon ara...',
+              prefixIcon: Icon(Icons.search, color: theme.hintColor),
+              isDense: true,
+              filled: true,
+              fillColor: theme.cardTheme.color ?? theme.cardColor,
+              border: OutlineInputBorder(borderRadius: BorderRadius.circular(AppDimensions.radiusFull), borderSide: BorderSide(color: theme.dividerColor)),
+              enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(AppDimensions.radiusFull), borderSide: BorderSide(color: theme.dividerColor)),
+            ),
+          ),
+        ),
         const LibraryCategorySelector(),
         Expanded(
-          child: GridView.builder(
-            padding: const EdgeInsets.all(AppDimensions.spacing12),
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              crossAxisSpacing: AppDimensions.spacing12,
-              mainAxisSpacing: AppDimensions.spacing12,
-              childAspectRatio: 0.82,
-            ),
-            itemCount: filtered.length,
-            itemBuilder: (_, i) => TemplateGridCard(template: filtered[i]),
-          ),
+          child: state.isLoading
+              ? const Center(child: CircularProgressIndicator())
+              : filtered.isEmpty
+                  ? _buildEmpty(theme)
+                  : GridView.builder(
+                      padding: const EdgeInsets.all(AppDimensions.spacing12),
+                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        crossAxisSpacing: AppDimensions.spacing12,
+                        mainAxisSpacing: AppDimensions.spacing12,
+                        childAspectRatio: 0.82,
+                      ),
+                      itemCount: filtered.length,
+                      itemBuilder: (_, i) => TemplateGridCard(template: filtered[i]),
+                    ),
         ),
       ]),
     );
   }
+
+  Widget _buildEmpty(ThemeData theme) => Center(
+        child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+          Icon(Icons.grid_view_outlined, size: 48, color: theme.hintColor),
+          const SizedBox(height: AppDimensions.spacing12),
+          Text('Bu kategoride şablon bulunmuyor.', style: AppTypography.bodyMedium.copyWith(color: theme.hintColor)),
+        ]),
+      );
 }

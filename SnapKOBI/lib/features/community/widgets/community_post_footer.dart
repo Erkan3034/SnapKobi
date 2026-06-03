@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_dimensions.dart';
 import '../../../core/theme/app_typography.dart';
-import '../../create/create_screen.dart';
+import '../../../shared/navigation/routes.dart';
 import '../../discover/discover_provider.dart';
 
 class CommunityPostFooter extends StatefulWidget {
@@ -72,12 +73,7 @@ class _CommunityPostFooterState extends State<CommunityPostFooter> {
               borderRadius: BorderRadius.circular(AppDimensions.radiusSmall),
             ),
           ),
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (_) => const CreateScreen()),
-            );
-          },
+          onPressed: () => context.push(AppRoutes.create),
           icon: const Icon(Icons.auto_awesome, size: 14),
           label: Text(
             'Şablonu Dene',

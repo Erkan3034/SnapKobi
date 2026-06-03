@@ -1,4 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Release APK'da ag erisimi icin sart (Supabase + backend API). Debug manifest'i
+         bunu otomatik ekler; release'de elle tanimlanmazsa tum istekler basarisiz olur. -->
+    <uses-permission android:name="android.permission.INTERNET"/>
     <application
         android:label="snapkobi"
         android:name="${applicationName}"

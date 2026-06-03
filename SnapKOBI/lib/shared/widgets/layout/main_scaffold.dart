@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/app_icons.dart';
-import '../../../features/create/create_screen.dart';
 import '../../../features/discover/discover_screen.dart';
 import '../../../features/history/history_screen.dart';
 import '../../../features/library/library_screen.dart';
 import '../../../features/settings/settings_screen.dart';
+import '../../navigation/routes.dart';
 import 'create_fab_button.dart';
 
 class MainScaffold extends StatefulWidget {
@@ -31,7 +32,7 @@ class _MainScaffoldState extends State<MainScaffold> {
     final theme = Theme.of(context);
     return Scaffold(
       body: IndexedStack(index: _selectedIndex, children: _screens),
-      floatingActionButton: CreateFabButton(onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const CreateScreen()))),
+      floatingActionButton: CreateFabButton(onTap: () => context.push(AppRoutes.create)),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: BottomAppBar(
         shape: const CircularNotchedRectangle(), notchMargin: 8,

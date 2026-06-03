@@ -216,8 +216,10 @@ model AdminTemplate {
   description             String?
   thumbnailUrl            String?   @map("thumbnail_url")
   category                String
+  usageCount              Int       @default(0) @map("usage_count")
   isActive                Boolean   @default(true) @map("is_active")
   isFeatured              Boolean   @default(false) @map("is_featured")
+  isPremium               Boolean   @default(false) @map("is_premium")
   sortOrder               Int       @default(0) @map("sort_order")
   displayWeek             DateTime? @map("display_week")
   backgroundSystemPrompt  String?   @map("background_system_prompt") @db.Text
@@ -230,4 +232,44 @@ model AdminTemplate {
   updatedAt               DateTime  @updatedAt @map("updated_at")
 
   @@map("admin_templates")
+}
+
+model Trend {
+  id         String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  title      String
+  imageUrl   String       @map("image_url")
+  beforeUrl  String       @map("before_url")
+  usageCount Int          @default(0) @map("usage_count")
+  category   String
+  popularity Int          @default(0)
+  sector     SectorType
+  platform   PlatformType
+  caption    String       @default("") @db.Text
+  hashtags   String[]     @default([])
+  scenes     String[]     @default([])
+  isActive   Boolean      @default(true) @map("is_active")
+  sortOrder  Int          @default(0) @map("sort_order")
+  createdAt  DateTime     @default(now()) @map("created_at")
+  updatedAt  DateTime     @updatedAt @map("updated_at")
+
+  @@index([isActive, sortOrder])
+  @@map("trends")
+}
+
+model CommunityPost {
+  id            String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userName      String       @map("user_name")
+  avatarUrl     String?      @map("avatar_url")
+  beforeUrl     String       @map("before_url")
+  afterUrl      String       @map("after_url")
+  platform      PlatformType
+  category      String       @default("other")
+  likesCount    Int          @default(0) @map("likes_count")
+  commentsCount Int          @default(0) @map("comments_count")
+  isActive      Boolean      @default(true) @map("is_active")
+  sortOrder     Int          @default(0) @map("sort_order")
+  createdAt     DateTime     @default(now()) @map("created_at")
+
+  @@index([isActive, createdAt(sort: Desc)])
+  @@map("community_posts")
 }

@@ -5,6 +5,7 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_dimensions.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../shared/navigation/routes.dart';
+import '../../../shared/widgets/image/app_network_image.dart';
 import '../../discover/discover_provider.dart';
 
 class TrendingGridCard extends StatelessWidget {
@@ -32,9 +33,11 @@ class TrendingGridCard extends StatelessWidget {
           children: [
             Stack(
               children: [
-                ClipRRect(
+                AppNetworkImage(
+                  url: item.imageUrl,
+                  height: 140,
+                  width: double.infinity,
                   borderRadius: const BorderRadius.vertical(top: Radius.circular(AppDimensions.radiusMedium)),
-                  child: Image.network(item.imageUrl, height: 140, width: double.infinity, fit: BoxFit.cover),
                 ),
                 Positioned(
                   top: AppDimensions.spacing8,

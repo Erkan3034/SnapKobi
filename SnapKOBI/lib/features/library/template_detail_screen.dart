@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_dimensions.dart';
 import '../../core/theme/app_typography.dart';
-import '../create/create_screen.dart';
+import '../../shared/navigation/routes.dart';
 import 'library_provider.dart';
 
 class TemplateDetailScreen extends StatelessWidget {
@@ -70,7 +70,7 @@ class TemplateDetailScreen extends StatelessWidget {
             ),
             onPressed: () {
               context.pop();
-              Navigator.of(context).push(MaterialPageRoute(builder: (_) => const CreateScreen()));
+              context.push(AppRoutes.create, extra: {'templateId': template.id});
             },
             icon: const Icon(Icons.auto_awesome_rounded),
             label: const Text('Bu Şablonu Kullan', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),

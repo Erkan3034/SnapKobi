@@ -18,8 +18,24 @@ import 'widgets/platform_chip_button.dart';
 import 'widgets/template_feed_widget.dart';
 
 
-class CreateScreen extends ConsumerWidget {
-  const CreateScreen({super.key});
+class CreateScreen extends ConsumerStatefulWidget {
+  final String? initialTemplateId;
+  const CreateScreen({super.key, this.initialTemplateId});
+
+  @override
+  ConsumerState<CreateScreen> createState() => _CreateScreenState();
+}
+
+class _CreateScreenState extends ConsumerState<CreateScreen> {
+  @override
+  void initState() {
+    super.initState();
+    final tid = widget.initialTemplateId;
+    if (tid != null && tid.isNotEmpty) {
+      // Library'den "Bu Şablonu Kullan" ile gelindiyse şablonu önceden seç.
+      Future.microtask(() => ref.read(createProvider.notifier).setTemplateId(tid));
+    }
+  }
 
   Future<void> _pickImage(WidgetRef ref, ImageSource src) async {
     final img = await ImagePicker().pickImage(source: src);
@@ -27,7 +43,8 @@ class CreateScreen extends ConsumerWidget {
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
+    final ref = this.ref;
     final state = ref.watch(createProvider);
     final hasImg = state.selectedImagePath != null;
     final theme = Theme.of(context);

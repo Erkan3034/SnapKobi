@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../../../core/constants/app_constants.dart';
 import '../../../core/theme/app_dimensions.dart';
 import '../../../core/theme/app_typography.dart';
+import '../../../shared/widgets/image/app_network_image.dart';
 import '../../discover/discover_provider.dart';
 
 class TrendAiScenes extends StatelessWidget {
@@ -11,8 +11,7 @@ class TrendAiScenes extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final names = AppConstants.defaultSceneNames;
-    final images = item.scenes;
+    final images = item.scenes; // trends.scenes (DB)
     final theme = Theme.of(context);
 
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -27,7 +26,7 @@ class TrendAiScenes extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: AppDimensions.spacing16),
           itemCount: images.length,
           itemBuilder: (context, index) {
-            final title = index < names.length ? names[index] : 'Sahne ${index + 1}';
+            final title = 'Sahne ${index + 1}';
             return Padding(
               padding: const EdgeInsets.only(right: AppDimensions.spacing12),
               child: Column(children: [
@@ -38,9 +37,11 @@ class TrendAiScenes extends StatelessWidget {
                     borderRadius: BorderRadius.circular(AppDimensions.radiusMedium),
                     boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 6, offset: const Offset(0, 3))],
                   ),
-                  child: ClipRRect(
+                  child: AppNetworkImage(
+                    url: images[index],
+                    width: double.infinity,
+                    height: double.infinity,
                     borderRadius: BorderRadius.circular(AppDimensions.radiusMedium),
-                    child: Image.network(images[index], fit: BoxFit.cover),
                   ),
                 ),
                 const SizedBox(height: 6),

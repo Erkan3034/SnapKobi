@@ -5,6 +5,7 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_dimensions.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../shared/navigation/routes.dart';
+import '../../../shared/widgets/image/app_network_image.dart';
 import '../discover_provider.dart';
 
 class TrendingCard extends StatelessWidget {
@@ -26,9 +27,11 @@ class TrendingCard extends StatelessWidget {
           boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.06), blurRadius: 8, offset: const Offset(0, 2))],
         ),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          ClipRRect(
+          AppNetworkImage(
+            url: item.imageUrl,
+            height: 120,
+            width: 160,
             borderRadius: const BorderRadius.vertical(top: Radius.circular(AppDimensions.radiusMedium)),
-            child: Image.network(item.imageUrl, height: 120, width: 160, fit: BoxFit.cover),
           ),
           Padding(
             padding: const EdgeInsets.all(AppDimensions.spacing8),

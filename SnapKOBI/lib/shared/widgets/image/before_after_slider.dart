@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_dimensions.dart';
+import 'app_network_image.dart';
 
 class BeforeAfterSlider extends StatefulWidget {
   final String beforeUrl;
@@ -40,9 +41,7 @@ class _BeforeAfterSliderState extends State<BeforeAfterSlider> {
             child: GestureDetector(
               onHorizontalDragUpdate: (_) {},
               child: Stack(fit: StackFit.expand, children: [
-                widget.afterUrl.isNotEmpty
-                    ? Image.network(widget.afterUrl, width: width, height: widget.height, fit: BoxFit.cover)
-                    : Container(color: AppColors.primaryLightest, width: width, height: widget.height, child: const Icon(Icons.image, color: AppColors.primary)),
+                AppNetworkImage(url: widget.afterUrl, width: width, height: widget.height),
                 Align(
                   alignment: Alignment.centerLeft,
                   child: ClipRect(
@@ -50,26 +49,30 @@ class _BeforeAfterSliderState extends State<BeforeAfterSlider> {
                     child: SizedBox(
                       width: width,
                       height: widget.height,
-                      child: widget.beforeUrl.isNotEmpty
-                          ? Image.network(widget.beforeUrl, width: width, height: widget.height, fit: BoxFit.cover)
-                          : Container(color: AppColors.primaryLightest, width: width, height: widget.height, child: const Icon(Icons.image, color: AppColors.primary)),
+                      child: AppNetworkImage(url: widget.beforeUrl, width: width, height: widget.height),
                     ),
                   ),
                 ),
-                FractionallySizedBox(
-                  alignment: Alignment.centerLeft,
-                  widthFactor: _clipPercent,
-                  child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-                    Container(width: 2.5, height: widget.height, color: AppColors.white),
-                    Transform.translate(
-                      offset: const Offset(13, 0),
-                      child: Container(
-                        width: 28, height: 28,
-                        decoration: const BoxDecoration(color: AppColors.white, shape: BoxShape.circle, boxShadow: [BoxShadow(color: Colors.black26, blurRadius: 4)]),
-                        child: const Icon(Icons.swap_horiz, color: AppColors.primary, size: 18),
-                      ),
+                // Ayirici cizgi (tam yukseklik), kolun tam ortasinda
+                Positioned(
+                  left: (width * _clipPercent).clamp(14.0, width - 14.0) - 1.25,
+                  top: 0,
+                  bottom: 0,
+                  child: Container(width: 2.5, color: AppColors.white),
+                ),
+                // Kaydirma kolu — 28px sabit genislik; kenarlardan tasmayacak sekilde clamp'lenir
+                Positioned(
+                  left: (width * _clipPercent).clamp(14.0, width - 14.0) - 14,
+                  top: 0,
+                  bottom: 0,
+                  width: 28,
+                  child: Center(
+                    child: Container(
+                      width: 28, height: 28,
+                      decoration: const BoxDecoration(color: AppColors.white, shape: BoxShape.circle, boxShadow: [BoxShadow(color: Colors.black26, blurRadius: 4)]),
+                      child: const Icon(Icons.swap_horiz, color: AppColors.primary, size: 18),
                     ),
-                  ]),
+                  ),
                 ),
               ]),
             ),
