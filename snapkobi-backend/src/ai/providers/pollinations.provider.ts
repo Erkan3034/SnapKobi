@@ -31,15 +31,33 @@ export async function generateImageWithPollinations(
       ? 'flux'
       : config!.activeModel;
     pollinationsUrl.searchParams.set('model', model);
+    // Ucretsiz `image.pollinations.ai/prompt` endpoint'i Authorization header'ini
+    // genelde yok sayar; token'i query param olarak da gondermek rate-limit'i (402/429)
+    // gercekten asar. Her iki yontemi de uygula.
+    if (apiKey) {
+      pollinationsUrl.searchParams.set('token', apiKey);
+    }
 
-    console.log(`🎨 Fetching image from Pollinations AI: ${pollinationsUrl}`);
-    const response = await fetch(pollinationsUrl, {
-      headers: apiKey ? { Authorization: `Bearer ${apiKey}` } : {},
-      signal: AbortSignal.timeout(60000),
-    });
+    console.log(`🎨 Fetching image from Pollinations AI (model=${model}, auth=${apiKey ? 'token' : 'anon'})`);
 
-    if (!response.ok) {
-      throw new Error(`Pollinations AI responded with status: ${response.status}`);
+    // 402/429 (kuyruk dolu/rate limit) durumunda kisa beklemeyle bir kez yeniden dene.
+    let response: Response | null = null;
+    for (let attempt = 0; attempt < 2; attempt++) {
+      response = await fetch(pollinationsUrl, {
+        headers: apiKey ? { Authorization: `Bearer ${apiKey}` } : {},
+        signal: AbortSignal.timeout(60000),
+      });
+      if (response.ok) break;
+      if ((response.status === 402 || response.status === 429) && attempt === 0) {
+        console.warn(`⏳ Pollinations ${response.status} (rate limit) — 4sn sonra tekrar denenecek...`);
+        await new Promise((r) => setTimeout(r, 4000));
+        continue;
+      }
+      break;
+    }
+
+    if (!response || !response.ok) {
+      throw new Error(`Pollinations AI responded with status: ${response?.status ?? 'no-response'}`);
     }
 
     const arrayBuffer = await response.arrayBuffer();

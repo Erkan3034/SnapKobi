@@ -15,6 +15,11 @@ const envSchema = z.object({
   FAL_KEY: z.string().optional(),
   POLLINATIONS_KEY: z.string().optional(),
   OPENAI_API_KEY: z.string().optional(),
+  // Pixazo (Azure API Management) — opsiyonel birincil gorsel saglayici.
+  // PIXAZO_API_URL: portaldaki "Request URL" (sorgu paramlari haric base).
+  // PIXAZO_API_KEY: "Ocp-Apim-Subscription-Key" abonelik anahtari.
+  PIXAZO_API_KEY: z.string().optional(),
+  PIXAZO_API_URL: z.string().optional(),
   GEMINI_MODEL: z.string().optional(),
   PORT: z.coerce.number().default(3000),
   NODE_ENV: z.enum(['development', 'staging', 'production']).default('development'),

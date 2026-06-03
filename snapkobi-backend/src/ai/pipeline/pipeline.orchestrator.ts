@@ -9,6 +9,8 @@ import { getSignedUrlForPath, uploadToSupabaseStorage } from '../providers/stora
 import { removeProductBackground } from '../providers/background-removal.helper';
 import { compositeProductOnBackground } from '../providers/composite.helper';
 import { normalizeToJpeg } from '../providers/image-normalize.helper';
+import { generateLocalBackdrop } from '../providers/local-backdrop.helper';
+import { generatePixazoBackdrop, isPixazoConfigured } from '../providers/pixazo.provider';
 
 
 
@@ -138,19 +140,48 @@ Important: Generate an empty photorealistic product photography scene with one c
       console.log('✂️ [Cutout Flow] Extracting transparent product PNG...');
       const productPngBuffer = await removeProductBackground(normalizedBuffer, 'image/jpeg');
 
-      console.log('🌅 [Cutout Flow] Generating clean empty scene backdrop from Pollinations...');
+      // Arka plan zinciri: 1) Pixazo (SDXL, varsa) → 2) Pollinations (flux) →
+      // 3) %100 yerel/ucretsiz studyo arka plani. Her durumda urun temiz bir
+      // sahneye kompozit edilir (duz orijinale ASLA dusmez).
       const textFreeBackdropPrompt =
-        `${emptyBackdropPrompt}\n\nCRITICAL: The image must contain ABSOLUTELY NO text, letters, words, numbers, ` +
+        `${emptyBackdropPrompt}\n\nStyle: premium product photography, soft diffused studio lighting, ` +
+        `shallow depth of field, gentle gradient, high detail, clean and professional, 8k.\n\n` +
+        `CRITICAL: The image must contain ABSOLUTELY NO text, letters, words, numbers, ` +
         `typography, captions, labels, logos, signs, watermarks or writing of any kind. A clean, empty, ` +
         `photorealistic background scene only.`;
-      const backdropUrl = await generateImageWithPollinations(textFreeBackdropPrompt, generationId, imageConfig);
 
-      console.log(`📥 [Cutout Flow] Downloading generated scene backdrop from: ${backdropUrl}`);
-      const backdropRes = await fetch(backdropUrl);
-      if (!backdropRes.ok) {
-        throw new Error(`Failed to download backdrop image: ${backdropRes.statusText}`);
+      let backdropBuffer: Buffer | null = null;
+
+      // 1) Pixazo (yapilandirilmissa)
+      if (isPixazoConfigured()) {
+        try {
+          console.log('🌅 [Cutout Flow] Generating backdrop from Pixazo (SDXL)...');
+          backdropBuffer = await generatePixazoBackdrop(textFreeBackdropPrompt);
+        } catch (pixazoError: any) {
+          console.warn(`⚠️ [Cutout Flow] Pixazo backdrop failed (${pixazoError.message}); Pollinations denenecek.`);
+        }
       }
-      const backdropBuffer = Buffer.from(await backdropRes.arrayBuffer());
+
+      // 2) Pollinations
+      if (!backdropBuffer) {
+        try {
+          console.log('🌅 [Cutout Flow] Generating clean empty scene backdrop from Pollinations...');
+          const backdropUrl = await generateImageWithPollinations(textFreeBackdropPrompt, generationId, imageConfig);
+          console.log(`📥 [Cutout Flow] Downloading generated scene backdrop from: ${backdropUrl}`);
+          const backdropRes = await fetch(backdropUrl);
+          if (!backdropRes.ok) {
+            throw new Error(`Failed to download backdrop image: ${backdropRes.statusText}`);
+          }
+          backdropBuffer = Buffer.from(await backdropRes.arrayBuffer());
+        } catch (backdropError: any) {
+          console.warn(`⚠️ [Cutout Flow] Pollinations backdrop failed (${backdropError.message}); yerel studyo arka plani kullaniliyor.`);
+        }
+      }
+
+      // 3) Yerel studyo arka plani (her zaman calisir)
+      if (!backdropBuffer) {
+        backdropBuffer = await generateLocalBackdrop(1080, 1080, backgroundStyle);
+      }
 
       console.log('🎨 [Cutout Flow] Compositing product cutout onto backdrop...');
       const compositedBuffer = await compositeProductOnBackground(productPngBuffer, backdropBuffer);

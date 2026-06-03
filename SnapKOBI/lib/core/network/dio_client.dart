@@ -14,6 +14,9 @@ class DioClient {
 						receiveTimeout: ApiConstants.receiveTimeout,
 						headers: {
 							'Content-Type': 'application/json',
+							// ngrok ucretsiz plan, tarayici istekleri icin bir uyari HTML sayfasi
+							// dondurebiliyor; bu header onu atlatip her zaman gercek JSON aldirir.
+							'ngrok-skip-browser-warning': 'true',
 						},
 					),
 				) {

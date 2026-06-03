@@ -31,20 +31,20 @@ export async function compositeProductOnBackground(
     const prodWidth = product.bitmap.width;
     const prodHeight = product.bitmap.height;
 
-    const maxWidth = bgWidth * 0.52;
-    const maxHeight = bgHeight * 0.58;
+    const maxWidth = bgWidth * 0.46;
+    const maxHeight = bgHeight * 0.54;
     const scale = Math.min(maxWidth / prodWidth, maxHeight / prodHeight, 1);
     const newWidth = Math.max(1, Math.round(prodWidth * scale));
     const newHeight = Math.max(1, Math.round(prodHeight * scale));
     product.resize({ w: newWidth, h: newHeight });
 
-    const surfaceY = Math.round(bgHeight * 0.78);
+    const surfaceY = Math.round(bgHeight * 0.82);
     const x = Math.round((bgWidth - newWidth) / 2);
     const y = Math.max(Math.round(bgHeight * 0.1), surfaceY - newHeight);
 
     const shadow = createContactShadow(
-      Math.max(20, Math.round(newWidth * 0.72)),
-      Math.max(8, Math.round(newHeight * 0.055))
+      Math.max(24, Math.round(newWidth * 0.82)),
+      Math.max(10, Math.round(newHeight * 0.07))
     );
     const shadowX = Math.round(x + (newWidth - shadow.bitmap.width) / 2);
     const shadowY = Math.round(surfaceY - shadow.bitmap.height / 2);
@@ -153,10 +153,11 @@ function createContactShadow(width: number, height: number) {
     const dy = (y - centerY) / Math.max(1, centerY);
     const distance = dx * dx + dy * dy;
     if (distance >= 1) return;
-    this.bitmap.data[index] = 18;
-    this.bitmap.data[index + 1] = 18;
-    this.bitmap.data[index + 2] = 18;
-    this.bitmap.data[index + 3] = Math.round(62 * Math.pow(1 - distance, 1.8));
+    this.bitmap.data[index] = 14;
+    this.bitmap.data[index + 1] = 14;
+    this.bitmap.data[index + 2] = 14;
+    // Daha koyu merkez + yumusak kenar gecisi → urun zemine daha iyi baglanir.
+    this.bitmap.data[index + 3] = Math.round(105 * Math.pow(1 - distance, 2.2));
   });
 
   return shadow;

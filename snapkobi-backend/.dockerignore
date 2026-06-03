@@ -1,0 +1,11 @@
+node_modules
+dist
+.env
+.env.*
+*.log
+*.png
+*.jpg
+*.jpeg
+.git
+.gitignore
+README.md
