@@ -33,7 +33,8 @@ class _MainScaffoldState extends State<MainScaffold> {
     return Scaffold(
       body: IndexedStack(index: _selectedIndex, children: _screens),
       floatingActionButton: CreateFabButton(onTap: () => context.push(AppRoutes.create)),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,//ortada fab buton
+      
       bottomNavigationBar: BottomAppBar(
         shape: const CircularNotchedRectangle(), notchMargin: 8,
         color: theme.bottomAppBarTheme.color ?? theme.colorScheme.surface, elevation: 12,

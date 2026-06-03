@@ -20,6 +20,7 @@ class DiscoverState {
   });
 }
 
+
 class DiscoverNotifier extends StateNotifier<DiscoverState> {
   final Ref _ref;
 

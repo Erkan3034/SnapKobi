@@ -15,6 +15,8 @@ import 'widgets/popular_templates_section.dart';
 import 'widgets/quick_start_banner.dart';
 import 'widgets/trending_section.dart';
 
+
+// ANASAYFA - TRENDLER, SABLONLAR, TOPLULUK PAYLASIMLARI
 class DiscoverScreen extends ConsumerWidget {
   const DiscoverScreen({super.key});
 

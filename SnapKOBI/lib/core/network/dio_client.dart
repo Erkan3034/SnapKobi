@@ -6,6 +6,7 @@ import 'interceptors/auth_interceptor.dart';
 class DioClient {
 	final Dio _dio;
 
+//uretim baslatma,gecmis, kullanici verlieri.
 	DioClient({required AuthInterceptor authInterceptor})
 			: _dio = Dio(
 					BaseOptions(
@@ -14,8 +15,6 @@ class DioClient {
 						receiveTimeout: ApiConstants.receiveTimeout,
 						headers: {
 							'Content-Type': 'application/json',
-							// ngrok ucretsiz plan, tarayici istekleri icin bir uyari HTML sayfasi
-							// dondurebiliyor; bu header onu atlatip her zaman gercek JSON aldirir.
 							'ngrok-skip-browser-warning': 'true',
 						},
 					),

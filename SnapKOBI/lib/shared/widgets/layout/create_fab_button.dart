@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_icons.dart';
 
-/// Getir tarzı ortada büyük mor FAB — "Üret ✨"
+///ortada büyük mor FAB — "Üret ✨"
 class CreateFabButton extends StatelessWidget {
   final VoidCallback onTap;
   const CreateFabButton({super.key, required this.onTap});
