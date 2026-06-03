@@ -1,3 +1,4 @@
+// Topluluk gönderisi üst kısmı (kullanıcı/sektör bilgisi).
 import 'package:flutter/material.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_dimensions.dart';

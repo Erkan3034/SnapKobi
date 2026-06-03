@@ -1,3 +1,4 @@
+// 'Üret' form state'i (seçili foto/platform/arka plan teması/şablon) — CreateNotifier.
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../domain/entities/platform_type.dart';

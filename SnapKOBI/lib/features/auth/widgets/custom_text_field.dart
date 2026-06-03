@@ -1,3 +1,4 @@
+// Ortak özelleştirilmiş giriş alanı (label + ikon + gölge); tüm form ekranlarında kullanılır.
 import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_colors.dart';

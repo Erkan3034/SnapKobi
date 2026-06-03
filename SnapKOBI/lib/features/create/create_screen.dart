@@ -1,3 +1,4 @@
+// Yeni üretim ekranı: foto seç → platform/tema seç → Üret. Orta FAB ile açılır. Rota: /create
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';

@@ -1,3 +1,4 @@
+// Şablon detay ekranı ('Bu şablonu kullan' → /create). Rota: /template-detail
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 

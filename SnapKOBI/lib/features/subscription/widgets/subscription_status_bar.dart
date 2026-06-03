@@ -1,3 +1,4 @@
+// Mevcut abonelik durum çubuğu.
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

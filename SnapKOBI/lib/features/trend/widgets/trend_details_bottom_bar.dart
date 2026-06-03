@@ -1,3 +1,4 @@
+// Trend detay alt aksiyon çubuğu ('Bu trendi kullan').
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 

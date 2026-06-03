@@ -1,3 +1,4 @@
+// 'Üret' gönder butonu (yalnızca foto seçiliyse aktif olur).
 import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_colors.dart';

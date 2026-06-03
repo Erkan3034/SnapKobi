@@ -1,3 +1,4 @@
+// Foto yükleme/önizleme alanı (seçili fotoğrafı gösterir, temizleme imkânı verir).
 import 'dart:io';
 import 'package:flutter/material.dart';
 

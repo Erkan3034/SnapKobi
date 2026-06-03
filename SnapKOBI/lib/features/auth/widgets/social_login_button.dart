@@ -1,3 +1,4 @@
+// Google/Apple sosyal giriş butonu widget'ı (SocialLoginType ile tür seçilir).
 import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_colors.dart';

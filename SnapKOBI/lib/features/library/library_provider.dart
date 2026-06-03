@@ -1,3 +1,4 @@
+// Kütüphane state'i + kategori/sıralama/arama — LibraryNotifier, LibraryTemplate modeli.
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/utils/logger.dart';

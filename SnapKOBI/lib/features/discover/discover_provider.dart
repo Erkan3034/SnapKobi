@@ -1,3 +1,4 @@
+// Ana sayfa state'i (trend/şablon/topluluk listeleri + arka plan temaları) — DiscoverNotifier.
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/utils/logger.dart';

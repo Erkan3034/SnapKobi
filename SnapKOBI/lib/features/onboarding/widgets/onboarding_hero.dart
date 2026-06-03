@@ -1,3 +1,4 @@
+// Onboarding üst görsel/illüstrasyon kartı.
 import 'package:flutter/material.dart';
 
 import '../../../core/constants/app_strings.dart';

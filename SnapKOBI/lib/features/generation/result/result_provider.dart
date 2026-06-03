@@ -1,3 +1,4 @@
+// Sonuç ekranı state'i (üretilen görsel/video/caption/hashtag) — ResultNotifier.
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class ResultState {

@@ -1,3 +1,4 @@
+// Arka plan teması seçici (studio/outdoor vb.).
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

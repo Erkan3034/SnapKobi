@@ -1,3 +1,4 @@
+// Ayarlar tek satır öğesi (ikon + başlık + trailing + onTap).
 import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_dimensions.dart';

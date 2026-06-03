@@ -1,3 +1,4 @@
+// Topluluk gönderisi önce/sonra görsel karşılaştırması.
 import 'package:flutter/material.dart';
 import '../../../shared/widgets/image/before_after_slider.dart';
 import '../../discover/discover_provider.dart';

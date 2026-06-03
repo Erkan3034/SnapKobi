@@ -1,3 +1,4 @@
+// Sektör seçim onboarding ekranı. Rota: /onboarding_sector
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 

@@ -1,3 +1,4 @@
+// Şablon kütüphanesi verisini Supabase'den çeken datasource.
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 

@@ -1,3 +1,4 @@
+// Abonelik state'i + plan bilgileri (aylık/yıllık fiyat) — SubscriptionNotifier.
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../domain/entities/subscription.dart';

@@ -1,3 +1,4 @@
+// Seçili platformu gösteren ve platform seçim sheet'ini açan çip buton.
 import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_colors.dart';

@@ -1,3 +1,4 @@
+// Kesik çizgili çerçeve çizen CustomPainter (yükleme alanı kenarlığı).
 import 'dart:ui';
 import 'package:flutter/material.dart';
 

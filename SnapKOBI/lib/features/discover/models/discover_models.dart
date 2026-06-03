@@ -1,3 +1,4 @@
+// Keşfet veri modelleri: TrendItem, TemplateItem, CommunityItem, BackgroundThemeOption.
 class TrendItem {
   final String title;
   final String imageUrl;

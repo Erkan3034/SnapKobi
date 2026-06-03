@@ -1,3 +1,4 @@
+// Seçili platforma göre hazır şablon akışı (templatesProvider.family).
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/di/providers.dart';

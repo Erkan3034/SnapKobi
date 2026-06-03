@@ -1,3 +1,4 @@
+// Projelerim ekranı — alt menü 2. sekme; üretim geçmişi grid'i + filtre. Rota: /history
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';

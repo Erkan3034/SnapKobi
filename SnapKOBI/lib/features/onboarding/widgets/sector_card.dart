@@ -1,3 +1,4 @@
+// Sektör seçim kartı (onboarding'de seçilebilir öğe).
 import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_colors.dart';

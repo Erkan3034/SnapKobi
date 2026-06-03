@@ -1,3 +1,4 @@
+// Ayarlar üst profil başlığı (avatar/ad/plan rozeti).
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

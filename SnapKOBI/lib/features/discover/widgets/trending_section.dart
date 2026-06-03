@@ -1,3 +1,4 @@
+// Ana sayfa 'Trendler' bölümü (yatay kaydırmalı liste).
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 

@@ -1,3 +1,4 @@
+// Ana sayfa (Keşfet) — alt menü 1. sekme; trend/şablon/topluluk bölümlerini gösterir.
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';

@@ -1,3 +1,4 @@
+// Platform seçim bottom sheet'i (Instagram/TikTok/Trendyol...).
 import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_colors.dart';

@@ -1,3 +1,4 @@
+// Açılış başlık metni.
 import 'package:flutter/material.dart';
 
 import '../../../core/constants/app_strings.dart';

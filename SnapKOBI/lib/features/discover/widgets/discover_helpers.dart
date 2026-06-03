@@ -1,3 +1,4 @@
+// Keşfet yardımcıları: yükleme shimmer'ı ve bildirim sheet'i.
 import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_colors.dart';

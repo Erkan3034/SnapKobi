@@ -1,3 +1,4 @@
+// Ana sayfa üst 'Hemen Başla' banner'ı (dokununca /create açar).
 import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_colors.dart';

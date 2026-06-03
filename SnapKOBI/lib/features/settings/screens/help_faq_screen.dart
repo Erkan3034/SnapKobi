@@ -1,3 +1,4 @@
+// Yardım & SSS ekranı. Rota: /help-faq
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 

@@ -1,3 +1,4 @@
+// Topluluk gönderisi detay ekranı. Rota: /community-detail
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 

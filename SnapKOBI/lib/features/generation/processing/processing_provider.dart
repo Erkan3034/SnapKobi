@@ -1,3 +1,4 @@
+// Üretim orkestrasyonu: başlatır + Supabase Realtime ile durumu canlı izler — ProcessingNotifier.
 import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/di/providers.dart';

@@ -1,3 +1,4 @@
+// Açılış alt bilgisi + yükleme ilerleme çubuğu.
 import 'package:flutter/material.dart';
 
 import '../../../core/constants/app_strings.dart';

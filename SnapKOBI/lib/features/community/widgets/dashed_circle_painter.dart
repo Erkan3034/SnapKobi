@@ -1,3 +1,4 @@
+// Kesik çizgili daire çizen CustomPainter (avatar halkası).
 import 'package:flutter/material.dart';
 
 class DashedCirclePainter extends CustomPainter {

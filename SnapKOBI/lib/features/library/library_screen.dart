@@ -1,3 +1,4 @@
+// Kütüphane ekranı — alt menü 3. sekme; şablon grid'i + arama + kategori. Rota: /library
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';

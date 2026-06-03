@@ -1,3 +1,4 @@
+// Şifremi unuttum ekranı: e-posta alıp sıfırlama bağlantısı gönderir. Rota: /forgot-password
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

@@ -1,3 +1,4 @@
+// Üretilen caption/hashtag bölümü (kopyalama ile).
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

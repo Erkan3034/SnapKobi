@@ -1,3 +1,4 @@
+// E-posta doğrulama ekranı: kayıt sonrası 'mailini kontrol et' bilgisini gösterir. Rota: /verify-email
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 

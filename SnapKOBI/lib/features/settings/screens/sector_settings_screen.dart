@@ -1,3 +1,4 @@
+// Sektör ayarları ekranı (kullanıcının sektörünü seçer). Rota: /sector-settings
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 

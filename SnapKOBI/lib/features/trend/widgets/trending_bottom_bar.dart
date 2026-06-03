@@ -1,3 +1,4 @@
+// Trendler ekranı alt çubuğu.
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
