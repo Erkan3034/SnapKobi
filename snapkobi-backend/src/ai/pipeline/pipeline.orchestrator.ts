@@ -8,13 +8,23 @@ import { GenerationStatus } from '@prisma/client';
 import { getSignedUrlForPath, uploadToSupabaseStorage } from '../providers/storage.helper';
 import { removeProductBackground } from '../providers/background-removal.helper';
 import { compositeProductOnBackground } from '../providers/composite.helper';
-import { normalizeToJpeg } from '../providers/image-normalize.helper';
+import { normalizeToJpeg, downscaleToMaxEdge } from '../providers/image-normalize.helper';
 import { generateLocalBackdrop } from '../providers/local-backdrop.helper';
 import { generatePixazoBackdrop, isPixazoConfigured } from '../providers/pixazo.provider';
 
 
 
-export async function runGenerationPipeline(generationId: string): Promise<void> {
+// Ayni anda yalnizca BIR pipeline calissin: es zamanli iki agir is (ONNX modeli +
+// buyuk gorsel + ffmpeg) dusuk bellekli sunucuda OOM yapiyordu. Basit in-process kuyruk.
+let pipelineChain: Promise<void> = Promise.resolve();
+
+export function runGenerationPipeline(generationId: string): Promise<void> {
+  const next = pipelineChain.then(() => runPipelineInternal(generationId));
+  pipelineChain = next.catch(() => {}); // zincir kopmasin
+  return next;
+}
+
+async function runPipelineInternal(generationId: string): Promise<void> {
   const startTime = Date.now();
   console.log(`🚀 Starting advanced generation pipeline for ID: ${generationId}`);
 
@@ -129,11 +139,13 @@ Important: Generate an empty photorealistic product photography scene with one c
       throw new Error(`Failed to download original product image: ${originalRes.statusText}`);
     }
     const rawBuffer = Buffer.from(await originalRes.arrayBuffer());
-    const { buffer: normalizedBuffer } = await normalizeToJpeg(
+    const { buffer: jpegBuffer } = await normalizeToJpeg(
       rawBuffer,
       originalRes.headers.get('content-type'),
       originalUrl
     );
+    // Isleme oncesi kucult (OOM'u onler; final urun zaten kucuk kullanilir).
+    const normalizedBuffer = await downscaleToMaxEdge(jpegBuffer, 1440);
 
     let processedImageUrl = '';
     try {
