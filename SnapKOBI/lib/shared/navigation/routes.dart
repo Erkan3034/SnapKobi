@@ -25,5 +25,6 @@ abstract final class AppRoutes {
   static const String trending = '/trending';
   static const String trendDetails = '/trend-details';
   static const String communityShowcase = '/community-showcase';
+  static const String communityDetail = '/community-detail';
   static const String processing = '/processing';
 }

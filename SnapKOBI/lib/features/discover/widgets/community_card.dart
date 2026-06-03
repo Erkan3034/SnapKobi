@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/app_dimensions.dart';
 import '../../../core/theme/app_typography.dart';
+import '../../../shared/navigation/routes.dart';
 import '../../../shared/widgets/image/before_after_slider.dart';
 import '../discover_provider.dart';
 
@@ -19,7 +21,9 @@ class CommunityCard extends StatelessWidget {
     final beforeUrl = item.beforeUrl ?? '';
     final afterUrl = item.afterUrl ?? '';
 
-    return Container(
+    return GestureDetector(
+      onTap: () => context.push(AppRoutes.communityDetail, extra: item),
+      child: Container(
       margin: const EdgeInsets.symmetric(horizontal: AppDimensions.spacing16, vertical: AppDimensions.spacing4),
       padding: const EdgeInsets.all(AppDimensions.spacing12),
       decoration: BoxDecoration(
@@ -45,6 +49,7 @@ class CommunityCard extends StatelessWidget {
         const SizedBox(height: AppDimensions.spacing8),
         BeforeAfterSlider(beforeUrl: beforeUrl, afterUrl: afterUrl, height: 140),
       ]),
+      ),
     );
   }
 }

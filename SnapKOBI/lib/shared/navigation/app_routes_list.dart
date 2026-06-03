@@ -6,6 +6,7 @@ import '../../features/auth/login_screen.dart';
 import '../../features/auth/register_screen.dart';
 import '../../features/auth/reset_password_screen.dart';
 import '../../features/community/community_screen.dart';
+import '../../features/community/community_detail_screen.dart';
 import '../../features/create/create_screen.dart';
 import '../../features/discover/discover_provider.dart';
 import '../../features/generation/processing/processing_screen.dart';
@@ -64,6 +65,7 @@ final List<RouteBase> appRoutesList = [
   GoRoute(path: AppRoutes.trending, builder: (_, __) => const TrendingScreen()),
   GoRoute(path: AppRoutes.trendDetails, builder: (_, state) => TrendDetailsScreen(item: state.extra as TrendItem)),
   GoRoute(path: AppRoutes.communityShowcase, builder: (_, __) => const CommunityScreen()),
+  GoRoute(path: AppRoutes.communityDetail, builder: (_, state) => CommunityDetailScreen(item: state.extra as CommunityItem)),
   GoRoute(path: AppRoutes.processing, builder: (_, __) => const ProcessingScreen()),
   GoRoute(path: AppRoutes.library, builder: (_, __) => const LibraryScreen()),
   GoRoute(path: AppRoutes.templateDetail, builder: (_, state) => TemplateDetailScreen(template: state.extra as LibraryTemplate)),

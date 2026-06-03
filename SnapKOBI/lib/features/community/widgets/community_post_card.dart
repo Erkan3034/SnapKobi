@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_dimensions.dart';
+import '../../../shared/navigation/routes.dart';
 import '../../discover/discover_provider.dart';
 import 'community_post_header.dart';
 import 'community_post_comparison.dart';
@@ -12,7 +14,9 @@ class CommunityPostCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Container(
+    return GestureDetector(
+      onTap: () => context.push(AppRoutes.communityDetail, extra: item),
+      child: Container(
       margin: const EdgeInsets.symmetric(
         horizontal: AppDimensions.spacing16,
         vertical: AppDimensions.spacing8,
@@ -38,6 +42,7 @@ class CommunityPostCard extends StatelessWidget {
           const SizedBox(height: AppDimensions.spacing12),
           CommunityPostFooter(item: item),
         ],
+      ),
       ),
     );
   }
