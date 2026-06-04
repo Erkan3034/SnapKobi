@@ -27,4 +27,7 @@ abstract final class AppRoutes {
   static const String communityShowcase = '/community-showcase';
   static const String communityDetail = '/community-detail';
   static const String processing = '/processing';
+
+  //test screen add
+  //static const String test = '/test';
 }

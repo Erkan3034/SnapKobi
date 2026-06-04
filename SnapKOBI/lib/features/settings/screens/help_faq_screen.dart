@@ -16,6 +16,7 @@ class HelpFaqScreen extends StatelessWidget {
       _FAQ('Kredi sistemi nasıl çalışır?', 'Her görsel üretimi veya video üretimi 1 kredi tüketir. Aylık planınız yenilendiğinde kredileriniz sıfırlanır.'),
       _FAQ('Üyeliğimi ne zaman iptal edebilirim?', 'İstediğiniz an aboneliğinizi iptal edebilirsiniz. İptal durumunda mevcut fatura dönemi sonuna kadar haklarınız devam eder.'),
       _FAQ('Görseller ticari kullanıma uygun mu?', 'Evet, ürettiğiniz tüm içerikler ticari markanız için tamamen lisanslı ve ticari kullanıma uygundur.'),
+      
     ];
 
     return Scaffold(

@@ -1,5 +1,4 @@
 import 'package:go_router/go_router.dart';
-
 import '../../features/auth/email_verification_screen.dart';
 import '../../features/auth/forgot_password_screen.dart';
 import '../../features/auth/login_screen.dart';
@@ -69,4 +68,6 @@ final List<RouteBase> appRoutesList = [
   GoRoute(path: AppRoutes.processing, builder: (_, __) => const ProcessingScreen()),
   GoRoute(path: AppRoutes.library, builder: (_, __) => const LibraryScreen()),
   GoRoute(path: AppRoutes.templateDetail, builder: (_, state) => TemplateDetailScreen(template: state.extra as LibraryTemplate)),
+ //test screen add(also add its import)
+ // GoRoute(path: AppRoutes.test, builder: (_, __) => const TestEkrani()),
 ];

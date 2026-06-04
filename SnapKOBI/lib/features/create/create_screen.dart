@@ -63,6 +63,7 @@ class _CreateScreenState extends ConsumerState<CreateScreen> {
         child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
           const UsageBanner(),
           const SizedBox(height: AppDimensions.spacing20),
+          
           ImageUploadZone(imagePath: state.selectedImagePath,
             onClear: () => ref.read(createProvider.notifier).setImagePath(null),
             onTap: () => _pickImage(ref, ImageSource.gallery)),

@@ -21,7 +21,7 @@ class _BeforeAfterSliderState extends State<BeforeAfterSlider> {
   void _update(PointerEvent event) {
     final RenderBox box = context.findRenderObject() as RenderBox;
     final double localX = box.globalToLocal(event.position).dx;
-    setState(() => _clipPercent = (localX / box.size.width).clamp(0.0, 1.0));
+    setState(() => _clipPercent = (localX / box.size.width).clamp(0.0, 1.0)); // sürüklenirken clipPercent'i güncelle, 0-1 arasında kalacak şekilde clamp'le
   }
 
   @override

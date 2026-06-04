@@ -27,6 +27,15 @@ void showRatingDialog(BuildContext context) {
           },
           child: const Text('Gönder'),
         ),
+        TextButton(
+          onPressed: () {
+            Navigator.pop(context);
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Puanınız için teşekkür ederiz! ⭐⭐⭐⭐⭐')),
+            );
+          },
+          child: const Text('Puanla'),
+        ),
       ],
     ),
   );
