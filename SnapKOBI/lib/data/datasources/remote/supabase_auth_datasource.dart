@@ -40,6 +40,10 @@ class SupabaseAuthDataSource {
     await _client.auth.signInWithOAuth(
       OAuthProvider.google,
       redirectTo: redirectTo,
+      // 'select_account': Google oturumu acik olsa bile her seferinde hesap
+      // secim ekranini zorla goster (cikis sonrasi otomatik eski hesaba
+      // geri girmeyi engeller).
+      queryParams: const {'prompt': 'select_account'},
     );
   }
 

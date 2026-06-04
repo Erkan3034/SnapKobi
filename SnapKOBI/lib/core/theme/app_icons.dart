@@ -37,6 +37,7 @@ abstract final class AppIcons {
   static const IconData platformWeb = Icons.language;
   static const IconData platformTiktok = Icons.music_note_outlined;
   static const IconData platformHepsiburada = Icons.local_mall_outlined;
+  static const IconData platformThreads = Icons.alternate_email; // Threads (@ benzeri ikon)
 
   // ─── Durum ───────────────────────────────────────────────────────
   static const IconData statusSuccess = Icons.check_circle;

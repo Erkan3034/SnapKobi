@@ -69,5 +69,5 @@ final List<RouteBase> appRoutesList = [
   GoRoute(path: AppRoutes.library, builder: (_, __) => const LibraryScreen()),
   GoRoute(path: AppRoutes.templateDetail, builder: (_, state) => TemplateDetailScreen(template: state.extra as LibraryTemplate)),
  //test screen add(also add its import)
- // GoRoute(path: AppRoutes.test, builder: (_, __) => const TestEkrani()),
+  //GoRoute(path: AppRoutes.test, builder: (_, __) => const TestEkrani()),
 ];

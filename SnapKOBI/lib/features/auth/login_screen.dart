@@ -137,6 +137,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 prefixIcon: Icons.mail_outline,
                 keyboardType: TextInputType.emailAddress,
                 textInputAction: TextInputAction.next,
+                //suffixIcon:IconButton(icon:Icon(Icons.cleaning_services_outlined),onPressed: () => _emailController.clear()),
                 controller: _emailController,
                 enabled: !isLoading,
               ),

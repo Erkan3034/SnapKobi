@@ -28,7 +28,7 @@ class QuickStartBanner extends StatelessWidget {
           Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Text('Hemen Üretmeye Başla', style: AppTypography.titleLarge.copyWith(color: AppColors.white)),
             const SizedBox(height: AppDimensions.spacing4),
-            Text('Ürününüzü çekin, AI gerisini halleder',
+            Text('Ürününüzü çekin, SnapKobi AI gerisini halleder',
               style: AppTypography.bodyMedium.copyWith(color: AppColors.white.withValues(alpha: 0.7))),
           ])),
           Container(
